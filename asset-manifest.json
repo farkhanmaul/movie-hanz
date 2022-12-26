@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/movie-hanz/static/css/main.de7f6c85.css",
+    "main.js": "/movie-hanz/static/js/main.59ce2f3e.js",
+    "static/js/787.20594fdc.chunk.js": "/movie-hanz/static/js/787.20594fdc.chunk.js",
+    "index.html": "/movie-hanz/index.html",
+    "main.de7f6c85.css.map": "/movie-hanz/static/css/main.de7f6c85.css.map",
+    "main.59ce2f3e.js.map": "/movie-hanz/static/js/main.59ce2f3e.js.map",
+    "787.20594fdc.chunk.js.map": "/movie-hanz/static/js/787.20594fdc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.de7f6c85.css",
+    "static/js/main.59ce2f3e.js"
+  ]
+}
