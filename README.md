@@ -1,6 +1,54 @@
-# Getting Started with Create React App
+# Movie Hanz 🎬
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Movie Hanz adalah aplikasi web React untuk mencari dan menampilkan informasi film populer. Aplikasi ini menggunakan API The Movie Database (TMDb) untuk mengambil data film terbaru dan memungkinkan pengguna untuk mencari film favorit mereka.
+
+## Features
+
+- ✨ Menampilkan daftar film populer
+- 🔍 Pencarian film real-time
+- 📱 Responsive design
+- 🎭 Informasi lengkap film (judul, poster, tanggal rilis, rating)
+
+## Tech Stack
+
+- React 18.2.0
+- Axios untuk HTTP requests
+- CSS untuk styling
+- TMDb API
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (versi 14 atau lebih tinggi)
+- npm atau yarn
+
+### Installation
+
+1. Clone repository ini
+```bash
+git clone https://github.com/farkhanmaul/movie-hanz.git
+cd movie-hanz
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Setup environment variables
+Buat file `.env` dan tambahkan:
+```
+REACT_APP_BASEIMGURL=https://image.tmdb.org/t/p/w500
+REACT_APP_APIKEY=your_tmdb_api_key
+```
+
+4. Jalankan aplikasi
+```bash
+npm start
+```
+
+Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
@@ -68,3 +116,23 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Contributing
+
+1. Fork repository ini
+2. Buat branch baru (`git checkout -b feature/amazing-feature`)
+3. Commit perubahan (`git commit -m 'Add some amazing feature'`)
+4. Push ke branch (`git push origin feature/amazing-feature`)
+5. Buat Pull Request
+
+## License
+
+Project ini menggunakan MIT License.
+
+## Demo
+
+🔗 [Live Demo](https://farkhanmaul.github.io/movie-hanz)
+
+## Author
+
+**Farkhan Maul** - [GitHub](https://github.com/farkhanmaul)
