@@ -1,5 +1,5 @@
 import "./App.css";
-import { getMovieList, searchMovie, getTopMoviesThisMonth, getPopularTV } from "./api.js";
+import { getMovieList, searchMovie, getTopMoviesThisMonth, getPopularTV, getTrendingMovies } from "./api.js";
 import { useEffect, useState } from "react";
 import TrendingSection from "./components/TrendingSection";
 import SearchSection from "./components/SearchSection";
@@ -12,6 +12,7 @@ import Pagination from "./components/Pagination";
 const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
   const [popularTVShows, setPopularTVShows] = useState([]);
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [heroMovies, setHeroMovies] = useState([]);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [currentSection, setCurrentSection] = useState('home');
@@ -39,21 +40,23 @@ const App = () => {
 
   const initializeData = async () => {
     try {
-      const [popularResult, topMonthResult, tvResult] = await Promise.all([
+      const [popularResult, topMonthResult, tvResult, trendingResult] = await Promise.all([
         getMovieList(1),
         getTopMoviesThisMonth(),
-        getPopularTV()
+        getPopularTV(),
+        getTrendingMovies('week') // Get trending this week for recommendations
       ]);
       
       setPopularMovies(popularResult.results.slice(0, 10)); // Limit to 1 row
       setPopularTVShows(tvResult.slice(0, 10)); // Limit to 1 row
+      setRecommendedMovies(trendingResult.results?.slice(0, 10) || []); // Recommendations
       setTotalPages(Math.min(popularResult.total_pages, 500)); // TMDb limits to 500 pages
       
       // Use top movies this month as hero carousel, fallback to popular
       if (topMonthResult && topMonthResult.length > 0) {
-        setHeroMovies(topMonthResult.slice(0, 5)); // Get top 5 for carousel
+        setHeroMovies(topMonthResult.slice(0, 10)); // Get top 10 for carousel
       } else if (popularResult.results && popularResult.results.length > 0) {
-        setHeroMovies(popularResult.results.slice(0, 5));
+        setHeroMovies(popularResult.results.slice(0, 10));
       }
     } catch (error) {
       // Fallback if API fails
@@ -62,7 +65,7 @@ const App = () => {
         setPopularMovies(result.results.slice(0, 10));
         setTotalPages(Math.min(result.total_pages, 500));
         if (result.results && result.results.length > 0) {
-          setHeroMovies(result.results.slice(0, 5));
+          setHeroMovies(result.results.slice(0, 10));
         }
       } catch (fallbackError) {
         console.error('Failed to load data:', fallbackError);
@@ -162,6 +165,38 @@ const App = () => {
             <div className="Movie-title">{show.name}</div>
             <div className="Movie-date">{show.first_air_date}</div>
             <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  const RecommendedMoviesList = () => {
+    return recommendedMovies.map((movie, i) => {
+      return (
+        <div 
+          className="movie-card" 
+          key={i}
+          onClick={() => handleMovieClick(movie.id)}
+        >
+          <div className="movie-poster-container">
+            <div className="trending-badge">🔥 Trending</div>
+            <img
+              className="Movie-img"
+              alt={movie.title}
+              src={`${process.env.REACT_APP_BASEIMGURL}/${movie.poster_path}`}
+              onError={(e) => {
+                e.target.src = '/placeholder-poster.jpg';
+              }}
+            />
+            <div className="movie-overlay">
+              <button className="play-button">▶</button>
+            </div>
+          </div>
+          <div className="movie-info">
+            <div className="Movie-title">{movie.title}</div>
+            <div className="Movie-date">{movie.release_date}</div>
+            <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
           </div>
         </div>
       );
@@ -379,6 +414,20 @@ const App = () => {
                 </div>
               )}
             </div>
+
+            {/* Recommendations Section */}
+            <div className="section">
+              <div className="section-header">
+                <h2 className="section-title">Recommendations for You</h2>
+              </div>
+              {loading ? (
+                <div className="loading">Loading recommendations...</div>
+              ) : (
+                <div className="movie-grid">
+                  <RecommendedMoviesList />
+                </div>
+              )}
+            </div>
           </>
         );
     }
@@ -390,7 +439,10 @@ const App = () => {
         {/* Fixed Navigation Header */}
         <nav className="header-nav">
           <div className="nav-container">
-            <h1>MOVIEHANZ</h1>
+            <div className="logo-container">
+              <h1>MOVIEHANZ</h1>
+              <span className="logo-subtitle">Portal</span>
+            </div>
             
             <div className="nav-search-container">
               <input

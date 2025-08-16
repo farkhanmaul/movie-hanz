@@ -1,0 +1,11 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simple version for ico conversion -->
+  <rect width="16" height="16" rx="3" fill="#e50914"/>
+  <circle cx="8" cy="8" r="6" fill="none" stroke="white" stroke-width="1"/>
+  <circle cx="8" cy="8" r="1.5" fill="white"/>
+  <circle cx="5" cy="5" r="0.8" fill="white"/>
+  <circle cx="11" cy="5" r="0.8" fill="white"/>
+  <circle cx="5" cy="11" r="0.8" fill="white"/>
+  <circle cx="11" cy="11" r="0.8" fill="white"/>
+  <polygon points="6.5,6 10,8 6.5,10" fill="#e50914"/>
+</svg>
