@@ -28,16 +28,17 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   };
 
   const renderMovieList = (movies) => {
-    return movies.slice(0, 12).map((movie, index) => (
+    return movies.slice(0, 20).map((movie, index) => (
       <div 
         key={movie.id} 
-        className="movie-card"
+        className="ranking-item"
         onClick={() => onMovieClick && onMovieClick(movie.id)}
       >
-        <div className="movie-poster-container">
-          <div className="top-rated-rank">#{index + 1}</div>
+        <div className="ranking-number">
+          <span className="rank-text">#{index + 1}</span>
+        </div>
+        <div className="ranking-poster">
           <img
-            className="movie-poster"
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
               : '/placeholder-poster.jpg'
@@ -47,34 +48,40 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
               e.target.src = '/placeholder-poster.jpg';
             }}
           />
-          <div className="movie-overlay">
-            <button className="play-button">▶</button>
-          </div>
         </div>
-        <div className="movie-info">
-          <div className="movie-title">{movie.title}</div>
-          <div className="movie-year">
-            {new Date(movie.release_date).getFullYear()}
+        <div className="ranking-info">
+          <h3 className="ranking-title">{movie.title}</h3>
+          <div className="ranking-meta">
+            <span className="ranking-year">{new Date(movie.release_date).getFullYear()}</span>
+            <span className="ranking-rating">⭐ {movie.vote_average?.toFixed(1)}</span>
+            <span className="ranking-votes">{movie.vote_count?.toLocaleString()} votes</span>
           </div>
-          <div className="movie-rating">
-            ⭐ {movie.vote_average?.toFixed(1)}
-          </div>
+          <p className="ranking-overview">
+            {movie.overview?.length > 150
+              ? `${movie.overview.substring(0, 150)}...`
+              : movie.overview}
+          </p>
+        </div>
+        <div className="ranking-score">
+          <div className="score-number">{movie.vote_average?.toFixed(1)}</div>
+          <div className="score-label">Rating</div>
         </div>
       </div>
     ));
   };
 
   const renderTVList = (tvShows) => {
-    return tvShows.slice(0, 12).map((show, index) => (
+    return tvShows.slice(0, 20).map((show, index) => (
       <div 
         key={show.id} 
-        className="movie-card"
+        className="ranking-item"
         onClick={() => onTVClick && onTVClick(show.id)}
       >
-        <div className="movie-poster-container">
-          <div className="top-rated-rank">#{index + 1}</div>
+        <div className="ranking-number">
+          <span className="rank-text">#{index + 1}</span>
+        </div>
+        <div className="ranking-poster">
           <img
-            className="movie-poster"
             src={show.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
               : '/placeholder-poster.jpg'
@@ -84,18 +91,23 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
               e.target.src = '/placeholder-poster.jpg';
             }}
           />
-          <div className="movie-overlay">
-            <button className="play-button">▶</button>
-          </div>
         </div>
-        <div className="movie-info">
-          <div className="movie-title">{show.name}</div>
-          <div className="movie-year">
-            {new Date(show.first_air_date).getFullYear()}
+        <div className="ranking-info">
+          <h3 className="ranking-title">{show.name}</h3>
+          <div className="ranking-meta">
+            <span className="ranking-year">{new Date(show.first_air_date).getFullYear()}</span>
+            <span className="ranking-rating">⭐ {show.vote_average?.toFixed(1)}</span>
+            <span className="ranking-votes">{show.vote_count?.toLocaleString()} votes</span>
           </div>
-          <div className="movie-rating">
-            ⭐ {show.vote_average?.toFixed(1)}
-          </div>
+          <p className="ranking-overview">
+            {show.overview?.length > 150
+              ? `${show.overview.substring(0, 150)}...`
+              : show.overview}
+          </p>
+        </div>
+        <div className="ranking-score">
+          <div className="score-number">{show.vote_average?.toFixed(1)}</div>
+          <div className="score-label">Rating</div>
         </div>
       </div>
     ));
@@ -124,19 +136,19 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
         </button>
       </div>
 
-      <div className="movie-grid">
+      <div className="ranking-list">
         {activeTab === 'movies' && renderMovieList(topRatedMovies)}
         {activeTab === 'tv' && renderTVList(topRatedTV)}
       </div>
 
       {activeTab === 'movies' && topRatedMovies.length > 0 && (
         <div className="section-subtitle">
-          Showing top {Math.min(12, topRatedMovies.length)} highest rated movies • Minimum rating: ⭐ {Math.min(...topRatedMovies.slice(0, 12).map(m => m.vote_average)).toFixed(1)}
+          Showing top {Math.min(20, topRatedMovies.length)} highest rated movies • Minimum rating: ⭐ {Math.min(...topRatedMovies.slice(0, 20).map(m => m.vote_average)).toFixed(1)}
         </div>
       )}
       {activeTab === 'tv' && topRatedTV.length > 0 && (
         <div className="section-subtitle">
-          Showing top {Math.min(12, topRatedTV.length)} highest rated TV shows • Minimum rating: ⭐ {Math.min(...topRatedTV.slice(0, 12).map(s => s.vote_average)).toFixed(1)}
+          Showing top {Math.min(20, topRatedTV.length)} highest rated TV shows • Minimum rating: ⭐ {Math.min(...topRatedTV.slice(0, 20).map(s => s.vote_average)).toFixed(1)}
         </div>
       )}
     </div>

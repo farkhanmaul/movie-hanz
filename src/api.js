@@ -4,11 +4,11 @@ const apiKey = process.env.REACT_APP_API_KEY;
 const baseURL = process.env.REACT_APP_BASEURL;
 
 // Popular Movies (existing)
-export const getMovieList = async () => {
+export const getMovieList = async (page = 1) => {
   const movie = await axios.get(
-    `${baseURL}/movie/popular?page=1&api_key=${apiKey}`
+    `${baseURL}/movie/popular?page=${page}&api_key=${apiKey}`
   );
-  return movie.data.results;
+  return movie.data;
 };
 
 // Search Movies (existing)
@@ -20,18 +20,33 @@ export const searchMovie = async (q) => {
 };
 
 // Trending Movies & TV Shows
-export const getTrendingMovies = async (timeWindow = 'day') => {
+export const getTrendingMovies = async (timeWindow = 'day', page = 1) => {
   const response = await axios.get(
-    `${baseURL}/trending/movie/${timeWindow}?api_key=${apiKey}`
+    `${baseURL}/trending/movie/${timeWindow}?page=${page}&api_key=${apiKey}`
+  );
+  return response.data;
+};
+
+// Top Movies This Month/Year for Hero
+export const getTopMoviesThisMonth = async () => {
+  const currentDate = new Date();
+  const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+  const thisMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  
+  const fromDate = lastMonth.toISOString().split('T')[0];
+  const toDate = thisMonth.toISOString().split('T')[0];
+  
+  const response = await axios.get(
+    `${baseURL}/discover/movie?api_key=${apiKey}&sort_by=vote_average.desc&vote_count.gte=1000&primary_release_date.gte=${fromDate}&primary_release_date.lte=${toDate}`
   );
   return response.data.results;
 };
 
-export const getTrendingTV = async (timeWindow = 'day') => {
+export const getTrendingTV = async (timeWindow = 'day', page = 1) => {
   const response = await axios.get(
-    `${baseURL}/trending/tv/${timeWindow}?api_key=${apiKey}`
+    `${baseURL}/trending/tv/${timeWindow}?page=${page}&api_key=${apiKey}`
   );
-  return response.data.results;
+  return response.data;
 };
 
 export const getTrendingAll = async (timeWindow = 'day') => {
@@ -88,33 +103,33 @@ export const getPersonDetails = async (personId) => {
 };
 
 // Now Playing & Upcoming
-export const getNowPlayingMovies = async () => {
+export const getNowPlayingMovies = async (page = 1) => {
   const response = await axios.get(
-    `${baseURL}/movie/now_playing?page=1&api_key=${apiKey}`
+    `${baseURL}/movie/now_playing?page=${page}&api_key=${apiKey}`
   );
-  return response.data.results;
+  return response.data;
 };
 
-export const getUpcomingMovies = async () => {
+export const getUpcomingMovies = async (page = 1) => {
   const response = await axios.get(
-    `${baseURL}/movie/upcoming?page=1&api_key=${apiKey}`
+    `${baseURL}/movie/upcoming?page=${page}&api_key=${apiKey}`
   );
-  return response.data.results;
+  return response.data;
 };
 
 // Top Rated
-export const getTopRatedMovies = async () => {
+export const getTopRatedMovies = async (page = 1) => {
   const response = await axios.get(
-    `${baseURL}/movie/top_rated?page=1&api_key=${apiKey}`
+    `${baseURL}/movie/top_rated?page=${page}&api_key=${apiKey}`
   );
-  return response.data.results;
+  return response.data;
 };
 
-export const getTopRatedTV = async () => {
+export const getTopRatedTV = async (page = 1) => {
   const response = await axios.get(
-    `${baseURL}/tv/top_rated?page=1&api_key=${apiKey}`
+    `${baseURL}/tv/top_rated?page=${page}&api_key=${apiKey}`
   );
-  return response.data.results;
+  return response.data;
 };
 
 // Popular TV

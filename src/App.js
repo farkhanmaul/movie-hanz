@@ -1,11 +1,12 @@
 import "./App.css";
-import { getMovieList, searchMovie, getTopRatedMovies } from "./api.js";
+import { getMovieList, searchMovie, getTopMoviesThisMonth } from "./api.js";
 import { useEffect, useState } from "react";
 import TrendingSection from "./components/TrendingSection";
 import SearchSection from "./components/SearchSection";
 import MovieDetail from "./components/MovieDetail";
 import NowPlayingUpcoming from "./components/NowPlayingUpcoming";
 import TopRatedSection from "./components/TopRatedSection";
+import Pagination from "./components/Pagination";
 
 const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
@@ -14,20 +15,74 @@ const App = () => {
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [showMovieDetail, setShowMovieDetail] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch data for homepage
-    Promise.all([
-      getMovieList(),
-      getTopRatedMovies()
-    ]).then(([popularResult, topRatedResult]) => {
-      setPopularMovies(popularResult);
-      // Use top rated movie as hero
-      if (topRatedResult && topRatedResult.length > 0) {
-        setHeroMovie(topRatedResult[0]);
-      }
-    });
+    if (currentSection === 'home') {
+      loadPopularMovies(currentPage);
+    }
+  }, [currentPage, currentSection]);
+
+  useEffect(() => {
+    // Initialize data for homepage
+    initializeData();
   }, []);
+
+  const initializeData = async () => {
+    try {
+      const [popularResult, topMonthResult] = await Promise.all([
+        getMovieList(1),
+        getTopMoviesThisMonth()
+      ]);
+      
+      setPopularMovies(popularResult.results);
+      setTotalPages(Math.min(popularResult.total_pages, 500)); // TMDb limits to 500 pages
+      
+      // Use top movie this month as hero, fallback to popular
+      if (topMonthResult && topMonthResult.length > 0) {
+        setHeroMovie(topMonthResult[0]);
+      } else if (popularResult.results && popularResult.results.length > 0) {
+        setHeroMovie(popularResult.results[0]);
+      }
+    } catch (error) {
+      // Fallback if API fails
+      try {
+        const result = await getMovieList(1);
+        setPopularMovies(result.results);
+        setTotalPages(Math.min(result.total_pages, 500));
+        if (result.results && result.results.length > 0) {
+          setHeroMovie(result.results[0]);
+        }
+      } catch (fallbackError) {
+        console.error('Failed to load data:', fallbackError);
+      }
+    }
+  };
+
+  const loadPopularMovies = async (page) => {
+    setLoading(true);
+    try {
+      const result = await getMovieList(page);
+      setPopularMovies(result.results);
+      setTotalPages(Math.min(result.total_pages, 500));
+    } catch (error) {
+      console.error('Failed to load popular movies:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSectionChange = (section) => {
+    setCurrentSection(section);
+    setCurrentPage(1); // Reset page when changing sections
+  };
 
   const PopularMovieList = () => {
     return popularMovies.map((movie, i) => {
@@ -137,9 +192,21 @@ const App = () => {
             {/* Popular Movies Section */}
             <div className="section">
               <h2 className="section-title">Popular Movies</h2>
-              <div className="movie-grid">
-                <PopularMovieList />
-              </div>
+              {loading ? (
+                <div className="loading">Loading movies...</div>
+              ) : (
+                <>
+                  <div className="movie-grid">
+                    <PopularMovieList />
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    loading={loading}
+                  />
+                </>
+              )}
             </div>
           </>
         );
@@ -157,25 +224,25 @@ const App = () => {
             <div className="app-navigation">
               <button 
                 className={currentSection === 'home' ? 'nav-button active' : 'nav-button'}
-                onClick={() => setCurrentSection('home')}
+                onClick={() => handleSectionChange('home')}
               >
                 Home
               </button>
               <button 
                 className={currentSection === 'trending' ? 'nav-button active' : 'nav-button'}
-                onClick={() => setCurrentSection('trending')}
+                onClick={() => handleSectionChange('trending')}
               >
                 Trending
               </button>
               <button 
                 className={currentSection === 'nowplaying' ? 'nav-button active' : 'nav-button'}
-                onClick={() => setCurrentSection('nowplaying')}
+                onClick={() => handleSectionChange('nowplaying')}
               >
                 In Theaters
               </button>
               <button 
                 className={currentSection === 'toprated' ? 'nav-button active' : 'nav-button'}
-                onClick={() => setCurrentSection('toprated')}
+                onClick={() => handleSectionChange('toprated')}
               >
                 Top Rated
               </button>
