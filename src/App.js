@@ -20,7 +20,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (currentSection === 'home') {
+    if (currentSection === 'home' || currentSection === 'movies') {
       loadPopularMovies(currentPage);
     }
   }, [currentPage, currentSection]);
@@ -143,6 +143,27 @@ const App = () => {
         return <NowPlayingUpcoming onMovieClick={handleMovieClick} />;
       case 'toprated':
         return <TopRatedSection onMovieClick={handleMovieClick} onTVClick={handleMovieClick} />;
+      case 'movies':
+        return (
+          <div className="section">
+            <h2 className="section-title">Popular Movies</h2>
+            {loading ? (
+              <div className="loading">Loading movies...</div>
+            ) : (
+              <>
+                <div className="movie-grid">
+                  <PopularMovieList />
+                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  loading={loading}
+                />
+              </>
+            )}
+          </div>
+        );
       default:
         return (
           <>
@@ -191,21 +212,21 @@ const App = () => {
             
             {/* Popular Movies Section */}
             <div className="section">
-              <h2 className="section-title">Popular Movies</h2>
+              <div className="section-header">
+                <h2 className="section-title">Popular Movies</h2>
+                <button 
+                  className="show-all-btn"
+                  onClick={() => handleSectionChange('movies')}
+                >
+                  Show All
+                </button>
+              </div>
               {loading ? (
                 <div className="loading">Loading movies...</div>
               ) : (
-                <>
-                  <div className="movie-grid">
-                    <PopularMovieList />
-                  </div>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                    loading={loading}
-                  />
-                </>
+                <div className="movie-grid">
+                  <PopularMovieList />
+                </div>
               )}
             </div>
           </>
@@ -219,7 +240,7 @@ const App = () => {
         {/* Fixed Navigation Header */}
         <nav className="header-nav">
           <div className="nav-container">
-            <h1>MOVIE</h1>
+            <h1>MOVIEHANZ</h1>
             
             <div className="app-navigation">
               <button 
@@ -251,7 +272,10 @@ const App = () => {
                 onClick={() => setShowSearchModal(true)}
                 title="Search"
               >
-                🔍
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="21 21l-4.35-4.35"/>
+                </svg>
               </button>
             </div>
           </div>

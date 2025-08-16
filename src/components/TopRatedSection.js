@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { getTopRatedMovies, getTopRatedTV } from '../api';
+import Pagination from './Pagination';
 
 const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [topRatedTV, setTopRatedTV] = useState([]);
   const [activeTab, setActiveTab] = useState('movies');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
 
   useEffect(() => {
     fetchTopRatedData();
-  }, []);
+  }, [currentPage, activeTab]);
 
   const fetchTopRatedData = async () => {
     setLoading(true);
     try {
-      const [movies, tv] = await Promise.all([
-        getTopRatedMovies(),
-        getTopRatedTV()
-      ]);
-      setTopRatedMovies(movies.results || movies);
-      setTopRatedTV(tv.results || tv);
+      if (activeTab === 'movies') {
+        const movies = await getTopRatedMovies(currentPage);
+        setTopRatedMovies(movies.results || movies);
+        setTotalPages(Math.min(movies.total_pages || 1, 100)); // Limit to 100 pages
+      } else {
+        const tv = await getTopRatedTV(currentPage);
+        setTopRatedTV(tv.results || tv);
+        setTotalPages(Math.min(tv.total_pages || 1, 100)); // Limit to 100 pages
+      }
     } catch (error) {
       console.error('Error fetching top rated data:', error);
     } finally {
@@ -27,15 +35,25 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
     }
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage(1); // Reset page when switching tabs
+  };
+
   const renderMovieList = (movies) => {
-    return movies.slice(0, 20).map((movie, index) => (
+    return movies.map((movie, index) => (
       <div 
         key={movie.id} 
         className="ranking-item"
         onClick={() => onMovieClick && onMovieClick(movie.id)}
       >
         <div className="ranking-number">
-          <span className="rank-text">#{index + 1}</span>
+          <span className="rank-text">#{(currentPage - 1) * 20 + index + 1}</span>
         </div>
         <div className="ranking-poster">
           <img
@@ -71,14 +89,14 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   };
 
   const renderTVList = (tvShows) => {
-    return tvShows.slice(0, 20).map((show, index) => (
+    return tvShows.map((show, index) => (
       <div 
         key={show.id} 
         className="ranking-item"
         onClick={() => onTVClick && onTVClick(show.id)}
       >
         <div className="ranking-number">
-          <span className="rank-text">#{index + 1}</span>
+          <span className="rank-text">#{(currentPage - 1) * 20 + index + 1}</span>
         </div>
         <div className="ranking-poster">
           <img
@@ -124,15 +142,15 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
       <div className="control-tabs">
         <button
           className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
-          onClick={() => setActiveTab('movies')}
+          onClick={() => handleTabChange('movies')}
         >
-          Movies ({topRatedMovies.length})
+          Movies
         </button>
         <button
           className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
-          onClick={() => setActiveTab('tv')}
+          onClick={() => handleTabChange('tv')}
         >
-          TV Shows ({topRatedTV.length})
+          TV Shows
         </button>
       </div>
 
@@ -141,14 +159,21 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
         {activeTab === 'tv' && renderTVList(topRatedTV)}
       </div>
 
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        loading={loading}
+      />
+
       {activeTab === 'movies' && topRatedMovies.length > 0 && (
         <div className="section-subtitle">
-          Showing top {Math.min(20, topRatedMovies.length)} highest rated movies • Minimum rating: ⭐ {Math.min(...topRatedMovies.slice(0, 20).map(m => m.vote_average)).toFixed(1)}
+          Showing page {currentPage} of {totalPages} • {topRatedMovies.length} highest rated movies on this page
         </div>
       )}
       {activeTab === 'tv' && topRatedTV.length > 0 && (
         <div className="section-subtitle">
-          Showing top {Math.min(20, topRatedTV.length)} highest rated TV shows • Minimum rating: ⭐ {Math.min(...topRatedTV.slice(0, 20).map(s => s.vote_average)).toFixed(1)}
+          Showing page {currentPage} of {totalPages} • {topRatedTV.length} highest rated TV shows on this page
         </div>
       )}
     </div>
