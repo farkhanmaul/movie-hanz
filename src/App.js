@@ -1,5 +1,5 @@
 import "./App.css";
-import { getMovieList, searchMovie, getTopMoviesThisMonth } from "./api.js";
+import { getMovieList, searchMovie, getTopMoviesThisMonth, getPopularTV } from "./api.js";
 import { useEffect, useState } from "react";
 import TrendingSection from "./components/TrendingSection";
 import SearchSection from "./components/SearchSection";
@@ -11,6 +11,7 @@ import Pagination from "./components/Pagination";
 
 const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
+  const [popularTVShows, setPopularTVShows] = useState([]);
   const [heroMovies, setHeroMovies] = useState([]);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [currentSection, setCurrentSection] = useState('home');
@@ -26,6 +27,9 @@ const App = () => {
     if (currentSection === 'home' || currentSection === 'movies') {
       loadPopularMovies(currentPage);
     }
+    if (currentSection === 'tvshows') {
+      loadPopularTVShows(currentPage);
+    }
   }, [currentPage, currentSection]);
 
   useEffect(() => {
@@ -35,12 +39,14 @@ const App = () => {
 
   const initializeData = async () => {
     try {
-      const [popularResult, topMonthResult] = await Promise.all([
+      const [popularResult, topMonthResult, tvResult] = await Promise.all([
         getMovieList(1),
-        getTopMoviesThisMonth()
+        getTopMoviesThisMonth(),
+        getPopularTV()
       ]);
       
-      setPopularMovies(popularResult.results);
+      setPopularMovies(popularResult.results.slice(0, 10)); // Limit to 1 row
+      setPopularTVShows(tvResult.slice(0, 10)); // Limit to 1 row
       setTotalPages(Math.min(popularResult.total_pages, 500)); // TMDb limits to 500 pages
       
       // Use top movies this month as hero carousel, fallback to popular
@@ -53,7 +59,7 @@ const App = () => {
       // Fallback if API fails
       try {
         const result = await getMovieList(1);
-        setPopularMovies(result.results);
+        setPopularMovies(result.results.slice(0, 10));
         setTotalPages(Math.min(result.total_pages, 500));
         if (result.results && result.results.length > 0) {
           setHeroMovies(result.results.slice(0, 5));
@@ -72,6 +78,19 @@ const App = () => {
       setTotalPages(Math.min(result.total_pages, 500));
     } catch (error) {
       console.error('Failed to load popular movies:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadPopularTVShows = async (page) => {
+    setLoading(true);
+    try {
+      const result = await getPopularTV(); // Note: this API doesn't support pagination in our current implementation
+      setPopularTVShows(result);
+      setTotalPages(1); // For now, single page until we implement paginated TV API
+    } catch (error) {
+      console.error('Failed to load popular TV shows:', error);
     } finally {
       setLoading(false);
     }
@@ -112,6 +131,37 @@ const App = () => {
             <div className="Movie-title">{movie.title}</div>
             <div className="Movie-date">{movie.release_date}</div>
             <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  const PopularTVList = () => {
+    return popularTVShows.map((show, i) => {
+      return (
+        <div 
+          className="movie-card" 
+          key={i}
+          onClick={() => handleMovieClick(show.id)}
+        >
+          <div className="movie-poster-container">
+            <img
+              className="Movie-img"
+              alt={show.name}
+              src={`${process.env.REACT_APP_BASEIMGURL}/${show.poster_path}`}
+              onError={(e) => {
+                e.target.src = '/placeholder-poster.jpg';
+              }}
+            />
+            <div className="movie-overlay">
+              <button className="play-button">▶</button>
+            </div>
+          </div>
+          <div className="movie-info">
+            <div className="Movie-title">{show.name}</div>
+            <div className="Movie-date">{show.first_air_date}</div>
+            <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
           </div>
         </div>
       );
@@ -179,6 +229,44 @@ const App = () => {
                   loading={loading}
                 />
               </>
+            )}
+          </div>
+        );
+      case 'tvshows':
+        return (
+          <div className="section">
+            <h2 className="section-title">Popular TV Shows</h2>
+            {loading ? (
+              <div className="loading">Loading TV shows...</div>
+            ) : (
+              <div className="movie-grid">
+                {popularTVShows.map((show, i) => (
+                  <div 
+                    className="movie-card" 
+                    key={i}
+                    onClick={() => handleMovieClick(show.id)}
+                  >
+                    <div className="movie-poster-container">
+                      <img
+                        className="Movie-img"
+                        alt={show.name}
+                        src={`${process.env.REACT_APP_BASEIMGURL}/${show.poster_path}`}
+                        onError={(e) => {
+                          e.target.src = '/placeholder-poster.jpg';
+                        }}
+                      />
+                      <div className="movie-overlay">
+                        <button className="play-button">▶</button>
+                      </div>
+                    </div>
+                    <div className="movie-info">
+                      <div className="Movie-title">{show.name}</div>
+                      <div className="Movie-date">{show.first_air_date}</div>
+                      <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         );
@@ -268,6 +356,26 @@ const App = () => {
               ) : (
                 <div className="movie-grid">
                   <PopularMovieList />
+                </div>
+              )}
+            </div>
+
+            {/* Popular TV Shows Section */}
+            <div className="section">
+              <div className="section-header">
+                <h2 className="section-title">Popular TV Shows</h2>
+                <button 
+                  className="show-all-btn"
+                  onClick={() => handleSectionChange('tvshows')}
+                >
+                  Show All
+                </button>
+              </div>
+              {loading ? (
+                <div className="loading">Loading TV shows...</div>
+              ) : (
+                <div className="movie-grid">
+                  <PopularTVList />
                 </div>
               )}
             </div>
@@ -364,7 +472,11 @@ const App = () => {
               >
                 ×
               </button>
-              <SearchSection />
+              <SearchSection 
+                onMovieClick={handleMovieClick}
+                onTVClick={handleMovieClick}
+                onPersonClick={(personId) => console.log('Person clicked:', personId)}
+              />
             </div>
           </div>
         )}

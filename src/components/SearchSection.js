@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { searchMulti, searchMovie, searchTV, searchPerson } from '../api';
 
-const SearchSection = () => {
+const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searchType, setSearchType] = useState('multi');
@@ -83,7 +83,19 @@ const SearchSection = () => {
     const date = getDate(item);
 
     return (
-      <div key={`${item.id}-${mediaType}`} className="search-result-item">
+      <div 
+        key={`${item.id}-${mediaType}`} 
+        className="search-result-item"
+        onClick={() => {
+          if (mediaType === 'movie' && onMovieClick) {
+            onMovieClick(item.id);
+          } else if (mediaType === 'tv' && onTVClick) {
+            onTVClick(item.id);
+          } else if (mediaType === 'person' && onPersonClick) {
+            onPersonClick(item.id);
+          }
+        }}
+      >
         <img
           src={getImagePath(item)}
           alt={title}
