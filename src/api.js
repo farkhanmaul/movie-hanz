@@ -154,3 +154,113 @@ export const getTVGenres = async () => {
   );
   return response.data.genres;
 };
+
+// Discover Movies by Genre
+export const discoverMoviesByGenre = async (genreId, page = 1) => {
+  const response = await axios.get(
+    `${baseURL}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&page=${page}&sort_by=popularity.desc`
+  );
+  return response.data;
+};
+
+// Discover TV by Genre
+export const discoverTVByGenre = async (genreId, page = 1) => {
+  const response = await axios.get(
+    `${baseURL}/discover/tv?api_key=${apiKey}&with_genres=${genreId}&page=${page}&sort_by=popularity.desc`
+  );
+  return response.data;
+};
+
+// Movie Recommendations
+export const getMovieRecommendations = async (movieId) => {
+  const response = await axios.get(
+    `${baseURL}/movie/${movieId}/recommendations?api_key=${apiKey}`
+  );
+  return response.data.results;
+};
+
+// TV Recommendations
+export const getTVRecommendations = async (tvId) => {
+  const response = await axios.get(
+    `${baseURL}/tv/${tvId}/recommendations?api_key=${apiKey}`
+  );
+  return response.data.results;
+};
+
+// Similar Movies
+export const getSimilarMovies = async (movieId) => {
+  const response = await axios.get(
+    `${baseURL}/movie/${movieId}/similar?api_key=${apiKey}`
+  );
+  return response.data.results;
+};
+
+// Similar TV Shows
+export const getSimilarTV = async (tvId) => {
+  const response = await axios.get(
+    `${baseURL}/tv/${tvId}/similar?api_key=${apiKey}`
+  );
+  return response.data.results;
+};
+
+// Movie Videos (Trailers)
+export const getMovieVideos = async (movieId) => {
+  const response = await axios.get(
+    `${baseURL}/movie/${movieId}/videos?api_key=${apiKey}`
+  );
+  return response.data.results;
+};
+
+// Movie Credits (Cast & Crew)
+export const getMovieCredits = async (movieId) => {
+  const response = await axios.get(
+    `${baseURL}/movie/${movieId}/credits?api_key=${apiKey}`
+  );
+  return response.data;
+};
+
+// Reviews
+export const getMovieReviews = async (movieId) => {
+  const response = await axios.get(
+    `${baseURL}/movie/${movieId}/reviews?api_key=${apiKey}`
+  );
+  return response.data.results;
+};
+
+// Keywords
+export const getMovieKeywords = async (movieId) => {
+  const response = await axios.get(
+    `${baseURL}/movie/${movieId}/keywords?api_key=${apiKey}`
+  );
+  return response.data.keywords;
+};
+
+// Movie Collections
+export const getMovieCollection = async (collectionId) => {
+  const response = await axios.get(
+    `${baseURL}/collection/${collectionId}?api_key=${apiKey}`
+  );
+  return response.data;
+};
+
+// Discover with Filters
+export const discoverMoviesAdvanced = async ({
+  genre,
+  year,
+  sortBy = 'popularity.desc',
+  page = 1,
+  minRating = 0,
+  maxRating = 10,
+  region = ''
+}) => {
+  let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&sort_by=${sortBy}`;
+  
+  if (genre) url += `&with_genres=${genre}`;
+  if (year) url += `&primary_release_year=${year}`;
+  if (minRating > 0) url += `&vote_average.gte=${minRating}`;
+  if (maxRating < 10) url += `&vote_average.lte=${maxRating}`;
+  if (region) url += `&region=${region}`;
+  
+  const response = await axios.get(url);
+  return response.data;
+};
