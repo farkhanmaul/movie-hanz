@@ -138,11 +138,11 @@ const App = () => {
   const renderContent = () => {
     switch (currentSection) {
       case 'trending':
-        return <TrendingSection />;
+        return <TrendingSection onMovieClick={handleMovieClick} onTVClick={handleMovieClick} />;
       case 'nowplaying':
         return <NowPlayingUpcoming onMovieClick={handleMovieClick} />;
       case 'toprated':
-        return <TopRatedSection onMovieClick={handleMovieClick} />;
+        return <TopRatedSection onMovieClick={handleMovieClick} onTVClick={handleMovieClick} />;
       default:
         return (
           <>

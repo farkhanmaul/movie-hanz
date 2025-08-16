@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getTrendingMovies, getTrendingTV } from '../api';
 
-const TrendingSection = () => {
+const TrendingSection = ({ onMovieClick, onTVClick }) => {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [trendingTV, setTrendingTV] = useState([]);
   const [activeTab, setActiveTab] = useState('movies');
@@ -19,8 +19,8 @@ const TrendingSection = () => {
         getTrendingMovies(timeWindow),
         getTrendingTV(timeWindow)
       ]);
-      setTrendingMovies(movies);
-      setTrendingTV(tv);
+      setTrendingMovies(movies.results || movies);
+      setTrendingTV(tv.results || tv);
     } catch (error) {
       console.error('Error fetching trending data:', error);
     } finally {
@@ -30,7 +30,17 @@ const TrendingSection = () => {
 
   const renderMediaList = (mediaList) => {
     return mediaList.slice(0, 10).map((item, index) => (
-      <div key={item.id} className="trending-item">
+      <div 
+        key={item.id} 
+        className="trending-item"
+        onClick={() => {
+          if (activeTab === 'movies' && onMovieClick) {
+            onMovieClick(item.id);
+          } else if (activeTab === 'tv' && onTVClick) {
+            onTVClick(item.id);
+          }
+        }}
+      >
         <div className="trending-rank">#{index + 1}</div>
         <img
           src={`${process.env.REACT_APP_BASEIMGURL}${item.poster_path}`}

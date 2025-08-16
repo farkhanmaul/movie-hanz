@@ -18,8 +18,8 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
         getNowPlayingMovies(),
         getUpcomingMovies()
       ]);
-      setNowPlaying(nowPlayingData);
-      setUpcoming(upcomingData);
+      setNowPlaying(nowPlayingData.results || nowPlayingData);
+      setUpcoming(upcomingData.results || upcomingData);
     } catch (error) {
       console.error('Error fetching movie data:', error);
     } finally {

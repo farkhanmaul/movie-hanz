@@ -18,8 +18,8 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
         getTopRatedMovies(),
         getTopRatedTV()
       ]);
-      setTopRatedMovies(movies);
-      setTopRatedTV(tv);
+      setTopRatedMovies(movies.results || movies);
+      setTopRatedTV(tv.results || tv);
     } catch (error) {
       console.error('Error fetching top rated data:', error);
     } finally {
