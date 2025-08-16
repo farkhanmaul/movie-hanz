@@ -147,10 +147,10 @@ const SearchSection = () => {
   };
 
   return (
-    <div className="search-section">
-      <h2>🔍 Search Movies, TV Shows & People</h2>
+    <div className="section">
+      <h2 className="section-title">Search Movies, TV Shows & People</h2>
       
-      <div className="search-controls">
+      <div className="search-container">
         <input
           type="text"
           value={query}
@@ -158,40 +158,40 @@ const SearchSection = () => {
           placeholder="Search for movies, TV shows, or people..."
           className="search-input"
         />
+      </div>
         
-        <div className="search-type-selector">
-          <button
-            className={searchType === 'multi' ? 'active' : ''}
-            onClick={() => setSearchType('multi')}
-          >
-            All
-          </button>
-          <button
-            className={searchType === 'movie' ? 'active' : ''}
-            onClick={() => setSearchType('movie')}
-          >
-            Movies
-          </button>
-          <button
-            className={searchType === 'tv' ? 'active' : ''}
-            onClick={() => setSearchType('tv')}
-          >
-            TV Shows
-          </button>
-          <button
-            className={searchType === 'person' ? 'active' : ''}
-            onClick={() => setSearchType('person')}
-          >
-            People
-          </button>
-        </div>
+      <div className="control-tabs">
+        <button
+          className={searchType === 'multi' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setSearchType('multi')}
+        >
+          All
+        </button>
+        <button
+          className={searchType === 'movie' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setSearchType('movie')}
+        >
+          Movies
+        </button>
+        <button
+          className={searchType === 'tv' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setSearchType('tv')}
+        >
+          TV Shows
+        </button>
+        <button
+          className={searchType === 'person' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setSearchType('person')}
+        >
+          People
+        </button>
       </div>
 
       {loading && <div className="loading">Searching...</div>}
       
       {!loading && query.length > 2 && (
-        <div className="search-results-header">
-          <p>Found {totalResults} results for "{query}"</p>
+        <div className="section-subtitle">
+          Found {totalResults} results for "{query}"
         </div>
       )}
 

@@ -34,8 +34,9 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
         className="movie-card"
         onClick={() => onMovieClick && onMovieClick(movie.id)}
       >
-        <div className="movie-card-poster">
+        <div className="movie-poster-container">
           <img
+            className="movie-poster"
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
               : '/placeholder-poster.jpg'
@@ -45,23 +46,18 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
               e.target.src = '/placeholder-poster.jpg';
             }}
           />
-          <div className="movie-card-overlay">
-            <button className="view-details-btn">View Details</button>
+          <div className="movie-overlay">
+            <button className="play-button">▶</button>
           </div>
         </div>
-        <div className="movie-card-info">
-          <h3 className="movie-card-title">{movie.title}</h3>
-          <p className="movie-card-date">
-            {new Date(movie.release_date).toLocaleDateString()}
-          </p>
-          <div className="movie-card-rating">
+        <div className="movie-info">
+          <div className="movie-title">{movie.title}</div>
+          <div className="movie-year">
+            {new Date(movie.release_date).getFullYear()}
+          </div>
+          <div className="movie-rating">
             ⭐ {movie.vote_average?.toFixed(1)}
           </div>
-          <p className="movie-card-overview">
-            {movie.overview?.length > 100
-              ? `${movie.overview.substring(0, 100)}...`
-              : movie.overview}
-          </p>
         </div>
       </div>
     ));
@@ -83,11 +79,12 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
     return movies.slice(0, 12).map((movie) => (
       <div 
         key={movie.id} 
-        className="movie-card upcoming-movie"
+        className="movie-card"
         onClick={() => onMovieClick && onMovieClick(movie.id)}
       >
-        <div className="movie-card-poster">
+        <div className="movie-poster-container">
           <img
+            className="movie-poster"
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
               : '/placeholder-poster.jpg'
@@ -100,23 +97,18 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
           <div className="upcoming-badge">
             {getDaysUntilRelease(movie.release_date)}
           </div>
-          <div className="movie-card-overlay">
-            <button className="view-details-btn">View Details</button>
+          <div className="movie-overlay">
+            <button className="play-button">▶</button>
           </div>
         </div>
-        <div className="movie-card-info">
-          <h3 className="movie-card-title">{movie.title}</h3>
-          <p className="movie-card-date">
-            Release: {new Date(movie.release_date).toLocaleDateString()}
-          </p>
-          <div className="movie-card-rating">
+        <div className="movie-info">
+          <div className="movie-title">{movie.title}</div>
+          <div className="movie-year">
+            {new Date(movie.release_date).getFullYear()}
+          </div>
+          <div className="movie-rating">
             ⭐ {movie.vote_average?.toFixed(1)}
           </div>
-          <p className="movie-card-overview">
-            {movie.overview?.length > 100
-              ? `${movie.overview.substring(0, 100)}...`
-              : movie.overview}
-          </p>
         </div>
       </div>
     ));
@@ -127,18 +119,18 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
   }
 
   return (
-    <div className="nowplaying-upcoming-section">
-      <h2>🎬 In Theaters & Coming Soon</h2>
+    <div className="section">
+      <h2 className="section-title">In Theaters & Coming Soon</h2>
       
-      <div className="tab-selector">
+      <div className="control-tabs">
         <button
-          className={activeTab === 'nowplaying' ? 'active' : ''}
+          className={activeTab === 'nowplaying' ? 'tab-button active' : 'tab-button'}
           onClick={() => setActiveTab('nowplaying')}
         >
           Now Playing ({nowPlaying.length})
         </button>
         <button
-          className={activeTab === 'upcoming' ? 'active' : ''}
+          className={activeTab === 'upcoming' ? 'tab-button active' : 'tab-button'}
           onClick={() => setActiveTab('upcoming')}
         >
           Coming Soon ({upcoming.length})

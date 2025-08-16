@@ -31,12 +31,13 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
     return movies.slice(0, 12).map((movie, index) => (
       <div 
         key={movie.id} 
-        className="top-rated-card"
+        className="movie-card"
         onClick={() => onMovieClick && onMovieClick(movie.id)}
       >
-        <div className="top-rated-rank">#{index + 1}</div>
-        <div className="top-rated-poster">
+        <div className="movie-poster-container">
+          <div className="top-rated-rank">#{index + 1}</div>
           <img
+            className="movie-poster"
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
               : '/placeholder-poster.jpg'
@@ -46,20 +47,17 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
               e.target.src = '/placeholder-poster.jpg';
             }}
           />
-          <div className="top-rated-overlay">
-            <div className="rating-badge">
-              ⭐ {movie.vote_average?.toFixed(1)}
-            </div>
-            <button className="view-details-btn">View Details</button>
+          <div className="movie-overlay">
+            <button className="play-button">▶</button>
           </div>
         </div>
-        <div className="top-rated-info">
-          <h3 className="top-rated-title">{movie.title}</h3>
-          <p className="top-rated-date">
+        <div className="movie-info">
+          <div className="movie-title">{movie.title}</div>
+          <div className="movie-year">
             {new Date(movie.release_date).getFullYear()}
-          </p>
-          <div className="vote-count">
-            {movie.vote_count?.toLocaleString()} votes
+          </div>
+          <div className="movie-rating">
+            ⭐ {movie.vote_average?.toFixed(1)}
           </div>
         </div>
       </div>
@@ -70,12 +68,13 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
     return tvShows.slice(0, 12).map((show, index) => (
       <div 
         key={show.id} 
-        className="top-rated-card"
+        className="movie-card"
         onClick={() => onTVClick && onTVClick(show.id)}
       >
-        <div className="top-rated-rank">#{index + 1}</div>
-        <div className="top-rated-poster">
+        <div className="movie-poster-container">
+          <div className="top-rated-rank">#{index + 1}</div>
           <img
+            className="movie-poster"
             src={show.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
               : '/placeholder-poster.jpg'
@@ -85,20 +84,17 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
               e.target.src = '/placeholder-poster.jpg';
             }}
           />
-          <div className="top-rated-overlay">
-            <div className="rating-badge">
-              ⭐ {show.vote_average?.toFixed(1)}
-            </div>
-            <button className="view-details-btn">View Details</button>
+          <div className="movie-overlay">
+            <button className="play-button">▶</button>
           </div>
         </div>
-        <div className="top-rated-info">
-          <h3 className="top-rated-title">{show.name}</h3>
-          <p className="top-rated-date">
+        <div className="movie-info">
+          <div className="movie-title">{show.name}</div>
+          <div className="movie-year">
             {new Date(show.first_air_date).getFullYear()}
-          </p>
-          <div className="vote-count">
-            {show.vote_count?.toLocaleString()} votes
+          </div>
+          <div className="movie-rating">
+            ⭐ {show.vote_average?.toFixed(1)}
           </div>
         </div>
       </div>
@@ -110,43 +106,39 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   }
 
   return (
-    <div className="top-rated-section">
-      <h2>🏆 Top Rated All Time</h2>
+    <div className="section">
+      <h2 className="section-title">Top Rated All Time</h2>
       
-      <div className="tab-selector">
+      <div className="control-tabs">
         <button
-          className={activeTab === 'movies' ? 'active' : ''}
+          className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
           onClick={() => setActiveTab('movies')}
         >
           Movies ({topRatedMovies.length})
         </button>
         <button
-          className={activeTab === 'tv' ? 'active' : ''}
+          className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
           onClick={() => setActiveTab('tv')}
         >
           TV Shows ({topRatedTV.length})
         </button>
       </div>
 
-      <div className="top-rated-grid">
+      <div className="movie-grid">
         {activeTab === 'movies' && renderMovieList(topRatedMovies)}
         {activeTab === 'tv' && renderTVList(topRatedTV)}
       </div>
 
-      <div className="top-rated-stats">
-        {activeTab === 'movies' && topRatedMovies.length > 0 && (
-          <div className="stats-info">
-            <p>Showing top {Math.min(12, topRatedMovies.length)} highest rated movies</p>
-            <p>Minimum rating: ⭐ {Math.min(...topRatedMovies.slice(0, 12).map(m => m.vote_average)).toFixed(1)}</p>
-          </div>
-        )}
-        {activeTab === 'tv' && topRatedTV.length > 0 && (
-          <div className="stats-info">
-            <p>Showing top {Math.min(12, topRatedTV.length)} highest rated TV shows</p>
-            <p>Minimum rating: ⭐ {Math.min(...topRatedTV.slice(0, 12).map(s => s.vote_average)).toFixed(1)}</p>
-          </div>
-        )}
-      </div>
+      {activeTab === 'movies' && topRatedMovies.length > 0 && (
+        <div className="section-subtitle">
+          Showing top {Math.min(12, topRatedMovies.length)} highest rated movies • Minimum rating: ⭐ {Math.min(...topRatedMovies.slice(0, 12).map(m => m.vote_average)).toFixed(1)}
+        </div>
+      )}
+      {activeTab === 'tv' && topRatedTV.length > 0 && (
+        <div className="section-subtitle">
+          Showing top {Math.min(12, topRatedTV.length)} highest rated TV shows • Minimum rating: ⭐ {Math.min(...topRatedTV.slice(0, 12).map(s => s.vote_average)).toFixed(1)}
+        </div>
+      )}
     </div>
   );
 };

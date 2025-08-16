@@ -63,42 +63,40 @@ const TrendingSection = () => {
   }
 
   return (
-    <div className="trending-section">
-      <h2>🔥 Trending {timeWindow === 'day' ? 'Today' : 'This Week'}</h2>
+    <div className="section">
+      <h2 className="section-title">Trending {timeWindow === 'day' ? 'Today' : 'This Week'}</h2>
       
-      <div className="trending-controls">
-        <div className="time-selector">
-          <button
-            className={timeWindow === 'day' ? 'active' : ''}
-            onClick={() => setTimeWindow('day')}
-          >
-            Today
-          </button>
-          <button
-            className={timeWindow === 'week' ? 'active' : ''}
-            onClick={() => setTimeWindow('week')}
-          >
-            This Week
-          </button>
-        </div>
-
-        <div className="tab-selector">
-          <button
-            className={activeTab === 'movies' ? 'active' : ''}
-            onClick={() => setActiveTab('movies')}
-          >
-            Movies
-          </button>
-          <button
-            className={activeTab === 'tv' ? 'active' : ''}
-            onClick={() => setActiveTab('tv')}
-          >
-            TV Shows
-          </button>
-        </div>
+      <div className="control-tabs">
+        <button
+          className={timeWindow === 'day' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setTimeWindow('day')}
+        >
+          Today
+        </button>
+        <button
+          className={timeWindow === 'week' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setTimeWindow('week')}
+        >
+          This Week
+        </button>
       </div>
 
-      <div className="trending-content">
+      <div className="control-tabs">
+        <button
+          className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setActiveTab('movies')}
+        >
+          Movies
+        </button>
+        <button
+          className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setActiveTab('tv')}
+        >
+          TV Shows
+        </button>
+      </div>
+
+      <div className="trending-list">
         {activeTab === 'movies' && renderMediaList(trendingMovies)}
         {activeTab === 'tv' && renderMediaList(trendingTV)}
       </div>

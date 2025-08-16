@@ -23,21 +23,28 @@ const App = () => {
     return popularMovies.map((movie, i) => {
       return (
         <div 
-          className="Movie-wrapper" 
+          className="movie-card" 
           key={i}
           onClick={() => handleMovieClick(movie.id)}
         >
-          <div className="Movie-title">{movie.title}</div>
-          <img
-            className="Movie-img"
-            alt={movie.title}
-            src={`${process.env.REACT_APP_BASEIMGURL}/${movie.poster_path}`}
-            onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
-            }}
-          />
-          <div className="Movie-date">release: {movie.release_date}</div>
-          <div className="Movie-rate">⭐ {movie.vote_average}</div>
+          <div className="movie-poster-container">
+            <img
+              className="Movie-img"
+              alt={movie.title}
+              src={`${process.env.REACT_APP_BASEIMGURL}/${movie.poster_path}`}
+              onError={(e) => {
+                e.target.src = '/placeholder-poster.jpg';
+              }}
+            />
+            <div className="movie-overlay">
+              <button className="play-button">▶</button>
+            </div>
+          </div>
+          <div className="movie-info">
+            <div className="Movie-title">{movie.title}</div>
+            <div className="Movie-date">{movie.release_date}</div>
+            <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
+          </div>
         </div>
       );
     });
@@ -75,14 +82,16 @@ const App = () => {
         return <TopRatedSection onMovieClick={handleMovieClick} />;
       default:
         return (
-          <div className="home-section">
-            <h2>🎬 Popular Movies</h2>
-            <input
-              placeholder="Cari film kesayangan..."
-              className="Movie-search"
-              onChange={({ target }) => search(target.value)}
-            />
-            <div className="Movie-container">
+          <div className="section">
+            <h2 className="section-title">Popular Movies</h2>
+            <div className="search-container">
+              <input
+                placeholder="Search your favorite movies..."
+                className="Movie-search"
+                onChange={({ target }) => search(target.value)}
+              />
+            </div>
+            <div className="movie-grid">
               <PopularMovieList />
             </div>
           </div>
@@ -93,40 +102,44 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>MOVIE HANZ</h1>
-        
-        {/* Navigation */}
-        <nav className="app-navigation">
-          <button 
-            className={currentSection === 'home' ? 'nav-button active' : 'nav-button'}
-            onClick={() => setCurrentSection('home')}
-          >
-            🏠 Home
-          </button>
-          <button 
-            className={currentSection === 'trending' ? 'nav-button active' : 'nav-button'}
-            onClick={() => setCurrentSection('trending')}
-          >
-            🔥 Trending
-          </button>
-          <button 
-            className={currentSection === 'search' ? 'nav-button active' : 'nav-button'}
-            onClick={() => setCurrentSection('search')}
-          >
-            🔍 Search
-          </button>
-          <button 
-            className={currentSection === 'nowplaying' ? 'nav-button active' : 'nav-button'}
-            onClick={() => setCurrentSection('nowplaying')}
-          >
-            🎭 In Theaters
-          </button>
-          <button 
-            className={currentSection === 'toprated' ? 'nav-button active' : 'nav-button'}
-            onClick={() => setCurrentSection('toprated')}
-          >
-            🏆 Top Rated
-          </button>
+        {/* Fixed Navigation Header */}
+        <nav className="header-nav">
+          <div className="nav-container">
+            <h1>MOVIE</h1>
+            
+            <div className="app-navigation">
+              <button 
+                className={currentSection === 'home' ? 'nav-button active' : 'nav-button'}
+                onClick={() => setCurrentSection('home')}
+              >
+                Home
+              </button>
+              <button 
+                className={currentSection === 'trending' ? 'nav-button active' : 'nav-button'}
+                onClick={() => setCurrentSection('trending')}
+              >
+                Trending
+              </button>
+              <button 
+                className={currentSection === 'search' ? 'nav-button active' : 'nav-button'}
+                onClick={() => setCurrentSection('search')}
+              >
+                Search
+              </button>
+              <button 
+                className={currentSection === 'nowplaying' ? 'nav-button active' : 'nav-button'}
+                onClick={() => setCurrentSection('nowplaying')}
+              >
+                In Theaters
+              </button>
+              <button 
+                className={currentSection === 'toprated' ? 'nav-button active' : 'nav-button'}
+                onClick={() => setCurrentSection('toprated')}
+              >
+                Top Rated
+              </button>
+            </div>
+          </div>
         </nav>
 
         {/* Content */}
