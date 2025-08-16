@@ -1,5 +1,5 @@
 import "./App.css";
-import { getMovieList, searchMovie } from "./api.js";
+import { getMovieList, searchMovie, getTopRatedMovies } from "./api.js";
 import { useEffect, useState } from "react";
 import TrendingSection from "./components/TrendingSection";
 import SearchSection from "./components/SearchSection";
@@ -9,13 +9,23 @@ import TopRatedSection from "./components/TopRatedSection";
 
 const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
+  const [heroMovie, setHeroMovie] = useState(null);
   const [currentSection, setCurrentSection] = useState('home');
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [showMovieDetail, setShowMovieDetail] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   useEffect(() => {
-    getMovieList().then((result) => {
-      setPopularMovies(result);
+    // Fetch data for homepage
+    Promise.all([
+      getMovieList(),
+      getTopRatedMovies()
+    ]).then(([popularResult, topRatedResult]) => {
+      setPopularMovies(popularResult);
+      // Use top rated movie as hero
+      if (topRatedResult && topRatedResult.length > 0) {
+        setHeroMovie(topRatedResult[0]);
+      }
     });
   }, []);
 
@@ -74,27 +84,64 @@ const App = () => {
     switch (currentSection) {
       case 'trending':
         return <TrendingSection />;
-      case 'search':
-        return <SearchSection />;
       case 'nowplaying':
         return <NowPlayingUpcoming onMovieClick={handleMovieClick} />;
       case 'toprated':
         return <TopRatedSection onMovieClick={handleMovieClick} />;
       default:
         return (
-          <div className="section">
-            <h2 className="section-title">Popular Movies</h2>
-            <div className="search-container">
-              <input
-                placeholder="Search your favorite movies..."
-                className="Movie-search"
-                onChange={({ target }) => search(target.value)}
-              />
+          <>
+            {/* Hero Section */}
+            {heroMovie && (
+              <div className="hero-section">
+                <div 
+                  className="hero-backdrop"
+                  style={{
+                    backgroundImage: heroMovie.backdrop_path 
+                      ? `url(https://image.tmdb.org/t/p/w1280${heroMovie.backdrop_path})`
+                      : 'none'
+                  }}
+                >
+                  <div className="hero-overlay">
+                    <div className="hero-content">
+                      <h1 className="hero-title">{heroMovie.title}</h1>
+                      <div className="hero-meta">
+                        <span className="hero-rating">⭐ {heroMovie.vote_average?.toFixed(1)}</span>
+                        <span className="hero-year">{new Date(heroMovie.release_date).getFullYear()}</span>
+                      </div>
+                      <p className="hero-overview">
+                        {heroMovie.overview?.length > 300 
+                          ? `${heroMovie.overview.substring(0, 300)}...`
+                          : heroMovie.overview}
+                      </p>
+                      <div className="hero-buttons">
+                        <button 
+                          className="hero-play-btn"
+                          onClick={() => handleMovieClick(heroMovie.id)}
+                        >
+                          ▶ Play
+                        </button>
+                        <button 
+                          className="hero-info-btn"
+                          onClick={() => handleMovieClick(heroMovie.id)}
+                        >
+                          ⓘ More Info
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Popular Movies Section */}
+            <div className="section">
+              <h2 className="section-title">Popular Movies</h2>
+              <div className="movie-grid">
+                <PopularMovieList />
+              </div>
             </div>
-            <div className="movie-grid">
-              <PopularMovieList />
-            </div>
-          </div>
+          </>
         );
     }
   };
@@ -121,12 +168,6 @@ const App = () => {
                 Trending
               </button>
               <button 
-                className={currentSection === 'search' ? 'nav-button active' : 'nav-button'}
-                onClick={() => setCurrentSection('search')}
-              >
-                Search
-              </button>
-              <button 
                 className={currentSection === 'nowplaying' ? 'nav-button active' : 'nav-button'}
                 onClick={() => setCurrentSection('nowplaying')}
               >
@@ -138,6 +179,13 @@ const App = () => {
               >
                 Top Rated
               </button>
+              <button 
+                className="search-icon-btn"
+                onClick={() => setShowSearchModal(true)}
+                title="Search"
+              >
+                🔍
+              </button>
             </div>
           </div>
         </nav>
@@ -146,6 +194,21 @@ const App = () => {
         <div className="app-content">
           {renderContent()}
         </div>
+
+        {/* Search Modal */}
+        {showSearchModal && (
+          <div className="search-modal-overlay" onClick={() => setShowSearchModal(false)}>
+            <div className="search-modal" onClick={(e) => e.stopPropagation()}>
+              <button 
+                className="search-modal-close"
+                onClick={() => setShowSearchModal(false)}
+              >
+                ×
+              </button>
+              <SearchSection />
+            </div>
+          </div>
+        )}
 
         {/* Movie Detail Modal */}
         {showMovieDetail && selectedMovieId && (
