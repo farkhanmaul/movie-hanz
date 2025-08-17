@@ -1,210 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getTopRatedMovies, getTopRatedTV } from '../api';
-import Pagination from './Pagination';
+import { useApi } from '../hooks/useApi';
+import { getImageUrl, formatRating, generateYears } from '../utils/helpers';
+import LoadingSpinner from './ui/LoadingSpinner';
+import Pagination from './ui/Pagination';
 
 const TopRatedSection = ({ onMovieClick, onTVClick }) => {
-  const [topRatedMovies, setTopRatedMovies] = useState([]);
-  const [topRatedTV, setTopRatedTV] = useState([]);
   const [activeTab, setActiveTab] = useState('movies');
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [selectedYear, setSelectedYear] = useState('');
 
-  useEffect(() => {
-    fetchTopRatedData();
-  }, [currentPage, activeTab, selectedYear]);
-
-  const fetchTopRatedData = async () => {
-    setLoading(true);
-    try {
-      if (activeTab === 'movies') {
-        const movies = await getTopRatedMovies(currentPage, selectedYear);
-        setTopRatedMovies(movies.results || movies);
-        setTotalPages(Math.min(movies.total_pages || 1, 100)); // Limit to 100 pages
-      } else {
-        const tv = await getTopRatedTV(currentPage, selectedYear);
-        setTopRatedTV(tv.results || tv);
-        setTotalPages(Math.min(tv.total_pages || 1, 100)); // Limit to 100 pages
-      }
-    } catch (error) {
-      console.error('Error fetching top rated data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const apiFunc = activeTab === 'movies' ? getTopRatedMovies : getTopRatedTV;
+  const { data, loading } = useApi(() => apiFunc(currentPage, selectedYear), [currentPage, activeTab, selectedYear]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    setCurrentPage(1); // Reset page when switching tabs
+    setCurrentPage(1);
   };
 
   const handleYearChange = (year) => {
     setSelectedYear(year);
-    setCurrentPage(1); // Reset page when changing year
+    setCurrentPage(1);
   };
 
-  const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = currentYear; year >= 1900; year--) {
-      years.push(year);
-    }
-    return years;
+  const handleItemClick = (item) => {
+    if (activeTab === 'movies' && onMovieClick) onMovieClick(item.id);
+    else if (activeTab === 'tv' && onTVClick) onTVClick(item.id);
   };
 
-  const renderMovieList = (movies) => {
-    return movies.map((movie, index) => (
-      <div 
-        key={movie.id} 
-        className="ranking-item"
-        onClick={() => onMovieClick && onMovieClick(movie.id)}
-      >
-        <div className="ranking-number">
-          <span className="rank-text">#{(currentPage - 1) * 20 + index + 1}</span>
-        </div>
-        <div className="ranking-poster">
-          <img
-            src={movie.poster_path 
-              ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-              : '/placeholder-poster.jpg'
-            }
-            alt={movie.title}
-            onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
-            }}
-          />
-        </div>
-        <div className="ranking-info">
-          <h3 className="ranking-title">{movie.title}</h3>
-          <div className="ranking-meta">
-            <span className="ranking-year">{new Date(movie.release_date).getFullYear()}</span>
-            <span className="ranking-rating">⭐ {movie.vote_average?.toFixed(1)}</span>
-            <span className="ranking-votes">{movie.vote_count?.toLocaleString()} votes</span>
-          </div>
-          <p className="ranking-overview">
-            {movie.overview?.length > 150
-              ? `${movie.overview.substring(0, 150)}...`
-              : movie.overview}
-          </p>
-        </div>
-        <div className="ranking-score">
-          <div className="score-number">{movie.vote_average?.toFixed(1)}</div>
-          <div className="score-label">Rating</div>
-        </div>
-      </div>
-    ));
-  };
+  if (loading) return <LoadingSpinner size="lg" className="mx-auto my-8" />;
 
-  const renderTVList = (tvShows) => {
-    return tvShows.map((show, index) => (
-      <div 
-        key={show.id} 
-        className="ranking-item"
-        onClick={() => onTVClick && onTVClick(show.id)}
-      >
-        <div className="ranking-number">
-          <span className="rank-text">#{(currentPage - 1) * 20 + index + 1}</span>
-        </div>
-        <div className="ranking-poster">
-          <img
-            src={show.poster_path 
-              ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
-              : '/placeholder-poster.jpg'
-            }
-            alt={show.name}
-            onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
-            }}
-          />
-        </div>
-        <div className="ranking-info">
-          <h3 className="ranking-title">{show.name}</h3>
-          <div className="ranking-meta">
-            <span className="ranking-year">{new Date(show.first_air_date).getFullYear()}</span>
-            <span className="ranking-rating">⭐ {show.vote_average?.toFixed(1)}</span>
-            <span className="ranking-votes">{show.vote_count?.toLocaleString()} votes</span>
-          </div>
-          <p className="ranking-overview">
-            {show.overview?.length > 150
-              ? `${show.overview.substring(0, 150)}...`
-              : show.overview}
-          </p>
-        </div>
-        <div className="ranking-score">
-          <div className="score-number">{show.vote_average?.toFixed(1)}</div>
-          <div className="score-label">Rating</div>
-        </div>
-      </div>
-    ));
-  };
-
-  if (loading) {
-    return <div className="loading">Loading top rated content...</div>;
-  }
+  const currentData = data?.results || [];
+  const totalPages = Math.min(data?.total_pages || 1, 100);
 
   return (
-    <div className="section">
-      <h2 className="section-title">Top Rated All Time</h2>
-      
-      <div className="section-controls">
-        <div className="control-tabs">
-          <button
-            className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
-            onClick={() => handleTabChange('movies')}
-          >
-            Movies
-          </button>
-          <button
-            className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
-            onClick={() => handleTabChange('tv')}
-          >
-            TV Shows
-          </button>
-        </div>
-
-        <div className="year-filter">
-          <select
-            value={selectedYear}
-            onChange={(e) => handleYearChange(e.target.value)}
-            className="year-select"
-          >
-            <option value="">All Years</option>
-            {generateYearOptions().map(year => (
-              <option key={year} value={year}>{year}</option>
+    <section className="top-rated-section">
+      <div className="section-header">
+        <h2 className="section-title">Top Rated</h2>
+        <div className="section-controls">
+          <div className="tab-toggle">
+            {[{ key: 'movies', label: 'Movies' }, { key: 'tv', label: 'TV Shows' }].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => handleTabChange(tab.key)}
+                className={`tab-button ${activeTab === tab.key ? 'active' : ''}`}
+              >
+                {tab.label}
+              </button>
             ))}
-          </select>
+          </div>
+          <div className="year-filter">
+            <select value={selectedYear} onChange={(e) => handleYearChange(e.target.value)} className="year-select">
+              <option value="">All Years</option>
+              {generateYears().map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
       <div className="ranking-list">
-        {activeTab === 'movies' && renderMovieList(topRatedMovies)}
-        {activeTab === 'tv' && renderTVList(topRatedTV)}
+        {currentData.map((item, index) => (
+          <div key={item.id} className="ranking-item" onClick={() => handleItemClick(item)}>
+            <div className="ranking-number">
+              <span className="rank-text">#{(currentPage - 1) * 20 + index + 1}</span>
+            </div>
+            <div className="ranking-poster">
+              <img
+                src={getImageUrl(item.poster_path, 'poster') || '/placeholder-poster.jpg'}
+                alt={item.title || item.name}
+                onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+              />
+            </div>
+            <div className="ranking-info">
+              <h3 className="ranking-title">{item.title || item.name}</h3>
+              <div className="ranking-meta">
+                <span className="ranking-rating">⭐ {formatRating(item.vote_average)}</span>
+                <span className="ranking-year">
+                  {new Date(item.release_date || item.first_air_date).getFullYear()}
+                </span>
+              </div>
+              <p className="ranking-overview">
+                {item.overview?.substring(0, 120)}...
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
 
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={handlePageChange}
-        loading={loading}
+        onPageChange={setCurrentPage}
+        className="mt-8"
       />
-
-      {activeTab === 'movies' && topRatedMovies.length > 0 && (
-        <div className="section-subtitle">
-          Showing page {currentPage} of {totalPages} • {topRatedMovies.length} highest rated movies on this page
-        </div>
-      )}
-      {activeTab === 'tv' && topRatedTV.length > 0 && (
-        <div className="section-subtitle">
-          Showing page {currentPage} of {totalPages} • {topRatedTV.length} highest rated TV shows on this page
-        </div>
-      )}
-    </div>
+    </section>
   );
 };
 

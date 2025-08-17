@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getMovieGenres, getTVGenres, discoverMoviesByGenre, discoverTVByGenre } from '../api';
-import Pagination from './Pagination';
+import Pagination from './ui/Pagination';
 
 const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   const [movieGenres, setMovieGenres] = useState([]);

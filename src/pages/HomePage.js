@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getMovieList, getPopularTV, getTrendingMovies, getMovieVideos } from '../api';
-import SkeletonLoader from '../components/SkeletonLoader';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
   const [popularMovies, setPopularMovies] = useState([]);
@@ -281,7 +281,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
           </button>
         </div>
         {loading ? (
-          <SkeletonLoader count={5} />
+          <LoadingSpinner size="lg" className="mx-auto" />
         ) : (
           <div className="movie-grid">
             <PopularMovieList />
@@ -301,7 +301,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
           </button>
         </div>
         {loading ? (
-          <SkeletonLoader count={5} />
+          <LoadingSpinner size="lg" className="mx-auto" />
         ) : (
           <div className="movie-grid">
             <PopularTVList />
@@ -315,7 +315,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
           <h2 className="section-title">Recommendations for You</h2>
         </div>
         {loading ? (
-          <SkeletonLoader count={5} />
+          <LoadingSpinner size="lg" className="mx-auto" />
         ) : (
           <div className="movie-grid">
             <RecommendedMoviesList />

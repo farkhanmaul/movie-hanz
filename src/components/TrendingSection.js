@@ -1,127 +1,84 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getTrendingMovies, getTrendingTV } from '../api';
-import SkeletonLoader from './SkeletonLoader';
+import { useApi } from '../hooks/useApi';
+import { getImageUrl, formatRating } from '../utils/helpers';
+import LoadingSpinner from './ui/LoadingSpinner';
 
 const TrendingSection = ({ onMovieClick, onTVClick }) => {
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [trendingTV, setTrendingTV] = useState([]);
   const [activeTab, setActiveTab] = useState('movies');
   const [timeWindow, setTimeWindow] = useState('day');
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchTrendingData();
-  }, [timeWindow]);
+  const { data: trendingMovies, loading: moviesLoading } = useApi(
+    () => getTrendingMovies(timeWindow), [timeWindow]
+  );
+  
+  const { data: trendingTV, loading: tvLoading } = useApi(
+    () => getTrendingTV(timeWindow), [timeWindow]
+  );
 
-  const fetchTrendingData = async () => {
-    setLoading(true);
-    try {
-      const [movies, tv] = await Promise.all([
-        getTrendingMovies(timeWindow),
-        getTrendingTV(timeWindow)
-      ]);
-      setTrendingMovies(movies.results || movies);
-      setTrendingTV(tv.results || tv);
-    } catch (error) {
-      console.error('Error fetching trending data:', error);
-    } finally {
-      setLoading(false);
-    }
+  const loading = moviesLoading || tvLoading;
+  const currentData = activeTab === 'movies' ? trendingMovies?.results : trendingTV?.results;
+
+  const handleItemClick = (item) => {
+    if (activeTab === 'movies' && onMovieClick) onMovieClick(item.id);
+    else if (activeTab === 'tv' && onTVClick) onTVClick(item.id);
   };
 
-  const renderMediaList = (mediaList) => {
-    return mediaList.slice(0, 10).map((item, index) => (
-      <div 
-        key={item.id} 
-        className="trending-item"
-        onClick={() => {
-          if (activeTab === 'movies' && onMovieClick) {
-            onMovieClick(item.id);
-          } else if (activeTab === 'tv' && onTVClick) {
-            onTVClick(item.id);
-          }
-        }}
-      >
-        <div className="trending-rank">#{index + 1}</div>
-        <img
-          src={`${process.env.REACT_APP_BASEIMGURL}${item.poster_path}`}
-          alt={item.title || item.name}
-          className="trending-poster"
-          onError={(e) => {
-            e.target.src = '/placeholder-poster.jpg';
-          }}
-        />
-        <div className="trending-info">
-          <h3 className="trending-title">{item.title || item.name}</h3>
-          <p className="trending-date">
-            {item.release_date || item.first_air_date}
-          </p>
-          <div className="trending-rating">
-            ⭐ {item.vote_average?.toFixed(1)}
-          </div>
-          <p className="trending-overview">
-            {item.overview?.length > 150
-              ? `${item.overview.substring(0, 150)}...`
-              : item.overview}
-          </p>
-        </div>
-      </div>
-    ));
-  };
-
-  if (loading) {
-    return (
-      <div className="section">
-        <div className="section-header">
-          <h2 className="section-title">Trending</h2>
-        </div>
-        <SkeletonLoader count={10} />
-      </div>
-    );
-  }
+  if (loading) return <LoadingSpinner size="lg" className="mx-auto my-8" />;
 
   return (
-    <div className="section">
+    <section className="trending-section">
       <div className="section-header">
-        <h2 className="section-title">Trending</h2>
+        <h2 className="section-title">Trending {timeWindow === 'day' ? 'Today' : 'This Week'}</h2>
         <div className="trending-controls">
-          <div className="control-tabs time-window-tabs">
-            <button
-              className={timeWindow === 'day' ? 'tab-button active' : 'tab-button'}
-              onClick={() => setTimeWindow('day')}
-            >
-              Today
-            </button>
-            <button
-              className={timeWindow === 'week' ? 'tab-button active' : 'tab-button'}
-              onClick={() => setTimeWindow('week')}
-            >
-              This Week
-            </button>
+          <div className="time-toggle">
+            {['day', 'week'].map(period => (
+              <button
+                key={period}
+                onClick={() => setTimeWindow(period)}
+                className={`time-btn ${timeWindow === period ? 'active' : ''}`}
+              >
+                {period === 'day' ? 'Today' : 'This Week'}
+              </button>
+            ))}
           </div>
-          
-          <div className="control-tabs media-type-tabs">
-            <button
-              className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
-              onClick={() => setActiveTab('movies')}
-            >
-              Movies
-            </button>
-            <button
-              className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
-              onClick={() => setActiveTab('tv')}
-            >
-              TV Shows
-            </button>
+          <div className="tab-toggle">
+            {[{ key: 'movies', label: 'Movies' }, { key: 'tv', label: 'TV Shows' }].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`tab-btn ${activeTab === tab.key ? 'active' : ''}`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="trending-list">
-        {activeTab === 'movies' && renderMediaList(trendingMovies)}
-        {activeTab === 'tv' && renderMediaList(trendingTV)}
+      <div className="trending-grid">
+        {currentData?.slice(0, 10).map((item, index) => (
+          <div key={item.id} className="trending-item" onClick={() => handleItemClick(item)}>
+            <div className="trending-rank">#{index + 1}</div>
+            <img
+              src={getImageUrl(item.poster_path, 'poster') || '/placeholder-poster.jpg'}
+              alt={item.title || item.name}
+              className="trending-poster"
+              onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+            />
+            <div className="trending-info">
+              <h3 className="trending-title">{item.title || item.name}</h3>
+              <div className="trending-meta">
+                <span className="trending-rating">⭐ {formatRating(item.vote_average)}</span>
+                <span className="trending-year">
+                  {new Date(item.release_date || item.first_air_date).getFullYear()}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 

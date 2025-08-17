@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getMovieList } from '../api';
-import Pagination from '../components/Pagination';
+import Pagination from '../components/ui/Pagination';
 
 const MoviesPage = ({ onMovieClick }) => {
   const [movies, setMovies] = useState([]);

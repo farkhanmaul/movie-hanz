@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { discoverMoviesByCast, discoverMoviesByCrew, discoverMoviesByCompany, getPersonDetails } from '../api';
-import Pagination from './Pagination';
+import Pagination from './ui/Pagination';
 
 const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClose }) => {
   const [movies, setMovies] = useState([]);

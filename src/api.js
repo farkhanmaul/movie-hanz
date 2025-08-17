@@ -1,294 +1,122 @@
 import axios from "axios";
 
-const apiKey = process.env.REACT_APP_API_KEY;
-const baseURL = process.env.REACT_APP_BASEURL;
+const { REACT_APP_API_KEY: apiKey, REACT_APP_BASEURL: baseURL } = process.env;
 
-// Popular Movies (existing)
-export const getMovieList = async (page = 1) => {
-  const movie = await axios.get(
-    `${baseURL}/movie/popular?page=${page}&api_key=${apiKey}`
-  );
-  return movie.data;
+const createApiUrl = (endpoint, params = {}) => {
+  const url = new URL(`${baseURL}${endpoint}`);
+  url.searchParams.set('api_key', apiKey);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) url.searchParams.set(key, value);
+  });
+  return url.toString();
 };
 
-// Search Movies (existing)
-export const searchMovie = async (q) => {
-  const search = await axios.get(
-    `${baseURL}/search/movie?query=${q}&page=1&api_key=${apiKey}`
-  );
-  return search.data;
-};
-
-// Trending Movies & TV Shows
-export const getTrendingMovies = async (timeWindow = 'day', page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/trending/movie/${timeWindow}?page=${page}&api_key=${apiKey}`
-  );
+const apiRequest = async (endpoint, params = {}) => {
+  const response = await axios.get(createApiUrl(endpoint, params));
   return response.data;
 };
 
-// Top Movies This Month/Year for Hero
+export const getMovieList = (page = 1) => apiRequest('/movie/popular', { page });
+export const searchMovie = (q) => apiRequest('/search/movie', { query: q, page: 1 });
+export const searchMulti = (q) => apiRequest('/search/multi', { query: q, page: 1 });
+export const searchTV = (q) => apiRequest('/search/tv', { query: q, page: 1 });
+export const searchPerson = (q) => apiRequest('/search/person', { query: q, page: 1 });
+
+export const getTrendingMovies = (timeWindow = 'day', page = 1) => 
+  apiRequest(`/trending/movie/${timeWindow}`, { page });
+
+export const getTrendingTV = (timeWindow = 'day', page = 1) => 
+  apiRequest(`/trending/tv/${timeWindow}`, { page });
+
+export const getTrendingAll = (timeWindow = 'day') => 
+  apiRequest(`/trending/all/${timeWindow}`).then(data => data.results);
+
 export const getTopMoviesThisMonth = async () => {
   const currentDate = new Date();
   const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
   const thisMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
   
-  const fromDate = lastMonth.toISOString().split('T')[0];
-  const toDate = thisMonth.toISOString().split('T')[0];
-  
-  const response = await axios.get(
-    `${baseURL}/discover/movie?api_key=${apiKey}&sort_by=vote_average.desc&vote_count.gte=1000&primary_release_date.gte=${fromDate}&primary_release_date.lte=${toDate}`
-  );
-  return response.data.results;
+  return apiRequest('/discover/movie', {
+    sort_by: 'vote_average.desc',
+    'vote_count.gte': 1000,
+    'primary_release_date.gte': lastMonth.toISOString().split('T')[0],
+    'primary_release_date.lte': thisMonth.toISOString().split('T')[0]
+  }).then(data => data.results);
 };
 
-export const getTrendingTV = async (timeWindow = 'day', page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/trending/tv/${timeWindow}?page=${page}&api_key=${apiKey}`
-  );
-  return response.data;
+export const getMovieDetails = (movieId) => 
+  apiRequest(`/movie/${movieId}`, { append_to_response: 'credits,videos,similar' });
+
+export const getTVDetails = (tvId) => 
+  apiRequest(`/tv/${tvId}`, { append_to_response: 'credits,videos,similar' });
+
+export const getPersonDetails = (personId) => 
+  apiRequest(`/person/${personId}`, { append_to_response: 'movie_credits,tv_credits' });
+
+export const getNowPlayingMovies = (page = 1) => apiRequest('/movie/now_playing', { page });
+export const getUpcomingMovies = (page = 1) => apiRequest('/movie/upcoming', { page });
+
+export const getTopRatedMovies = (page = 1, year = '') => 
+  apiRequest('/movie/top_rated', { page, primary_release_year: year });
+
+export const getTopRatedTV = (page = 1, year = '') => 
+  apiRequest('/tv/top_rated', { page, first_air_date_year: year });
+
+export const getPopularTV = () => 
+  apiRequest('/tv/popular', { page: 1 }).then(data => data.results);
+
+export const getMovieGenres = () => 
+  apiRequest('/genre/movie/list').then(data => data.genres);
+
+export const getTVGenres = () => 
+  apiRequest('/genre/tv/list').then(data => data.genres);
+
+export const discoverMoviesByGenre = (genreId, page = 1) => 
+  apiRequest('/discover/movie', { with_genres: genreId, page, sort_by: 'popularity.desc' });
+
+export const discoverTVByGenre = (genreId, page = 1) => 
+  apiRequest('/discover/tv', { with_genres: genreId, page, sort_by: 'popularity.desc' });
+
+export const getMovieRecommendations = (movieId) => 
+  apiRequest(`/movie/${movieId}/recommendations`).then(data => data.results);
+
+export const getTVRecommendations = (tvId) => 
+  apiRequest(`/tv/${tvId}/recommendations`).then(data => data.results);
+
+export const getSimilarMovies = (movieId) => 
+  apiRequest(`/movie/${movieId}/similar`).then(data => data.results);
+
+export const getSimilarTV = (tvId) => 
+  apiRequest(`/tv/${tvId}/similar`).then(data => data.results);
+
+export const getMovieVideos = (movieId) => 
+  apiRequest(`/movie/${movieId}/videos`).then(data => data.results);
+
+export const getMovieCredits = (movieId) => apiRequest(`/movie/${movieId}/credits`);
+
+export const getMovieReviews = (movieId) => 
+  apiRequest(`/movie/${movieId}/reviews`).then(data => data.results);
+
+export const getMovieKeywords = (movieId) => 
+  apiRequest(`/movie/${movieId}/keywords`).then(data => data.keywords);
+
+export const getMovieCollection = (collectionId) => apiRequest(`/collection/${collectionId}`);
+
+export const discoverMoviesAdvanced = ({ genre, year, sortBy = 'popularity.desc', page = 1, minRating = 0, maxRating = 10, region = '' }) => {
+  const params = { page, sort_by: sortBy };
+  if (genre) params.with_genres = genre;
+  if (year) params.primary_release_year = year;
+  if (minRating > 0) params['vote_average.gte'] = minRating;
+  if (maxRating < 10) params['vote_average.lte'] = maxRating;
+  if (region) params.region = region;
+  return apiRequest('/discover/movie', params);
 };
 
-export const getTrendingAll = async (timeWindow = 'day') => {
-  const response = await axios.get(
-    `${baseURL}/trending/all/${timeWindow}?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
+export const discoverMoviesByCast = (personId, page = 1) => 
+  apiRequest('/discover/movie', { with_cast: personId, page, sort_by: 'popularity.desc' });
 
-// Multi Search (Movie/TV/People)
-export const searchMulti = async (q) => {
-  const response = await axios.get(
-    `${baseURL}/search/multi?query=${q}&page=1&api_key=${apiKey}`
-  );
-  return response.data;
-};
+export const discoverMoviesByCrew = (personId, page = 1) => 
+  apiRequest('/discover/movie', { with_crew: personId, page, sort_by: 'popularity.desc' });
 
-export const searchTV = async (q) => {
-  const response = await axios.get(
-    `${baseURL}/search/tv?query=${q}&page=1&api_key=${apiKey}`
-  );
-  return response.data;
-};
-
-export const searchPerson = async (q) => {
-  const response = await axios.get(
-    `${baseURL}/search/person?query=${q}&page=1&api_key=${apiKey}`
-  );
-  return response.data;
-};
-
-// Movie Details
-export const getMovieDetails = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}?api_key=${apiKey}&append_to_response=credits,videos,similar`
-  );
-  return response.data;
-};
-
-// TV Series Details
-export const getTVDetails = async (tvId) => {
-  const response = await axios.get(
-    `${baseURL}/tv/${tvId}?api_key=${apiKey}&append_to_response=credits,videos,similar`
-  );
-  return response.data;
-};
-
-// Person Details
-export const getPersonDetails = async (personId) => {
-  const response = await axios.get(
-    `${baseURL}/person/${personId}?api_key=${apiKey}&append_to_response=movie_credits,tv_credits`
-  );
-  return response.data;
-};
-
-// Now Playing & Upcoming
-export const getNowPlayingMovies = async (page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/movie/now_playing?page=${page}&api_key=${apiKey}`
-  );
-  return response.data;
-};
-
-export const getUpcomingMovies = async (page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/movie/upcoming?page=${page}&api_key=${apiKey}`
-  );
-  return response.data;
-};
-
-// Top Rated
-export const getTopRatedMovies = async (page = 1, year = '') => {
-  let url = `${baseURL}/movie/top_rated?page=${page}&api_key=${apiKey}`;
-  if (year) {
-    url += `&primary_release_year=${year}`;
-  }
-  const response = await axios.get(url);
-  return response.data;
-};
-
-export const getTopRatedTV = async (page = 1, year = '') => {
-  let url = `${baseURL}/tv/top_rated?page=${page}&api_key=${apiKey}`;
-  if (year) {
-    url += `&first_air_date_year=${year}`;
-  }
-  const response = await axios.get(url);
-  return response.data;
-};
-
-// Popular TV
-export const getPopularTV = async () => {
-  const response = await axios.get(
-    `${baseURL}/tv/popular?page=1&api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// Genres
-export const getMovieGenres = async () => {
-  const response = await axios.get(
-    `${baseURL}/genre/movie/list?api_key=${apiKey}`
-  );
-  return response.data.genres;
-};
-
-export const getTVGenres = async () => {
-  const response = await axios.get(
-    `${baseURL}/genre/tv/list?api_key=${apiKey}`
-  );
-  return response.data.genres;
-};
-
-// Discover Movies by Genre
-export const discoverMoviesByGenre = async (genreId, page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&page=${page}&sort_by=popularity.desc`
-  );
-  return response.data;
-};
-
-// Discover TV by Genre
-export const discoverTVByGenre = async (genreId, page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/discover/tv?api_key=${apiKey}&with_genres=${genreId}&page=${page}&sort_by=popularity.desc`
-  );
-  return response.data;
-};
-
-// Movie Recommendations
-export const getMovieRecommendations = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}/recommendations?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// TV Recommendations
-export const getTVRecommendations = async (tvId) => {
-  const response = await axios.get(
-    `${baseURL}/tv/${tvId}/recommendations?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// Similar Movies
-export const getSimilarMovies = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}/similar?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// Similar TV Shows
-export const getSimilarTV = async (tvId) => {
-  const response = await axios.get(
-    `${baseURL}/tv/${tvId}/similar?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// Movie Videos (Trailers)
-export const getMovieVideos = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}/videos?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// Movie Credits (Cast & Crew)
-export const getMovieCredits = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}/credits?api_key=${apiKey}`
-  );
-  return response.data;
-};
-
-// Reviews
-export const getMovieReviews = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}/reviews?api_key=${apiKey}`
-  );
-  return response.data.results;
-};
-
-// Keywords
-export const getMovieKeywords = async (movieId) => {
-  const response = await axios.get(
-    `${baseURL}/movie/${movieId}/keywords?api_key=${apiKey}`
-  );
-  return response.data.keywords;
-};
-
-// Movie Collections
-export const getMovieCollection = async (collectionId) => {
-  const response = await axios.get(
-    `${baseURL}/collection/${collectionId}?api_key=${apiKey}`
-  );
-  return response.data;
-};
-
-// Discover with Filters
-export const discoverMoviesAdvanced = async ({
-  genre,
-  year,
-  sortBy = 'popularity.desc',
-  page = 1,
-  minRating = 0,
-  maxRating = 10,
-  region = ''
-}) => {
-  let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&sort_by=${sortBy}`;
-  
-  if (genre) url += `&with_genres=${genre}`;
-  if (year) url += `&primary_release_year=${year}`;
-  if (minRating > 0) url += `&vote_average.gte=${minRating}`;
-  if (maxRating < 10) url += `&vote_average.lte=${maxRating}`;
-  if (region) url += `&region=${region}`;
-  
-  const response = await axios.get(url);
-  return response.data;
-};
-
-// Discover Movies by Cast
-export const discoverMoviesByCast = async (personId, page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/discover/movie?api_key=${apiKey}&with_cast=${personId}&page=${page}&sort_by=popularity.desc`
-  );
-  return response.data;
-};
-
-// Discover Movies by Crew (Director, Producer, etc.)
-export const discoverMoviesByCrew = async (personId, page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/discover/movie?api_key=${apiKey}&with_crew=${personId}&page=${page}&sort_by=popularity.desc`
-  );
-  return response.data;
-};
-
-// Discover Movies by Production Company
-export const discoverMoviesByCompany = async (companyId, page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/discover/movie?api_key=${apiKey}&with_companies=${companyId}&page=${page}&sort_by=popularity.desc`
-  );
-  return response.data;
-};
+export const discoverMoviesByCompany = (companyId, page = 1) => 
+  apiRequest('/discover/movie', { with_companies: companyId, page, sort_by: 'popularity.desc' });
