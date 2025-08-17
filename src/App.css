@@ -378,16 +378,16 @@ body.light-mode .mobile-nav-button:hover {
   );
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 70px 120px 40px 120px; /* More padding to avoid arrows */
+  justify-content: flex-start;
+  padding: 70px 180px 40px 80px; /* Left-aligned but with enough space from arrows */
   z-index: 10;
 }
 
 .hero-content {
-  max-width: 600px;
+  max-width: 550px;
   color: white;
   z-index: 2;
-  text-align: center;
+  text-align: left;
 }
 
 .hero-title {
@@ -588,6 +588,10 @@ body.light-mode .mobile-nav-button:hover {
   padding: 48px 24px;
 }
 
+.section + .section {
+  padding-top: 24px;
+}
+
 /* Add top padding for sections without hero */
 .App-header > .app-content > .section:first-child {
   padding-top: 118px; /* 70px navbar + 48px section padding */
@@ -771,9 +775,13 @@ body.light-mode .mobile-nav-button:hover {
 /* Movie Grid */
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   margin-bottom: 60px;
+  padding: 0 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .movie-card {
@@ -1872,6 +1880,7 @@ body.light-mode .footer-links a:hover {
 /* Genre Browse */
 .genre-selection {
   margin-bottom: 32px;
+  padding: 0 20px;
 }
 
 .genre-pills {
@@ -1937,6 +1946,14 @@ body.light-mode .content-count {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .movie-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    padding: 0 18px;
+  }
+}
+
 @media (max-width: 768px) {
   .header-nav {
     background: rgba(15, 15, 15, 0.98);
@@ -1988,6 +2005,25 @@ body.light-mode .content-count {
     font-size: 24px;
   }
   
+  .hero-overlay {
+    padding: 70px 20px 40px 20px;
+    justify-content: center;
+  }
+  
+  .hero-content {
+    text-align: center;
+    max-width: 100%;
+  }
+  
+  .hero-title {
+    font-size: 32px;
+  }
+  
+  .hero-description {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
   .hero-nav-btn {
     width: 50px;
     height: 50px;
@@ -2014,6 +2050,14 @@ body.light-mode .content-count {
     padding: 32px 16px;
   }
   
+  .section + .section {
+    padding-top: 16px;
+  }
+  
+  .genre-selection {
+    padding: 0 16px;
+  }
+  
   .App-header > .app-content > .section:first-child {
     padding-top: 92px; /* 60px navbar + 32px section padding */
   }
@@ -2028,8 +2072,9 @@ body.light-mode .content-count {
   }
   
   .movie-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
+    padding: 0 16px;
   }
   
   .trending-list,
@@ -2171,8 +2216,9 @@ body.light-mode .content-count {
   }
   
   .movie-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+    padding: 0 12px;
   }
   
   .control-tabs {
@@ -2305,7 +2351,9 @@ body.light-mode .content-count {
 /* Genre Dropdown */
 .genre-dropdown {
   position: relative;
-  min-width: 200px;
+  min-width: 250px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .genre-dropdown-button {
