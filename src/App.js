@@ -1,5 +1,5 @@
 import "./App.css";
-import { getMovieList, searchMovie, getTopMoviesThisMonth, getPopularTV, getTrendingMovies } from "./api.js";
+import { getMovieList, searchMovie, getTopMoviesThisMonth, getPopularTV, getTrendingMovies, getMovieVideos } from "./api.js";
 import { useEffect, useState } from "react";
 import TrendingSection from "./components/TrendingSection";
 import SearchSection from "./components/SearchSection";
@@ -8,6 +8,7 @@ import NowPlayingUpcoming from "./components/NowPlayingUpcoming";
 import TopRatedSection from "./components/TopRatedSection";
 import GenreBrowse from "./components/GenreBrowse";
 import Pagination from "./components/Pagination";
+import SkeletonLoader from "./components/SkeletonLoader";
 
 const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
@@ -22,7 +23,9 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
+  const [showHeroTrailer, setShowHeroTrailer] = useState(false);
+  const [heroTrailerKey, setHeroTrailerKey] = useState(null);
 
   useEffect(() => {
     if (currentSection === 'home' || currentSection === 'movies') {
@@ -47,9 +50,11 @@ const App = () => {
         getTrendingMovies('week') // Get trending this week for recommendations
       ]);
       
-      setPopularMovies(popularResult.results.slice(0, 10)); // Limit to 1 row
-      setPopularTVShows(tvResult.slice(0, 10)); // Limit to 1 row
-      setRecommendedMovies(trendingResult.results?.slice(0, 10) || []); // Recommendations
+      // Calculate complete rows based on grid (responsive: 5-6 items per row on desktop, fewer on mobile)
+      const itemsPerRow = 5; // Conservative estimate for complete rows
+      setPopularMovies(popularResult.results.slice(0, itemsPerRow * 2)); // 2 complete rows
+      setPopularTVShows(tvResult.slice(0, itemsPerRow * 2)); // 2 complete rows  
+      setRecommendedMovies(trendingResult.results?.slice(0, itemsPerRow * 2) || []); // 2 complete rows
       setTotalPages(Math.min(popularResult.total_pages, 500)); // TMDb limits to 500 pages
       
       // Use top movies this month as hero carousel, fallback to popular
@@ -62,7 +67,8 @@ const App = () => {
       // Fallback if API fails
       try {
         const result = await getMovieList(1);
-        setPopularMovies(result.results.slice(0, 10));
+        const itemsPerRow = 5;
+        setPopularMovies(result.results.slice(0, itemsPerRow * 2)); // Complete rows
         setTotalPages(Math.min(result.total_pages, 500));
         if (result.results && result.results.length > 0) {
           setHeroMovies(result.results.slice(0, 10));
@@ -231,9 +237,32 @@ const App = () => {
     setCurrentHeroIndex(prev => prev === heroMovies.length - 1 ? 0 : prev + 1);
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode(prev => !prev);
-    document.body.classList.toggle('dark-mode', !darkMode);
+  const toggleLightMode = () => {
+    setLightMode(prev => !prev);
+    document.body.classList.toggle('light-mode', !lightMode);
+  };
+
+  const handleHeroPlayTrailer = async (movieId) => {
+    try {
+      const videos = await getMovieVideos(movieId);
+      const trailer = videos.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+      if (trailer) {
+        setHeroTrailerKey(trailer.key);
+        setShowHeroTrailer(true);
+      } else {
+        // If no trailer, show movie details instead
+        handleMovieClick(movieId);
+      }
+    } catch (error) {
+      console.error('Failed to fetch trailer:', error);
+      // Fallback to movie details
+      handleMovieClick(movieId);
+    }
+  };
+
+  const handleCloseHeroTrailer = () => {
+    setShowHeroTrailer(false);
+    setHeroTrailerKey(null);
   };
 
   const renderContent = () => {
@@ -347,9 +376,9 @@ const App = () => {
                       <div className="hero-buttons">
                         <button 
                           className="hero-play-btn"
-                          onClick={() => handleMovieClick(heroMovies[currentHeroIndex]?.id)}
+                          onClick={() => handleHeroPlayTrailer(heroMovies[currentHeroIndex]?.id)}
                         >
-                          ▶ Play
+                          ▶ Play Trailer
                         </button>
                         <button 
                           className="hero-info-btn"
@@ -387,7 +416,7 @@ const App = () => {
                 </button>
               </div>
               {loading ? (
-                <div className="loading">Loading movies...</div>
+                <SkeletonLoader count={10} />
               ) : (
                 <div className="movie-grid">
                   <PopularMovieList />
@@ -407,7 +436,7 @@ const App = () => {
                 </button>
               </div>
               {loading ? (
-                <div className="loading">Loading TV shows...</div>
+                <SkeletonLoader count={10} />
               ) : (
                 <div className="movie-grid">
                   <PopularTVList />
@@ -421,7 +450,7 @@ const App = () => {
                 <h2 className="section-title">Recommendations for You</h2>
               </div>
               {loading ? (
-                <div className="loading">Loading recommendations...</div>
+                <SkeletonLoader count={10} />
               ) : (
                 <div className="movie-grid">
                   <RecommendedMoviesList />
@@ -491,17 +520,17 @@ const App = () => {
               </button>
               <button 
                 className="theme-toggle-btn"
-                onClick={toggleDarkMode}
-                title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                onClick={toggleLightMode}
+                title={lightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
               >
-                {darkMode ? (
+                {lightMode ? (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                   </svg>
                 ) : (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
                   </svg>
                 )}
               </button>
@@ -512,6 +541,22 @@ const App = () => {
         {/* Content */}
         <div className="app-content">
           {renderContent()}
+          
+          {/* Footer */}
+          <footer className="app-footer">
+            <div className="footer-content">
+              <div className="footer-credits">
+                <p>🎬 Created with passion by <strong>Hanz</strong></p>
+                <p>🤖 Enhanced with <strong>Claude AI</strong></p>
+                <p>🎭 Powered by <strong>The Movie Database (TMDb)</strong></p>
+              </div>
+              <div className="footer-links">
+                <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDb</a>
+                <span>•</span>
+                <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude AI</a>
+              </div>
+            </div>
+          </footer>
         </div>
 
         {/* Search Modal */}
@@ -533,11 +578,28 @@ const App = () => {
           </div>
         )}
 
+        {/* Hero Trailer Modal */}
+        {showHeroTrailer && heroTrailerKey && (
+          <div className="trailer-modal-overlay" onClick={handleCloseHeroTrailer}>
+            <div className="trailer-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="trailer-close-btn" onClick={handleCloseHeroTrailer}>×</button>
+              <iframe
+                src={`https://www.youtube.com/embed/${heroTrailerKey}?autoplay=1`}
+                title="Movie Trailer"
+                frameBorder="0"
+                allowFullScreen
+                allow="autoplay"
+              ></iframe>
+            </div>
+          </div>
+        )}
+
         {/* Movie Detail Modal */}
         {showMovieDetail && selectedMovieId && (
           <MovieDetail 
             movieId={selectedMovieId} 
             onClose={handleCloseMovieDetail}
+            onMovieClick={handleMovieClick}
           />
         )}
       </header>

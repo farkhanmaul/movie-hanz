@@ -264,3 +264,27 @@ export const discoverMoviesAdvanced = async ({
   const response = await axios.get(url);
   return response.data;
 };
+
+// Discover Movies by Cast
+export const discoverMoviesByCast = async (personId, page = 1) => {
+  const response = await axios.get(
+    `${baseURL}/discover/movie?api_key=${apiKey}&with_cast=${personId}&page=${page}&sort_by=popularity.desc`
+  );
+  return response.data;
+};
+
+// Discover Movies by Crew (Director, Producer, etc.)
+export const discoverMoviesByCrew = async (personId, page = 1) => {
+  const response = await axios.get(
+    `${baseURL}/discover/movie?api_key=${apiKey}&with_crew=${personId}&page=${page}&sort_by=popularity.desc`
+  );
+  return response.data;
+};
+
+// Discover Movies by Production Company
+export const discoverMoviesByCompany = async (companyId, page = 1) => {
+  const response = await axios.get(
+    `${baseURL}/discover/movie?api_key=${apiKey}&with_companies=${companyId}&page=${page}&sort_by=popularity.desc`
+  );
+  return response.data;
+};
