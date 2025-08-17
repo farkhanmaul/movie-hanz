@@ -10,8 +10,12 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedYear, setSelectedYear] = useState('');
 
-  const apiFunc = activeTab === 'movies' ? getTopRatedMovies : getTopRatedTV;
-  const { data, loading } = useApi(() => apiFunc(currentPage, selectedYear), [currentPage, activeTab, selectedYear]);
+  const { data, loading, refetch } = useApi(
+    () => activeTab === 'movies' 
+      ? getTopRatedMovies(currentPage, selectedYear)
+      : getTopRatedTV(currentPage, selectedYear), 
+    [currentPage, activeTab, selectedYear]
+  );
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -21,6 +25,7 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const handleYearChange = (year) => {
     setSelectedYear(year);
     setCurrentPage(1);
+    setTimeout(() => refetch(), 100);
   };
 
   const handleItemClick = (item) => {

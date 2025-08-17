@@ -68,8 +68,7 @@ const AppContent = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <nav className="header-nav">
+      <nav className="header-nav">
           <div className="nav-container">
             <Link to="/" className="logo-container">
               <h1>MOVIEHANZ</h1>
@@ -128,7 +127,6 @@ const AppContent = () => {
             </button>
           </div>
         </nav>
-      </header>
 
       <main className="main-content">
         <TransitionGroup component={null}>

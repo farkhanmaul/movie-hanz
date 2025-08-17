@@ -222,8 +222,8 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
                   </span>
                 </div>
                 <p className="hero-description">
-                  {heroMovies[currentHeroIndex]?.overview?.length > 400 
-                    ? `${heroMovies[currentHeroIndex]?.overview.substring(0, 400)}...`
+                  {heroMovies[currentHeroIndex]?.overview?.length > 300 
+                    ? `${heroMovies[currentHeroIndex]?.overview.substring(0, 300)}...`
                     : heroMovies[currentHeroIndex]?.overview}
                 </p>
                 <div className="hero-buttons">
