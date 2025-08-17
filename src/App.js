@@ -163,7 +163,7 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <Router basename="/movie-hanz">
+  <Router basename={process.env.NODE_ENV === 'production' ? '/movie-hanz' : ''}>
     <AppContent />
   </Router>
 );
