@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import SearchSection from "./components/SearchSection";
 import MovieDetail from "./components/MovieDetail";
 import FilteredMovies from "./components/FilteredMovies";
@@ -72,25 +73,33 @@ const AppContent = () => {
     }
     
     return (
-      <Routes>
-        <Route path="/" element={
-          <HomePage 
-            onMovieClick={handleMovieClick} 
-            onShowFilteredMovies={handleShowFilteredMovies}
-            onNavigate={(path) => navigate(path)}
-          />
-        } />
-        <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
-        <Route path="/nowplaying" element={<NowPlayingPage onMovieClick={handleMovieClick} />} />
-        <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} />} />
-        <Route path="/genres" element={<GenresPage onMovieClick={handleMovieClick} />} />
-        <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
-        <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
-        <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
-        <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-        <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-        <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-      </Routes>
+      <TransitionGroup component={null}>
+        <CSSTransition
+          key={location.pathname}
+          timeout={300}
+          classNames="page-transition"
+        >
+          <Routes location={location}>
+            <Route path="/" element={
+              <HomePage 
+                onMovieClick={handleMovieClick} 
+                onShowFilteredMovies={handleShowFilteredMovies}
+                onNavigate={(path) => navigate(path)}
+              />
+            } />
+            <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
+            <Route path="/nowplaying" element={<NowPlayingPage onMovieClick={handleMovieClick} />} />
+            <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} />} />
+            <Route path="/genres" element={<GenresPage onMovieClick={handleMovieClick} />} />
+            <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
+            <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
+            <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
+            <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+            <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+            <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+          </Routes>
+        </CSSTransition>
+      </TransitionGroup>
     );
   };
 

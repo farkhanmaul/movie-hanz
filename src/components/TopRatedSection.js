@@ -9,22 +9,21 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
 
   useEffect(() => {
     fetchTopRatedData();
-  }, [currentPage, activeTab]);
+  }, [currentPage, activeTab, selectedYear]);
 
   const fetchTopRatedData = async () => {
     setLoading(true);
     try {
       if (activeTab === 'movies') {
-        const movies = await getTopRatedMovies(currentPage);
+        const movies = await getTopRatedMovies(currentPage, selectedYear);
         setTopRatedMovies(movies.results || movies);
         setTotalPages(Math.min(movies.total_pages || 1, 100)); // Limit to 100 pages
       } else {
-        const tv = await getTopRatedTV(currentPage);
+        const tv = await getTopRatedTV(currentPage, selectedYear);
         setTopRatedTV(tv.results || tv);
         setTotalPages(Math.min(tv.total_pages || 1, 100)); // Limit to 100 pages
       }
@@ -43,6 +42,20 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setCurrentPage(1); // Reset page when switching tabs
+  };
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    setCurrentPage(1); // Reset page when changing year
+  };
+
+  const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear; year >= 1900; year--) {
+      years.push(year);
+    }
+    return years;
   };
 
   const renderMovieList = (movies) => {
@@ -139,19 +152,34 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
     <div className="section">
       <h2 className="section-title">Top Rated All Time</h2>
       
-      <div className="control-tabs">
-        <button
-          className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
-          onClick={() => handleTabChange('movies')}
-        >
-          Movies
-        </button>
-        <button
-          className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
-          onClick={() => handleTabChange('tv')}
-        >
-          TV Shows
-        </button>
+      <div className="section-controls">
+        <div className="control-tabs">
+          <button
+            className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
+            onClick={() => handleTabChange('movies')}
+          >
+            Movies
+          </button>
+          <button
+            className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
+            onClick={() => handleTabChange('tv')}
+          >
+            TV Shows
+          </button>
+        </div>
+
+        <div className="year-filter">
+          <select
+            value={selectedYear}
+            onChange={(e) => handleYearChange(e.target.value)}
+            className="year-select"
+          >
+            <option value="">All Years</option>
+            {generateYearOptions().map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="ranking-list">

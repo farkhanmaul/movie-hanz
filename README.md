@@ -1,20 +1,38 @@
 # Movie Hanz 🎬
 
-Movie Hanz adalah aplikasi web React untuk mencari dan menampilkan informasi film populer. Aplikasi ini menggunakan API The Movie Database (TMDb) untuk mengambil data film terbaru dan memungkinkan pengguna untuk mencari film favorit mereka.
+Movie Hanz adalah aplikasi web React yang modern untuk menjelajahi film dan acara TV. Aplikasi ini menggunakan API The Movie Database (TMDb) untuk memberikan pengalaman komprehensif dalam menemukan dan menonton informasi lengkap tentang konten hiburan favorit Anda.
 
 ## Features
 
-- ✨ Menampilkan daftar film populer
-- 🔍 Pencarian film real-time
-- 📱 Responsive design
-- 🎭 Informasi lengkap film (judul, poster, tanggal rilis, rating)
+### 🎯 Core Features
+- ✨ **Homepage dengan Hero Section** - Menampilkan film trending dengan informasi lengkap
+- 🔍 **Advanced Search** - Pencarian real-time dengan filter komprehensif
+- 🎭 **Detail Film/TV Lengkap** - Cast, crew, trailer, dan informasi produksi
+- 📊 **Multiple Categories** - Trending, Now Playing, Top Rated, dan Genres
+- 🎪 **Genre Browsing** - Jelajahi konten berdasarkan genre dengan interface intuitif
+
+### 🎨 UI/UX Features
+- 📱 **Fully Responsive** - Optimal di semua perangkat (desktop, tablet, mobile)
+- 🌙 **Light/Dark Mode** - Toggle tema dengan transisi halus
+- ✨ **Smooth Animations** - Page transitions dan hover effects yang halus
+- 🎬 **Netflix-style Design** - Interface modern dengan typography premium
+- 📊 **Year Filtering** - Filter konten berdasarkan tahun rilis
+
+### 🚀 Technical Features
+- ⚡ **Clean URLs** - Routing tanpa hash untuk SEO-friendly URLs
+- 🔄 **Lazy Loading** - Optimasi performa dengan lazy loading images
+- 📄 **Pagination** - Navigasi konten yang efisien
+- 🎯 **Click-to-Navigate** - Navigation intuitif ke detail pages
+- 🎪 **Crew Display** - Text-based crew information dengan positions
 
 ## Tech Stack
 
-- React 18.2.0
-- Axios untuk HTTP requests
-- CSS untuk styling
-- TMDb API
+- **Frontend**: React 18.2.0 dengan React Router DOM
+- **Styling**: CSS3 dengan Custom Properties & Flexbox/Grid
+- **HTTP Client**: Axios untuk API requests
+- **Animations**: React Transition Group untuk smooth transitions
+- **API**: The Movie Database (TMDb) API v3
+- **Icons**: Custom SVG icons & GitHub/Claude branding
 
 ## Getting Started
 
@@ -37,11 +55,17 @@ npm install
 ```
 
 3. Setup environment variables
-Buat file `.env` dan tambahkan:
-```
+Buat file `.env` di root directory dan tambahkan:
+```env
 REACT_APP_BASEIMGURL=https://image.tmdb.org/t/p/w500
-REACT_APP_APIKEY=your_tmdb_api_key
+REACT_APP_APIKEY=your_tmdb_api_key_here
 ```
+
+Untuk mendapatkan API key:
+1. Kunjungi [TMDb](https://www.themoviedb.org/)
+2. Buat akun dan verifikasi email
+3. Pergi ke Settings > API > Request API Key
+4. Pilih "Developer" dan isi form yang diperlukan
 
 4. Jalankan aplikasi
 ```bash
@@ -50,72 +74,90 @@ npm start
 
 Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000)
 
+## Project Structure
+
+```
+movie-hanz/
+├── public/
+│   ├── index.html
+│   └── favicon.svg
+├── src/
+│   ├── components/          # Komponen reusable
+│   │   ├── SearchSection.js # Search modal & functionality
+│   │   ├── MovieDetail.js   # Detail view component
+│   │   ├── TopRatedSection.js # Top rated dengan year filter
+│   │   ├── GenreBrowse.js   # Genre selection interface
+│   │   └── ...
+│   ├── pages/               # Page components untuk routing
+│   │   ├── HomePage.js      # Landing page dengan hero
+│   │   ├── MovieDetailPage.js # Dedicated movie detail page
+│   │   ├── GenresPage.js    # Genre browsing page
+│   │   └── ...
+│   ├── hooks/              # Custom React hooks
+│   ├── api.js              # TMDb API integration
+│   ├── App.js              # Main app dengan routing
+│   └── App.css             # Global styles & theming
+└── README.md
+```
+
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Jalankan aplikasi dalam development mode di [http://localhost:3000](http://localhost:3000)
 
 ### `npm run build`
+Build aplikasi untuk production ke folder `build/`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `npm test`
+Jalankan test runner
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Features Detail
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🎬 Homepage
+- **Hero Section**: Film trending terpopuler dengan backdrop, poster, dan informasi lengkap
+- **Multiple Sections**: Trending, Now Playing, Top Rated dengan pagination
+- **Quick Navigation**: Akses cepat ke berbagai kategori
 
-### `npm run eject`
+### 🔍 Search & Discovery
+- **Advanced Search**: Pencarian real-time dengan debouncing
+- **Genre Browsing**: Interface card-based untuk memilih genre
+- **Year Filtering**: Filter konten berdasarkan tahun rilis di Top Rated
+- **Smart Pagination**: Navigasi halaman yang responsif
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 📱 Responsive Design
+- **Mobile-First**: Optimized untuk mobile dengan breakpoints responsif
+- **Touch-Friendly**: Interface yang mudah digunakan di perangkat sentuh
+- **Adaptive Layout**: Grid dan flexbox yang menyesuaikan ukuran layar
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🎨 Theming
+- **Dual Theme**: Light dan Dark mode dengan transisi halus
+- **CSS Variables**: Sistem theming yang konsisten
+- **Netflix-inspired**: Design language yang familiar dan modern
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Performance & Optimization
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Lazy Loading**: Images dimuat secara bertahap untuk performa optimal
+- **API Optimization**: Efficient caching dan error handling
+- **Bundle Optimization**: Tree-shaking dan code splitting untuk ukuran bundle minimal
+- **SEO-Friendly**: Clean URLs dan meta tags yang proper
 
-## Learn More
+## Browser Support
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- ✅ Chrome (80+)
+- ✅ Firefox (75+)
+- ✅ Safari (13+)
+- ✅ Edge (80+)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## API Reference
 
-### Code Splitting
+Aplikasi ini menggunakan [The Movie Database (TMDb) API](https://developers.themoviedb.org/3):
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- `GET /movie/popular` - Film populer
+- `GET /movie/top_rated` - Film top rated dengan year filter
+- `GET /movie/now_playing` - Film sedang tayang
+- `GET /trending/all/day` - Trending harian
+- `GET /genre/movie/list` - Daftar genre
+- `GET /search/multi` - Search multimedia
 
 ## Contributing
 
@@ -125,14 +167,41 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 4. Push ke branch (`git push origin feature/amazing-feature`)
 5. Buat Pull Request
 
+## Changelog
+
+### v2.0 (Latest)
+- ✨ Added smooth page transitions dengan React Transition Group
+- 🎨 Redesigned genre browsing dengan card interface
+- 📊 Added year filtering untuk top rated content  
+- 🔗 Converted dari hash routing ke clean URLs
+- 👥 Changed crew display ke text-based format
+- 🌙 Enhanced light/dark mode dengan better contrast
+- 📱 Improved mobile responsiveness
+
+### v1.0
+- 🎬 Initial release dengan basic movie browsing
+- 🔍 Search functionality
+- 📱 Responsive design
+- 🎭 Movie details modal
+
 ## License
 
-Project ini menggunakan MIT License.
+Project ini menggunakan MIT License - lihat file [LICENSE](LICENSE) untuk detail.
 
 ## Demo
 
 🔗 [Live Demo](https://farkhanmaul.github.io/movie-hanz)
 
+## Credits
+
+- **Design Inspiration**: Netflix UI/UX patterns
+- **API**: [The Movie Database (TMDb)](https://www.themoviedb.org/)
+- **Icons**: Custom SVG + [GitHub](https://github.com) + [Claude](https://claude.ai)
+
 ## Author
 
-**Farkhan Maul** - [GitHub](https://github.com/farkhanmaul)
+**Farkhan Maul** - [GitHub](https://github.com/farkhanmaul) | [LinkedIn](https://linkedin.com/in/farkhanmaul)
+
+---
+
+*Built with ❤️ using React and TMDb API*

@@ -11,7 +11,7 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
+  const [showGenreList, setShowGenreList] = useState(true);
 
   useEffect(() => {
     fetchGenres();
@@ -23,6 +23,17 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
     }
   }, [selectedGenre, activeTab, currentPage]);
 
+  const handleGenreClick = (genre) => {
+    setSelectedGenre(genre);
+    setShowGenreList(false);
+    setCurrentPage(1);
+  };
+
+  const handleBackToGenres = () => {
+    setShowGenreList(true);
+    setSelectedGenre(null);
+  };
+
   const fetchGenres = async () => {
     try {
       const [movies, tv] = await Promise.all([
@@ -31,12 +42,6 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
       ]);
       setMovieGenres(movies);
       setTVGenres(tv);
-      
-      // Set default genre to Action (id: 28 for movies, 10759 for TV)
-      if (movies.length > 0) {
-        const actionGenre = movies.find(g => g.name === 'Action') || movies[0];
-        setSelectedGenre(actionGenre);
-      }
     } catch (error) {
       console.error('Error fetching genres:', error);
     } finally {
@@ -132,86 +137,72 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
 
   const currentGenres = activeTab === 'movies' ? movieGenres : tvGenres;
 
+  if (showGenreList) {
+    return (
+      <div className="section">
+        <h2 className="section-title">Browse by Genre</h2>
+        
+        {/* Tab Selection */}
+        <div className="control-tabs">
+          <button
+            className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
+            onClick={() => setActiveTab('movies')}
+          >
+            Movies
+          </button>
+          <button
+            className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
+            onClick={() => setActiveTab('tv')}
+          >
+            TV Shows
+          </button>
+        </div>
+
+        {/* Genre Grid */}
+        {loading ? (
+          <div className="loading">Loading genres...</div>
+        ) : (
+          <div className="genre-grid">
+            {currentGenres.map((genre) => (
+              <div
+                key={genre.id}
+                className="genre-card"
+                onClick={() => handleGenreClick(genre)}
+              >
+                <h3 className="genre-name">{genre.name}</h3>
+                <div className="genre-overlay">
+                  <span>Explore →</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="section">
-      <h2 className="section-title">Browse by Genre</h2>
-      
-      {/* Tab Selection */}
-      <div className="control-tabs">
-        <button
-          className={activeTab === 'movies' ? 'tab-button active' : 'tab-button'}
-          onClick={() => handleTabChange('movies')}
-        >
-          Movies
-        </button>
-        <button
-          className={activeTab === 'tv' ? 'tab-button active' : 'tab-button'}
-          onClick={() => handleTabChange('tv')}
-        >
-          TV Shows
+      <div className="section-header">
+        <h2 className="section-title">{selectedGenre?.name} {activeTab === 'movies' ? 'Movies' : 'TV Shows'}</h2>
+        <button className="back-button" onClick={handleBackToGenres}>
+          ← Back to Genres
         </button>
       </div>
 
-      {/* Genre Selection Dropdown */}
-      <div className="genre-selection">
-        <div className="genre-dropdown">
-          <button 
-            className="genre-dropdown-button"
-            onClick={() => setShowGenreDropdown(!showGenreDropdown)}
-          >
-            <span>{selectedGenre?.name || 'Select Genre'}</span>
-            <svg 
-              className={`dropdown-arrow ${showGenreDropdown ? 'open' : ''}`}
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2"
-            >
-              <polyline points="6,9 12,15 18,9"></polyline>
-            </svg>
-          </button>
-          
-          {showGenreDropdown && (
-            <div className="genre-dropdown-menu">
-              {currentGenres.map((genre) => (
-                <button
-                  key={genre.id}
-                  className={`genre-dropdown-item ${selectedGenre?.id === genre.id ? 'active' : ''}`}
-                  onClick={() => handleGenreChange(genre)}
-                >
-                  {genre.name}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+      {/* Content */}
+      <div className="movie-grid">
+        {renderContent()}
       </div>
 
-      {/* Content Display */}
-      {selectedGenre && (
-        <>
-          <div className="genre-content-header">
-            <h3 className="genre-title">
-              {selectedGenre.name} {activeTab === 'movies' ? 'Movies' : 'TV Shows'}
-            </h3>
-            <div className="content-count">
-              {content.length} items found
-            </div>
-          </div>
-          
-          <div className="movie-grid">
-            {renderContent()}
-          </div>
-
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            loading={loading}
-          />
-        </>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          loading={loading}
+        />
       )}
     </div>
   );

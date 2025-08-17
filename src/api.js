@@ -118,17 +118,21 @@ export const getUpcomingMovies = async (page = 1) => {
 };
 
 // Top Rated
-export const getTopRatedMovies = async (page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/movie/top_rated?page=${page}&api_key=${apiKey}`
-  );
+export const getTopRatedMovies = async (page = 1, year = '') => {
+  let url = `${baseURL}/movie/top_rated?page=${page}&api_key=${apiKey}`;
+  if (year) {
+    url += `&primary_release_year=${year}`;
+  }
+  const response = await axios.get(url);
   return response.data;
 };
 
-export const getTopRatedTV = async (page = 1) => {
-  const response = await axios.get(
-    `${baseURL}/tv/top_rated?page=${page}&api_key=${apiKey}`
-  );
+export const getTopRatedTV = async (page = 1, year = '') => {
+  let url = `${baseURL}/tv/top_rated?page=${page}&api_key=${apiKey}`;
+  if (year) {
+    url += `&first_air_date_year=${year}`;
+  }
+  const response = await axios.get(url);
   return response.data;
 };
 

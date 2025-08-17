@@ -230,29 +230,19 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
           {movie.credits?.crew && movie.credits.crew.length > 0 && (
             <section className="movie-detail-section">
               <h3>Key Crew</h3>
-              <div className="crew-list">
+              <div className="crew-text-list">
                 {movie.credits.crew
-                  .filter(person => ['Director', 'Producer', 'Executive Producer', 'Screenplay', 'Writer'].includes(person.job))
-                  .slice(0, 8)
+                  .filter(person => ['Director', 'Producer', 'Executive Producer', 'Screenplay', 'Writer', 'Cinematography', 'Music'].includes(person.job))
+                  .slice(0, 12)
                   .map(person => (
                     <div 
                       key={`${person.id}-${person.job}`} 
-                      className="crew-member clickable-cast"
+                      className="crew-text-item clickable-crew"
                       onClick={() => handleFilterClick('crew', person.id, person.name)}
                       title={`See more movies by ${person.name}`}
                     >
-                      <img
-                        src={person.profile_path 
-                          ? `${process.env.REACT_APP_BASEIMGURL}${person.profile_path}`
-                          : '/placeholder-person.jpg'
-                        }
-                        alt={person.name}
-                        className="cast-photo"
-                      />
-                      <div className="cast-info">
-                        <div className="cast-name">{person.name}</div>
-                        <div className="cast-character">{person.job}</div>
-                      </div>
+                      <span className="crew-name">{person.name}</span>
+                      <span className="crew-job">{person.job}</span>
                     </div>
                   ))}
               </div>
