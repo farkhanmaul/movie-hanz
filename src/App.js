@@ -9,6 +9,7 @@ import TopRatedSection from "./components/TopRatedSection";
 import GenreBrowse from "./components/GenreBrowse";
 import Pagination from "./components/Pagination";
 import SkeletonLoader from "./components/SkeletonLoader";
+import FilteredMovies from "./components/FilteredMovies";
 
 const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
@@ -26,6 +27,9 @@ const App = () => {
   const [lightMode, setLightMode] = useState(false);
   const [showHeroTrailer, setShowHeroTrailer] = useState(false);
   const [heroTrailerKey, setHeroTrailerKey] = useState(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showFilteredView, setShowFilteredView] = useState(false);
+  const [filterConfig, setFilterConfig] = useState({ type: '', id: '', name: '' });
 
   useEffect(() => {
     if (currentSection === 'home' || currentSection === 'movies') {
@@ -50,28 +54,28 @@ const App = () => {
         getTrendingMovies('week') // Get trending this week for recommendations
       ]);
       
-      // Calculate complete rows based on grid (responsive: 5-6 items per row on desktop, fewer on mobile)
-      const itemsPerRow = 5; // Conservative estimate for complete rows
-      setPopularMovies(popularResult.results.slice(0, itemsPerRow * 2)); // 2 complete rows
-      setPopularTVShows(tvResult.slice(0, itemsPerRow * 2)); // 2 complete rows  
-      setRecommendedMovies(trendingResult.results?.slice(0, itemsPerRow * 2) || []); // 2 complete rows
+      // Show only 1 complete row per section (5 items each)
+      const itemsPerRow = 5;
+      setPopularMovies(popularResult.results.slice(0, itemsPerRow)); // 1 complete row only
+      setPopularTVShows(tvResult.slice(0, itemsPerRow)); // 1 complete row only
+      setRecommendedMovies(trendingResult.results?.slice(0, itemsPerRow) || []); // 1 complete row only
       setTotalPages(Math.min(popularResult.total_pages, 500)); // TMDb limits to 500 pages
       
       // Use top movies this month as hero carousel, fallback to popular
       if (topMonthResult && topMonthResult.length > 0) {
-        setHeroMovies(topMonthResult.slice(0, 10)); // Get top 10 for carousel
+        setHeroMovies(topMonthResult.slice(0, 20)); // Get top 20 for carousel (more movies)
       } else if (popularResult.results && popularResult.results.length > 0) {
-        setHeroMovies(popularResult.results.slice(0, 10));
+        setHeroMovies(popularResult.results.slice(0, 20)); // Fallback to 20 popular movies
       }
     } catch (error) {
       // Fallback if API fails
       try {
         const result = await getMovieList(1);
         const itemsPerRow = 5;
-        setPopularMovies(result.results.slice(0, itemsPerRow * 2)); // Complete rows
+        setPopularMovies(result.results.slice(0, itemsPerRow)); // 1 complete row only
         setTotalPages(Math.min(result.total_pages, 500));
         if (result.results && result.results.length > 0) {
-          setHeroMovies(result.results.slice(0, 10));
+          setHeroMovies(result.results.slice(0, 20)); // More movies for hero carousel
         }
       } catch (fallbackError) {
         console.error('Failed to load data:', fallbackError);
@@ -113,6 +117,22 @@ const App = () => {
   const handleSectionChange = (section) => {
     setCurrentSection(section);
     setCurrentPage(1); // Reset page when changing sections
+    setShowMobileMenu(false); // Close mobile menu when section changes
+  };
+
+  const toggleMobileMenu = () => {
+    setShowMobileMenu(prev => !prev);
+  };
+
+  const handleShowFilteredMovies = (type, id, name) => {
+    setFilterConfig({ type, id, name });
+    setShowFilteredView(true);
+    setShowMovieDetail(false); // Close movie detail if open
+  };
+
+  const handleCloseFilteredView = () => {
+    setShowFilteredView(false);
+    setFilterConfig({ type: '', id: '', name: '' });
   };
 
   const PopularMovieList = () => {
@@ -266,6 +286,18 @@ const App = () => {
   };
 
   const renderContent = () => {
+    if (showFilteredView) {
+      return (
+        <FilteredMovies
+          filterType={filterConfig.type}
+          filterId={filterConfig.id}
+          filterName={filterConfig.name}
+          onMovieClick={handleMovieClick}
+          onClose={handleCloseFilteredView}
+        />
+      );
+    }
+    
     switch (currentSection) {
       case 'trending':
         return <TrendingSection onMovieClick={handleMovieClick} onTVClick={handleMovieClick} />;
@@ -483,41 +515,11 @@ const App = () => {
               />
               <svg className="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8"/>
-                <path d="21 21l-4.35-4.35"/>
+                <path d="m21 21-4.35-4.35"/>
               </svg>
             </div>
             
-            <div className="app-navigation">
-              <button 
-                className={currentSection === 'home' ? 'nav-button active' : 'nav-button'}
-                onClick={() => handleSectionChange('home')}
-              >
-                Home
-              </button>
-              <button 
-                className={currentSection === 'trending' ? 'nav-button active' : 'nav-button'}
-                onClick={() => handleSectionChange('trending')}
-              >
-                Trending
-              </button>
-              <button 
-                className={currentSection === 'nowplaying' ? 'nav-button active' : 'nav-button'}
-                onClick={() => handleSectionChange('nowplaying')}
-              >
-                In Theaters
-              </button>
-              <button 
-                className={currentSection === 'toprated' ? 'nav-button active' : 'nav-button'}
-                onClick={() => handleSectionChange('toprated')}
-              >
-                Top Rated
-              </button>
-              <button 
-                className={currentSection === 'genres' ? 'nav-button active' : 'nav-button'}
-                onClick={() => handleSectionChange('genres')}
-              >
-                Genres
-              </button>
+            <div className="nav-right">
               <button 
                 className="theme-toggle-btn"
                 onClick={toggleLightMode}
@@ -534,7 +536,86 @@ const App = () => {
                   </svg>
                 )}
               </button>
+              
+              <button 
+                className="hamburger-btn"
+                onClick={toggleMobileMenu}
+                aria-label="Toggle menu"
+              >
+                <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
+                <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
+                <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
+              </button>
+              
+              <div className="app-navigation desktop-nav">
+                <button 
+                  className={currentSection === 'home' ? 'nav-button active' : 'nav-button'}
+                  onClick={() => handleSectionChange('home')}
+                >
+                  Home
+                </button>
+                <button 
+                  className={currentSection === 'trending' ? 'nav-button active' : 'nav-button'}
+                  onClick={() => handleSectionChange('trending')}
+                >
+                  Trending
+                </button>
+                <button 
+                  className={currentSection === 'nowplaying' ? 'nav-button active' : 'nav-button'}
+                  onClick={() => handleSectionChange('nowplaying')}
+                >
+                  In Theaters
+                </button>
+                <button 
+                  className={currentSection === 'toprated' ? 'nav-button active' : 'nav-button'}
+                  onClick={() => handleSectionChange('toprated')}
+                >
+                  Top Rated
+                </button>
+                <button 
+                  className={currentSection === 'genres' ? 'nav-button active' : 'nav-button'}
+                  onClick={() => handleSectionChange('genres')}
+                >
+                  Genres
+                </button>
+              </div>
             </div>
+            
+            {/* Mobile Navigation Menu */}
+            {showMobileMenu && (
+              <div className="mobile-nav-menu">
+                <button 
+                  className={currentSection === 'home' ? 'mobile-nav-button active' : 'mobile-nav-button'}
+                  onClick={() => handleSectionChange('home')}
+                >
+                  🏠 Home
+                </button>
+                <button 
+                  className={currentSection === 'trending' ? 'mobile-nav-button active' : 'mobile-nav-button'}
+                  onClick={() => handleSectionChange('trending')}
+                >
+                  🔥 Trending
+                </button>
+                <button 
+                  className={currentSection === 'nowplaying' ? 'mobile-nav-button active' : 'mobile-nav-button'}
+                  onClick={() => handleSectionChange('nowplaying')}
+                >
+                  🎬 In Theaters
+                </button>
+                <button 
+                  className={currentSection === 'toprated' ? 'mobile-nav-button active' : 'mobile-nav-button'}
+                  onClick={() => handleSectionChange('toprated')}
+                >
+                  ⭐ Top Rated
+                </button>
+                <button 
+                  className={currentSection === 'genres' ? 'mobile-nav-button active' : 'mobile-nav-button'}
+                  onClick={() => handleSectionChange('genres')}
+                >
+                  🎭 Genres
+                </button>
+              </div>
+            )}
           </div>
         </nav>
 
@@ -546,12 +627,14 @@ const App = () => {
           <footer className="app-footer">
             <div className="footer-content">
               <div className="footer-credits">
-                <p>🎬 Created with passion by <strong>Hanz</strong></p>
-                <p>🤖 Enhanced with <strong>Claude AI</strong></p>
-                <p>🎭 Powered by <strong>The Movie Database (TMDb)</strong></p>
+                <p>🎬 Created with passion by <a href="https://github.com/farkhanmaul" target="_blank" rel="noopener noreferrer"><strong>Hanz</strong></a></p>
+                <p>🤖 Enhanced with <a href="https://claude.ai" target="_blank" rel="noopener noreferrer"><strong>Claude AI</strong></a></p>
+                <p>🎭 Powered by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer"><strong>The Movie Database (TMDb)</strong></a></p>
               </div>
               <div className="footer-links">
-                <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDb</a>
+                <a href="https://github.com/farkhanmaul/movie-hanz" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                <span>•</span>
+                <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDb API</a>
                 <span>•</span>
                 <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude AI</a>
               </div>
@@ -600,6 +683,7 @@ const App = () => {
             movieId={selectedMovieId} 
             onClose={handleCloseMovieDetail}
             onMovieClick={handleMovieClick}
+            onShowFilteredMovies={handleShowFilteredMovies}
           />
         )}
       </header>

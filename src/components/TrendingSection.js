@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getTrendingMovies, getTrendingTV } from '../api';
+import SkeletonLoader from './SkeletonLoader';
 
 const TrendingSection = ({ onMovieClick, onTVClick }) => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -69,7 +70,14 @@ const TrendingSection = ({ onMovieClick, onTVClick }) => {
   };
 
   if (loading) {
-    return <div className="loading">Loading trending content...</div>;
+    return (
+      <div className="section">
+        <div className="section-header">
+          <h2 className="section-title">Trending</h2>
+        </div>
+        <SkeletonLoader count={10} />
+      </div>
+    );
   }
 
   return (

@@ -11,6 +11,7 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
   useEffect(() => {
     fetchGenres();
@@ -65,6 +66,7 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   const handleGenreChange = (genre) => {
     setSelectedGenre(genre);
     setCurrentPage(1);
+    setShowGenreDropdown(false);
   };
 
   const handleTabChange = (tab) => {
@@ -150,18 +152,40 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
         </button>
       </div>
 
-      {/* Genre Selection */}
+      {/* Genre Selection Dropdown */}
       <div className="genre-selection">
-        <div className="genre-pills">
-          {currentGenres.map((genre) => (
-            <button
-              key={genre.id}
-              className={`genre-pill ${selectedGenre?.id === genre.id ? 'active' : ''}`}
-              onClick={() => handleGenreChange(genre)}
+        <div className="genre-dropdown">
+          <button 
+            className="genre-dropdown-button"
+            onClick={() => setShowGenreDropdown(!showGenreDropdown)}
+          >
+            <span>{selectedGenre?.name || 'Select Genre'}</span>
+            <svg 
+              className={`dropdown-arrow ${showGenreDropdown ? 'open' : ''}`}
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2"
             >
-              {genre.name}
-            </button>
-          ))}
+              <polyline points="6,9 12,15 18,9"></polyline>
+            </svg>
+          </button>
+          
+          {showGenreDropdown && (
+            <div className="genre-dropdown-menu">
+              {currentGenres.map((genre) => (
+                <button
+                  key={genre.id}
+                  className={`genre-dropdown-item ${selectedGenre?.id === genre.id ? 'active' : ''}`}
+                  onClick={() => handleGenreChange(genre)}
+                >
+                  {genre.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getMovieDetails } from '../api';
-import FilteredMovies from './FilteredMovies';
 
-const MovieDetail = ({ movieId, onClose, onMovieClick }) => {
+const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showFilteredMovies, setShowFilteredMovies] = useState(false);
-  const [filterConfig, setFilterConfig] = useState({ type: '', id: '', name: '' });
   const [showTrailer, setShowTrailer] = useState(false);
 
   useEffect(() => {
@@ -47,14 +44,11 @@ const MovieDetail = ({ movieId, onClose, onMovieClick }) => {
   };
 
   const handleFilterClick = (type, id, name) => {
-    setFilterConfig({ type, id, name });
-    setShowFilteredMovies(true);
+    if (onShowFilteredMovies) {
+      onShowFilteredMovies(type, id, name);
+    }
   };
 
-  const handleCloseFiltered = () => {
-    setShowFilteredMovies(false);
-    setFilterConfig({ type: '', id: '', name: '' });
-  };
 
   const handleSimilarMovieClick = (movieId) => {
     if (onMovieClick) {
@@ -330,17 +324,6 @@ const MovieDetail = ({ movieId, onClose, onMovieClick }) => {
             </section>
           )}
         </div>
-        
-        {/* Filtered Movies Modal */}
-        {showFilteredMovies && (
-          <FilteredMovies
-            filterType={filterConfig.type}
-            filterId={filterConfig.id}
-            filterName={filterConfig.name}
-            onMovieClick={onMovieClick}
-            onClose={handleCloseFiltered}
-          />
-        )}
       </div>
     </div>
   );

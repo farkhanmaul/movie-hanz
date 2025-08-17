@@ -61,94 +61,70 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
     }
   };
 
-  if (loading) {
-    return (
-      <div className="movie-detail-overlay">
-        <div className="movie-detail-container">
-          <button className="close-button" onClick={onClose}>×</button>
-          <div className="loading">Loading movies...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="movie-detail-overlay">
-        <div className="movie-detail-container">
-          <button className="close-button" onClick={onClose}>×</button>
-          <div className="error">{error}</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="movie-detail-overlay" onClick={onClose}>
-      <div className="movie-detail-container" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose}>×</button>
-        
-        <div className="movie-detail-content">
-          <div className="movie-detail-section">
-            <h2 className="section-title">{getFilterTitle()}</h2>
-            <div className="content-count">
-              {movies.length} movies found
-            </div>
-          </div>
-
-          {movies.length > 0 ? (
-            <>
-              <div className="movie-grid">
-                {movies.map((movie) => (
-                  <div 
-                    key={movie.id} 
-                    className="movie-card"
-                    onClick={() => {
-                      onClose();
-                      onMovieClick(movie.id);
-                    }}
-                  >
-                    <div className="movie-poster-container">
-                      <img
-                        className="Movie-img"
-                        alt={movie.title}
-                        src={movie.poster_path 
-                          ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-                          : '/placeholder-poster.jpg'
-                        }
-                        onError={(e) => {
-                          e.target.src = '/placeholder-poster.jpg';
-                        }}
-                      />
-                      <div className="movie-overlay">
-                        <button className="play-button">▶</button>
-                      </div>
-                    </div>
-                    <div className="movie-info">
-                      <div className="Movie-title">{movie.title}</div>
-                      <div className="Movie-date">{movie.release_date}</div>
-                      <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {totalPages > 1 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                  loading={loading}
-                />
-              )}
-            </>
-          ) : (
-            <div className="no-results">
-              No movies found for {filterName}
-            </div>
-          )}
-        </div>
+    <div className="section">
+      <div className="section-header">
+        <h2 className="section-title">{getFilterTitle()}</h2>
+        <button className="back-button" onClick={onClose}>
+          ← Back
+        </button>
       </div>
+      <div className="content-count">
+        {movies.length} movies found
+      </div>
+
+      {loading ? (
+        <div className="loading">Loading movies...</div>
+      ) : error ? (
+        <div className="error">{error}</div>
+      ) : movies.length > 0 ? (
+        <>
+          <div className="movie-grid">
+            {movies.map((movie) => (
+              <div 
+                key={movie.id} 
+                className="movie-card"
+                onClick={() => onMovieClick(movie.id)}
+              >
+                <div className="movie-poster-container">
+                  <img
+                    className="Movie-img"
+                    alt={movie.title}
+                    src={movie.poster_path 
+                      ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
+                      : '/placeholder-poster.jpg'
+                    }
+                    onError={(e) => {
+                      e.target.src = '/placeholder-poster.jpg';
+                    }}
+                  />
+                  <div className="movie-overlay">
+                    <button className="play-button">▶</button>
+                  </div>
+                </div>
+                <div className="movie-info">
+                  <div className="Movie-title">{movie.title}</div>
+                  <div className="Movie-date">{movie.release_date}</div>
+                  <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              loading={loading}
+            />
+          )}
+        </>
+      ) : (
+        <div className="no-results">
+          No movies found for {filterName}
+        </div>
+      )}
     </div>
   );
 };
