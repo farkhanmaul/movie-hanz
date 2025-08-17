@@ -163,7 +163,7 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <Router>
+  <Router basename="/movie-hanz">
     <AppContent />
   </Router>
 );
