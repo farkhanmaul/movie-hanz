@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import { HashRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import SearchSection from "./components/SearchSection";
 import MovieDetail from "./components/MovieDetail";
 import FilteredMovies from "./components/FilteredMovies";
@@ -11,6 +11,9 @@ import TopRatedPage from "./pages/TopRatedPage";
 import GenresPage from "./pages/GenresPage";
 import MoviesPage from "./pages/MoviesPage";
 import TVShowsPage from "./pages/TVShowsPage";
+import CastPage from "./pages/CastPage";
+import CrewPage from "./pages/CrewPage";
+import CompanyPage from "./pages/CompanyPage";
 
 const AppContent = () => {
   const [selectedMovieId, setSelectedMovieId] = useState(null);
@@ -21,6 +24,7 @@ const AppContent = () => {
   const [showFilteredView, setShowFilteredView] = useState(false);
   const [filterConfig, setFilterConfig] = useState({ type: '', id: '', name: '' });
   const location = useLocation();
+  const navigate = useNavigate();
 
   const currentPath = location.pathname;
 
@@ -72,7 +76,8 @@ const AppContent = () => {
         <Route path="/" element={
           <HomePage 
             onMovieClick={handleMovieClick} 
-            onShowFilteredMovies={handleShowFilteredMovies} 
+            onShowFilteredMovies={handleShowFilteredMovies}
+            onNavigate={(path) => navigate(path)}
           />
         } />
         <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
@@ -81,6 +86,9 @@ const AppContent = () => {
         <Route path="/genres" element={<GenresPage onMovieClick={handleMovieClick} />} />
         <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
         <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
+        <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+        <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+        <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
       </Routes>
     );
   };

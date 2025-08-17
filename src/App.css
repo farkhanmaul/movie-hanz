@@ -356,6 +356,11 @@ body.light-mode .mobile-nav-button:hover {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.hero-transitioning {
+  opacity: 0.7;
 }
 
 .hero-overlay {
@@ -2452,68 +2457,270 @@ body.light-mode .genre-dropdown-item:hover {
   border-bottom: none;
 }
 
-/* Person Info in Filtered Pages */
-.person-info {
+/* Person Hero Section for Cast/Crew Pages */
+.person-hero {
   display: flex;
-  gap: 24px;
-  margin-bottom: 40px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  gap: 40px;
+  margin-bottom: 60px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
-.person-photo-container {
+.person-hero-photo {
   flex-shrink: 0;
 }
 
-.person-photo {
-  width: 120px;
-  height: 160px;
+.person-large-photo {
+  width: 300px;
+  height: 400px;
   object-fit: cover;
-  border-radius: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
 }
 
-.person-details {
+.person-large-photo:hover {
+  transform: scale(1.02);
+}
+
+.person-hero-details {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.person-name {
+.person-hero-name {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.person-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.person-birthday,
+.person-deathday,
+.person-department {
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.person-biography h3 {
   font-size: 24px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 12px;
-}
-
-.person-birthday {
-  color: var(--text-secondary);
-  font-size: 14px;
   margin-bottom: 16px;
-  font-style: italic;
 }
 
-.person-biography {
+.person-biography p {
   color: var(--text-secondary);
-  line-height: 1.6;
-  font-size: 15px;
+  line-height: 1.8;
+  font-size: 16px;
+  text-align: justify;
+}
+
+/* Movies Section for Cast/Crew Pages */
+.movies-section {
+  margin-top: 40px;
+}
+
+.movies-section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.movie-grid-small {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.movie-card-small {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movie-card-small:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.movie-poster-container-small {
+  position: relative;
+  overflow: hidden;
+}
+
+.Movie-img-small {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.movie-card-small:hover .Movie-img-small {
+  transform: scale(1.1);
+}
+
+.movie-overlay-small {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.movie-card-small:hover .movie-overlay-small {
+  opacity: 1;
+}
+
+.play-button-small {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.play-button-small:hover {
+  background: #ff1e2d;
+  transform: scale(1.1);
+}
+
+.movie-info-small {
+  padding: 12px;
+}
+
+.Movie-title-small {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.Movie-date-small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.Movie-rate-small {
+  color: #ffd700;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Responsive Design for Cast/Crew Pages */
+@media (max-width: 1024px) {
+  .person-hero {
+    gap: 30px;
+    padding: 30px;
+  }
+  
+  .person-large-photo {
+    width: 250px;
+    height: 330px;
+  }
+  
+  .person-hero-name {
+    font-size: 36px;
+  }
+  
+  .movie-grid-small {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+  }
 }
 
 @media (max-width: 768px) {
-  .person-info {
+  .person-hero {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 16px;
-    padding: 20px;
+    gap: 24px;
+    padding: 24px;
   }
   
-  .person-photo {
-    width: 100px;
-    height: 130px;
+  .person-large-photo {
+    width: 200px;
+    height: 260px;
   }
   
-  .person-name {
-    font-size: 20px;
+  .person-hero-name {
+    font-size: 28px;
+  }
+  
+  .person-biography p {
+    text-align: left;
+  }
+  
+  .movies-section-title {
+    font-size: 24px;
+  }
+  
+  .movie-grid-small {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+  }
+  
+  .Movie-img-small {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .person-large-photo {
+    width: 160px;
+    height: 200px;
+  }
+  
+  .person-hero-name {
+    font-size: 24px;
+  }
+  
+  .person-meta {
+    gap: 8px;
+  }
+  
+  .person-birthday,
+  .person-deathday,
+  .person-department {
+    font-size: 14px;
   }
 }

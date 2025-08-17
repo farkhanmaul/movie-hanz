@@ -44,9 +44,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
   };
 
   const handleFilterClick = (type, id, name) => {
-    if (onShowFilteredMovies) {
-      onShowFilteredMovies(type, id, name);
-    }
+    window.location.hash = `#/${type}/${id}`;
   };
 
 

@@ -85,34 +85,49 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
 
       {/* Person Info for cast/crew */}
       {(filterType === 'cast' || filterType === 'crew') && personDetails && (
-        <div className="person-info">
-          <div className="person-photo-container">
+        <div className="person-hero">
+          <div className="person-hero-photo">
             <img
               src={personDetails.profile_path 
                 ? `${process.env.REACT_APP_BASEIMGURL}${personDetails.profile_path}`
                 : '/placeholder-person.jpg'
               }
               alt={personDetails.name}
-              className="person-photo"
+              className="person-large-photo"
               onError={(e) => {
                 e.target.src = '/placeholder-person.jpg';
               }}
             />
           </div>
-          <div className="person-details">
-            <h3 className="person-name">{personDetails.name}</h3>
-            {personDetails.birthday && (
-              <p className="person-birthday">
-                Born: {new Date(personDetails.birthday).toLocaleDateString()}
-                {personDetails.place_of_birth && ` in ${personDetails.place_of_birth}`}
-              </p>
-            )}
+          <div className="person-hero-details">
+            <h1 className="person-hero-name">{personDetails.name}</h1>
+            <div className="person-meta">
+              {personDetails.birthday && (
+                <div className="person-birthday">
+                  <strong>Born:</strong> {new Date(personDetails.birthday).toLocaleDateString()}
+                  {personDetails.place_of_birth && ` in ${personDetails.place_of_birth}`}
+                </div>
+              )}
+              {personDetails.deathday && (
+                <div className="person-deathday">
+                  <strong>Died:</strong> {new Date(personDetails.deathday).toLocaleDateString()}
+                </div>
+              )}
+              {personDetails.known_for_department && (
+                <div className="person-department">
+                  <strong>Known for:</strong> {personDetails.known_for_department}
+                </div>
+              )}
+            </div>
             {personDetails.biography && (
-              <p className="person-biography">
-                {personDetails.biography.length > 300 
-                  ? `${personDetails.biography.substring(0, 300)}...`
-                  : personDetails.biography}
-              </p>
+              <div className="person-biography">
+                <h3>Biography</h3>
+                <p>
+                  {personDetails.biography.length > 800 
+                    ? `${personDetails.biography.substring(0, 800)}...`
+                    : personDetails.biography}
+                </p>
+              </div>
             )}
           </div>
         </div>
@@ -124,36 +139,54 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
         <div className="error">{error}</div>
       ) : movies.length > 0 ? (
         <>
-          <div className="movie-grid">
-            {movies.map((movie) => (
-              <div 
-                key={movie.id} 
-                className="movie-card"
-                onClick={() => onMovieClick(movie.id)}
-              >
-                <div className="movie-poster-container">
-                  <img
-                    className="Movie-img"
-                    alt={movie.title}
-                    src={movie.poster_path 
-                      ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-                      : '/placeholder-poster.jpg'
-                    }
-                    onError={(e) => {
-                      e.target.src = '/placeholder-poster.jpg';
-                    }}
-                  />
-                  <div className="movie-overlay">
-                    <button className="play-button">▶</button>
+          <div className="movies-section">
+            <h3 className="movies-section-title">
+              {filterType === 'cast' ? 'Movies & TV Shows' : 
+               filterType === 'crew' ? 'Filmography' : 
+               'Productions'}
+            </h3>
+            <div className="movie-grid-small">
+              {movies
+                .sort((a, b) => {
+                  // Sort by release date (newest first)
+                  const dateA = new Date(a.release_date || a.first_air_date || '1900-01-01');
+                  const dateB = new Date(b.release_date || b.first_air_date || '1900-01-01');
+                  return dateB - dateA;
+                })
+                .map((movie) => (
+                <div 
+                  key={movie.id} 
+                  className="movie-card-small"
+                  onClick={() => onMovieClick(movie.id)}
+                >
+                  <div className="movie-poster-container-small">
+                    <img
+                      className="Movie-img-small"
+                      alt={movie.title || movie.name}
+                      src={movie.poster_path 
+                        ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
+                        : '/placeholder-poster.jpg'
+                      }
+                      onError={(e) => {
+                        e.target.src = '/placeholder-poster.jpg';
+                      }}
+                    />
+                    <div className="movie-overlay-small">
+                      <button className="play-button-small">▶</button>
+                    </div>
+                  </div>
+                  <div className="movie-info-small">
+                    <div className="Movie-title-small">{movie.title || movie.name}</div>
+                    <div className="Movie-date-small">
+                      {movie.release_date || movie.first_air_date 
+                        ? new Date(movie.release_date || movie.first_air_date).getFullYear()
+                        : 'N/A'}
+                    </div>
+                    <div className="Movie-rate-small">⭐ {movie.vote_average?.toFixed(1)}</div>
                   </div>
                 </div>
-                <div className="movie-info">
-                  <div className="Movie-title">{movie.title}</div>
-                  <div className="Movie-date">{movie.release_date}</div>
-                  <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           
           {totalPages > 1 && (

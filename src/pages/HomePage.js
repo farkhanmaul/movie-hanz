@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { getMovieList, getPopularTV, getTrendingMovies, getMovieVideos } from '../api';
 import SkeletonLoader from '../components/SkeletonLoader';
 
-const HomePage = ({ onMovieClick, onShowFilteredMovies }) => {
+const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
   const [popularMovies, setPopularMovies] = useState([]);
   const [popularTVShows, setPopularTVShows] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [heroMovies, setHeroMovies] = useState([]);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [heroTransitioning, setHeroTransitioning] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showHeroTrailer, setShowHeroTrailer] = useState(false);
   const [heroTrailerKey, setHeroTrailerKey] = useState(null);
@@ -62,11 +63,21 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies }) => {
   };
 
   const handlePrevHero = () => {
-    setCurrentHeroIndex(prev => prev === 0 ? heroMovies.length - 1 : prev - 1);
+    if (heroTransitioning) return;
+    setHeroTransitioning(true);
+    setTimeout(() => {
+      setCurrentHeroIndex(prev => prev === 0 ? heroMovies.length - 1 : prev - 1);
+      setHeroTransitioning(false);
+    }, 150);
   };
 
   const handleNextHero = () => {
-    setCurrentHeroIndex(prev => prev === heroMovies.length - 1 ? 0 : prev + 1);
+    if (heroTransitioning) return;
+    setHeroTransitioning(true);
+    setTimeout(() => {
+      setCurrentHeroIndex(prev => prev === heroMovies.length - 1 ? 0 : prev + 1);
+      setHeroTransitioning(false);
+    }, 150);
   };
 
   const handleHeroPlayTrailer = async (movieId) => {
@@ -192,9 +203,11 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies }) => {
       {heroMovies.length > 0 && (
         <div className="hero-section">
           <div 
-            className="hero-background"
+            className={`hero-backdrop ${heroTransitioning ? 'hero-transitioning' : ''}`}
             style={{
-              backgroundImage: `url(${process.env.REACT_APP_BASEIMGURL}${heroMovies[currentHeroIndex]?.backdrop_path})`
+              backgroundImage: heroMovies[currentHeroIndex]?.backdrop_path 
+                ? `url(${process.env.REACT_APP_BASEIMGURL}${heroMovies[currentHeroIndex].backdrop_path})`
+                : 'none'
             }}
           >
             <div className="hero-overlay">
@@ -260,6 +273,12 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies }) => {
       <div className="section">
         <div className="section-header">
           <h2 className="section-title">Popular Movies</h2>
+          <button 
+            className="show-all-btn"
+            onClick={() => onNavigate('/movies')}
+          >
+            Show All
+          </button>
         </div>
         {loading ? (
           <SkeletonLoader count={5} />
@@ -274,6 +293,12 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies }) => {
       <div className="section">
         <div className="section-header">
           <h2 className="section-title">Popular TV Shows</h2>
+          <button 
+            className="show-all-btn"
+            onClick={() => onNavigate('/tvshows')}
+          >
+            Show All
+          </button>
         </div>
         {loading ? (
           <SkeletonLoader count={5} />
