@@ -34,7 +34,6 @@ const AppContent = () => {
   const handleShowFilteredMovies = (type, id, name) => {
     setFilterConfig({ type, id, name });
     setShowFilteredView(true);
-    setShowMovieDetail(false); // Close movie detail if open
   };
 
   const handleCloseFilteredView = () => {
