@@ -206,7 +206,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
             className={`hero-backdrop ${heroTransitioning ? 'hero-transitioning' : ''}`}
             style={{
               backgroundImage: heroMovies[currentHeroIndex]?.backdrop_path 
-                ? `url(${process.env.REACT_APP_BASEIMGURL}${heroMovies[currentHeroIndex].backdrop_path})`
+                ? `url(https://image.tmdb.org/t/p/original${heroMovies[currentHeroIndex].backdrop_path})`
                 : 'none'
             }}
           >

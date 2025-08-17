@@ -15,6 +15,7 @@ import CastPage from "./pages/CastPage";
 import CrewPage from "./pages/CrewPage";
 import CompanyPage from "./pages/CompanyPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const AppContent = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -89,6 +90,7 @@ const AppContent = () => {
             <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
             <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
             <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </CSSTransition>
       </TransitionGroup>
@@ -142,7 +144,7 @@ const AppContent = () => {
                   to="/nowplaying"
                   className={currentPath === '/nowplaying' ? 'nav-button active' : 'nav-button'}
                 >
-                  In Theaters
+                  Now Playing
                 </Link>
                 <Link 
                   to="/toprated"
