@@ -3,7 +3,6 @@ import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import SearchSection from "./components/SearchSection";
-import MovieDetail from "./components/MovieDetail";
 import FilteredMovies from "./components/FilteredMovies";
 import HomePage from "./pages/HomePage";
 import TrendingPage from "./pages/TrendingPage";
@@ -18,8 +17,6 @@ import CompanyPage from "./pages/CompanyPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 
 const AppContent = () => {
-  const [selectedMovieId, setSelectedMovieId] = useState(null);
-  const [showMovieDetail, setShowMovieDetail] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [lightMode, setLightMode] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -49,10 +46,6 @@ const AppContent = () => {
     navigate(`/movie/${movieId}`);
   };
 
-  const handleCloseMovieDetail = () => {
-    setShowMovieDetail(false);
-    setSelectedMovieId(null);
-  };
 
   const toggleLightMode = () => {
     setLightMode(prev => !prev);

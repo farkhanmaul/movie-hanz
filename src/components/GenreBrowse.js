@@ -71,7 +71,6 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   const handleGenreChange = (genre) => {
     setSelectedGenre(genre);
     setCurrentPage(1);
-    setShowGenreDropdown(false);
   };
 
   const handleTabChange = (tab) => {
