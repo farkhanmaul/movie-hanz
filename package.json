@@ -1,7 +1,32 @@
 {
-  "name": "movie-han",
-  "version": "0.1.0",
+  "name": "movie-hanz",
+  "version": "2.0.0",
+  "description": "🎬 Modern React movie discovery app with Netflix-inspired UI, featuring smooth transitions, dual theming, and comprehensive TMDb integration",
   "homepage": "https://farkhanmaul.github.io/movie-hanz",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farkhanmaul/movie-hanz.git"
+  },
+  "keywords": [
+    "react",
+    "movie",
+    "tmdb",
+    "netflix",
+    "cinema",
+    "entertainment",
+    "tv-shows",
+    "responsive",
+    "modern-ui"
+  ],
+  "author": {
+    "name": "Farkhan Maul",
+    "email": "farkhanmaul@gmail.com",
+    "url": "https://github.com/farkhanmaul"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/farkhanmaul/movie-hanz/issues"
+  },
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
