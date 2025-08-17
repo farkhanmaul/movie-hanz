@@ -397,7 +397,7 @@ body.light-mode .mobile-nav-button:hover {
   line-height: 1.1;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
   font-family: var(--font-primary);
-  letter-spacing: -1px;
+  letter-spacing: 1px;
 }
 
 .hero-meta {
@@ -408,12 +408,21 @@ body.light-mode .mobile-nav-button:hover {
 }
 
 .hero-rating {
-  background: rgba(255, 215, 0, 0.9);
-  color: #000;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
   padding: 4px 12px;
   border-radius: 20px;
   font-weight: 600;
   font-size: 14px;
+  border: 1px solid rgba(255, 215, 0, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hero-rating::before {
+  content: "⭐";
+  color: #ffd700;
 }
 
 .hero-year {
@@ -2441,4 +2450,70 @@ body.light-mode .genre-dropdown-item:hover {
 
 .genre-dropdown-item:last-child {
   border-bottom: none;
+}
+
+/* Person Info in Filtered Pages */
+.person-info {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.person-photo-container {
+  flex-shrink: 0;
+}
+
+.person-photo {
+  width: 120px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.person-details {
+  flex: 1;
+}
+
+.person-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.person-birthday {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.person-biography {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .person-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .person-photo {
+    width: 100px;
+    height: 130px;
+  }
+  
+  .person-name {
+    font-size: 20px;
+  }
 }

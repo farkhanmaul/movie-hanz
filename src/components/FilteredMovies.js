@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { discoverMoviesByCast, discoverMoviesByCrew, discoverMoviesByCompany } from '../api';
+import { discoverMoviesByCast, discoverMoviesByCrew, discoverMoviesByCompany, getPersonDetails } from '../api';
 import Pagination from './Pagination';
 
 const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClose }) => {
@@ -8,12 +8,25 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [personDetails, setPersonDetails] = useState(null);
 
   useEffect(() => {
     if (filterId) {
       fetchFilteredMovies(currentPage);
+      if (filterType === 'cast' || filterType === 'crew') {
+        fetchPersonDetails();
+      }
     }
   }, [filterId, currentPage, filterType]);
+
+  const fetchPersonDetails = async () => {
+    try {
+      const details = await getPersonDetails(filterId);
+      setPersonDetails(details);
+    } catch (err) {
+      console.error('Error fetching person details:', err);
+    }
+  };
 
   const fetchFilteredMovies = async (page) => {
     setLoading(true);
@@ -69,9 +82,41 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
           ← Back
         </button>
       </div>
-      <div className="content-count">
-        {movies.length} movies found
-      </div>
+
+      {/* Person Info for cast/crew */}
+      {(filterType === 'cast' || filterType === 'crew') && personDetails && (
+        <div className="person-info">
+          <div className="person-photo-container">
+            <img
+              src={personDetails.profile_path 
+                ? `${process.env.REACT_APP_BASEIMGURL}${personDetails.profile_path}`
+                : '/placeholder-person.jpg'
+              }
+              alt={personDetails.name}
+              className="person-photo"
+              onError={(e) => {
+                e.target.src = '/placeholder-person.jpg';
+              }}
+            />
+          </div>
+          <div className="person-details">
+            <h3 className="person-name">{personDetails.name}</h3>
+            {personDetails.birthday && (
+              <p className="person-birthday">
+                Born: {new Date(personDetails.birthday).toLocaleDateString()}
+                {personDetails.place_of_birth && ` in ${personDetails.place_of_birth}`}
+              </p>
+            )}
+            {personDetails.biography && (
+              <p className="person-biography">
+                {personDetails.biography.length > 300 
+                  ? `${personDetails.biography.substring(0, 300)}...`
+                  : personDetails.biography}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="loading">Loading movies...</div>
