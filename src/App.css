@@ -104,13 +104,6 @@ body {
   z-index: 0;
 }
 
-.App-header {
-  position: relative;
-  z-index: 1;
-  background: transparent;
-  min-height: 100vh;
-  padding: 0;
-}
 
 /* Header with fixed navigation */
 .header-nav {
@@ -122,7 +115,12 @@ body {
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
   z-index: 1000;
+  padding: 12px 0;
   transition: all 0.3s ease;
+}
+
+.main-content {
+  padding-top: 80px;
 }
 
 body.light-mode .header-nav {
@@ -708,7 +706,7 @@ body.light-mode .mobile-nav-button:hover {
 }
 
 /* Add top padding for sections without hero */
-.App-header > .app-content > .section:first-child {
+.App > .main-content > .section:first-child {
   padding-top: 118px; /* 70px navbar + 48px section padding */
 }
 
@@ -2298,7 +2296,7 @@ body.light-mode .content-count {
     padding: 0 16px;
   }
   
-  .App-header > .app-content > .section:first-child {
+  .App > .main-content > .section:first-child {
     padding-top: 92px; /* 60px navbar + 32px section padding */
   }
   

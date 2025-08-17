@@ -131,7 +131,8 @@ const AppContent = () => {
       <main className="main-content">
         <TransitionGroup component={null}>
           <CSSTransition key={location.pathname} timeout={300} classNames="page-transition">
-            <Routes location={location}>
+            <div>
+              <Routes location={location}>
               <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
               <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
               <Route path="/nowplaying" element={<NowPlayingPage onMovieClick={handleMovieClick} />} />
@@ -144,7 +145,8 @@ const AppContent = () => {
               <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
               <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
               <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+              </Routes>
+            </div>
           </CSSTransition>
         </TransitionGroup>
       </main>
