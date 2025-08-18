@@ -111,7 +111,7 @@ const AppContent = () => {
             </div>
           </div>
 
-          <div className={`mobile-menu ${showMobileMenu ? 'show' : ''}`}>
+          <div className={`mobile-nav-menu ${showMobileMenu ? 'show' : ''}`}>
             {navItems.map(item => (
               <Link
                 key={item.path}

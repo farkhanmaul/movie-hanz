@@ -388,6 +388,10 @@ body.light-mode .theme-toggle-btn::after {
   z-index: 999;
 }
 
+.mobile-nav-menu.show {
+  display: flex;
+}
+
 body.light-mode .mobile-nav-menu {
   background: rgba(255, 255, 255, 0.98);
 }
@@ -2224,7 +2228,7 @@ body.light-mode .content-count {
     display: flex;
   }
   
-  .mobile-nav-menu {
+  .mobile-nav-menu.show {
     display: flex;
   }
   
