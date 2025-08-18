@@ -306,7 +306,6 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
           )}
         </div>
       </div>
-    </div>
   );
 };
 
