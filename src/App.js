@@ -1,4 +1,5 @@
 import "./App.css";
+import "./navbar.css";
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -89,42 +90,28 @@ const AppContent = () => {
               </svg>
             </div>
             
-            <div className="nav-right">
-              <button className="hamburger-btn" onClick={toggleMobileMenu} aria-label="Toggle menu">
-                <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
-                <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
-                <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
-              </button>
-              
-              <div className="app-navigation desktop-nav">
-                {navItems.map(item => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className={location.pathname === item.path ? 'nav-button active' : 'nav-button'}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle theme" />
-              </div>
-            </div>
-          </div>
-
-          <div className={`mobile-nav-menu ${showMobileMenu ? 'show' : ''}`}>
-            {navItems.map(item => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={location.pathname === item.path ? 'mobile-nav-button active' : 'mobile-nav-button'}
-                onClick={() => setShowMobileMenu(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <button onClick={toggleTheme} className="mobile-theme-toggle">
-              {lightMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+            <button className="hamburger-btn" onClick={toggleMobileMenu} aria-label="Toggle menu">
+              <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
+              <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
+              <span className={`hamburger-line ${showMobileMenu ? 'active' : ''}`}></span>
             </button>
+            
+            <div className={`nav-links ${showMobileMenu ? 'mobile-open' : ''}`}>
+              {navItems.map(item => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={location.pathname === item.path ? 'nav-link active' : 'nav-link'}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
+                <span className="desktop-theme-icon"></span>
+                <span className="mobile-theme-text">{lightMode ? '🌙 Dark Mode' : '☀️ Light Mode'}</span>
+              </button>
+            </div>
           </div>
         </nav>
 
