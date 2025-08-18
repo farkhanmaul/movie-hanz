@@ -64,21 +64,16 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
 
   if (loading) {
     return (
-      <div className="movie-detail-overlay">
-        <div className="movie-detail-container">
-          <div className="loading">Loading movie details...</div>
-        </div>
+      <div className="movie-detail-page">
+        <div className="loading">Loading movie details...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="movie-detail-overlay">
-        <div className="movie-detail-container">
-          <button className="close-button" onClick={onClose}>×</button>
-          <div className="error">{error}</div>
-        </div>
+      <div className="movie-detail-page">
+        <div className="error">{error}</div>
       </div>
     );
   }
@@ -98,9 +93,8 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
   );
 
   return (
-    <div className="movie-detail-overlay" onClick={onClose}>
-      <div className="movie-detail-container" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose}>×</button>
+    <div className="movie-detail-page">
+      <div className="movie-detail-container">
         
         {/* Header with backdrop */}
         <div 
