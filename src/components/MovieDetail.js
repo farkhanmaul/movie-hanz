@@ -64,7 +64,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
 
   if (loading) {
     return (
-      <div className="movie-detail-page">
+      <div className="movie-detail-container">
         <div className="loading">Loading movie details...</div>
       </div>
     );
@@ -72,7 +72,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
 
   if (error) {
     return (
-      <div className="movie-detail-page">
+      <div className="movie-detail-container">
         <div className="error">{error}</div>
       </div>
     );
@@ -93,8 +93,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
   );
 
   return (
-    <div className="movie-detail-page">
-      <div className="movie-detail-container">
+    <div className="movie-detail-container">
         
         {/* Header with backdrop */}
         <div 
