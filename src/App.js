@@ -1,8 +1,7 @@
 import "./App.css";
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import Navbar from "./components/Navbar/Navbar";
 import SearchSection from "./components/SearchSection";
 import FilteredMovies from "./components/FilteredMovies";
 import HomePage from "./pages/HomePage";
@@ -21,9 +20,27 @@ import NotFoundPage from "./pages/NotFoundPage";
 const AppContent = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showFilteredView, setShowFilteredView] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
   const [filterConfig, setFilterConfig] = useState({ type: '', id: '', name: '' });
   const location = useLocation();
   const navigate = useNavigate();
+
+  const navItems = [
+    { path: '/trending', label: 'Trending' },
+    { path: '/nowplaying', label: 'Now Playing' },
+    { path: '/toprated', label: 'Top Rated' },
+    { path: '/genres', label: 'Genres' },
+    { path: '/movies', label: 'Movies' },
+    { path: '/tvshows', label: 'TV Shows' }
+  ];
+
+  const toggleMobileMenu = () => setShowMobileMenu(prev => !prev);
+  
+  const toggleTheme = () => {
+    setLightMode(prev => !prev);
+    document.body.classList.toggle('light-mode');
+  };
 
   const handleShowFilteredMovies = (type, id, name) => {
     setFilterConfig({ type, id, name });
@@ -53,7 +70,70 @@ const AppContent = () => {
 
   return (
     <div className="App">
-      <Navbar onSearchClick={handleSearchClick} />
+      <nav className="navbar">
+        <div className="navbar-container">
+          <Link to="/" className="logo">
+            <h1>MOVIEHANZ</h1>
+            <span>Portal</span>
+          </Link>
+          
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search movies, TV shows, people..."
+              className="search-input"
+              onFocus={handleSearchClick}
+              readOnly
+            />
+            <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+
+          <div className="nav-links">
+            {navItems.map(item => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <button onClick={toggleTheme} className="theme-toggle">
+            {lightMode ? '🌙' : '☀️'}
+          </button>
+
+          <button 
+            className={`mobile-toggle ${showMobileMenu ? 'active' : ''}`}
+            onClick={toggleMobileMenu}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        <div className={`mobile-nav ${showMobileMenu ? 'show' : ''}`}>
+          {navItems.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => setShowMobileMenu(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <button onClick={toggleTheme} className="mobile-theme-toggle">
+            {lightMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+          </button>
+        </div>
+      </nav>
 
       <main className="main-content">
         <TransitionGroup component={null}>
