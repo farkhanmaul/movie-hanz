@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/movie-hanz/static/css/main.a33d9c84.css",
+    "main.css": "/movie-hanz/static/css/main.d34e43af.css",
     "main.js": "/movie-hanz/static/js/main.74921605.js",
     "static/js/787.e66b5992.chunk.js": "/movie-hanz/static/js/787.e66b5992.chunk.js",
     "index.html": "/movie-hanz/index.html",
-    "main.a33d9c84.css.map": "/movie-hanz/static/css/main.a33d9c84.css.map",
+    "main.d34e43af.css.map": "/movie-hanz/static/css/main.d34e43af.css.map",
     "main.74921605.js.map": "/movie-hanz/static/js/main.74921605.js.map",
     "787.e66b5992.chunk.js.map": "/movie-hanz/static/js/787.e66b5992.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a33d9c84.css",
+    "static/css/main.d34e43af.css",
     "static/js/main.74921605.js"
   ]
 }

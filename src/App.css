@@ -691,14 +691,14 @@ body.light-mode .navbar {
   font-weight: 400;
 }
 
-/* Search Input */
-.search-container {
+/* Search Modal Input */
+.search-modal .search-container {
   display: flex;
   justify-content: center;
   margin-bottom: 40px;
 }
 
-.Movie-search, .search-input {
+.Movie-search {
   width: 100%;
   max-width: 500px;
   height: 48px;
@@ -711,13 +711,13 @@ body.light-mode .navbar {
   transition: all 0.3s ease;
 }
 
-.Movie-search:focus, .search-input:focus {
+.Movie-search:focus {
   outline: none;
   border-color: #e50914;
   background: rgba(255, 255, 255, 0.08);
 }
 
-.Movie-search::placeholder, .search-input::placeholder {
+.Movie-search::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
