@@ -91,7 +91,7 @@ const AppContent = () => {
             </svg>
           </div>
 
-          <div className="nav-links">
+          <div className={`nav-links ${showMobileMenu ? 'mobile-open' : ''}`}>
             {navItems.map(item => (
               <Link
                 key={item.path}
@@ -102,11 +102,10 @@ const AppContent = () => {
                 {item.label}
               </Link>
             ))}
+            <button onClick={toggleTheme} className="theme-toggle">
+              {lightMode ? '🌙' : '☀️'}
+            </button>
           </div>
-
-          <button onClick={toggleTheme} className="theme-toggle">
-            {lightMode ? '🌙' : '☀️'}
-          </button>
 
           <button 
             className={`mobile-toggle ${showMobileMenu ? 'active' : ''}`}
@@ -115,22 +114,6 @@ const AppContent = () => {
             <span></span>
             <span></span>
             <span></span>
-          </button>
-        </div>
-
-        <div className={`mobile-nav ${showMobileMenu ? 'show' : ''}`}>
-          {navItems.map(item => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
-              onClick={() => setShowMobileMenu(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <button onClick={toggleTheme} className="mobile-theme-toggle">
-            {lightMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
           </button>
         </div>
       </nav>
