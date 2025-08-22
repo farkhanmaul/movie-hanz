@@ -69,12 +69,6 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   };
 
   // Removed unused functions to fix ESLint warnings
-    
-    // Update selected genre for the new tab
-    const genres = tab === 'movies' ? movieGenres : tvGenres;
-    const matchingGenre = genres.find(g => g.name === selectedGenre?.name) || genres[0];
-    setSelectedGenre(matchingGenre);
-  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
