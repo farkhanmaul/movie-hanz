@@ -18,7 +18,7 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
       setResults([]);
       setTotalResults(0);
     }
-  }, [query, searchType]);
+  }, [query, searchType, handleSearch]);
 
   const handleSearch = async () => {
     if (query.length <= 2) return;

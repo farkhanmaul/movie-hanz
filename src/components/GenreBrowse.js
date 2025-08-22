@@ -21,7 +21,7 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
     if (selectedGenre) {
       fetchContentByGenre(selectedGenre.id, currentPage);
     }
-  }, [selectedGenre, activeTab, currentPage]);
+  }, [selectedGenre, activeTab, currentPage, fetchContentByGenre]);
 
   const handleGenreClick = (genre) => {
     setSelectedGenre(genre);
@@ -68,14 +68,7 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
     }
   };
 
-  const handleGenreChange = (genre) => {
-    setSelectedGenre(genre);
-    setCurrentPage(1);
-  };
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setCurrentPage(1);
+  // Removed unused functions to fix ESLint warnings
     
     // Update selected genre for the new tab
     const genres = tab === 'movies' ? movieGenres : tvGenres;

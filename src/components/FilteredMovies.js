@@ -17,7 +17,7 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
         fetchPersonDetails();
       }
     }
-  }, [filterId, currentPage, filterType]);
+  }, [filterId, currentPage, filterType, fetchFilteredMovies, fetchPersonDetails]);
 
   const fetchPersonDetails = async () => {
     try {

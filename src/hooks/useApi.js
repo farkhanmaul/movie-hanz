@@ -24,7 +24,7 @@ export const useApi = (apiFunc, dependencies = []) => {
     if (dependencies.length > 0) {
       fetchData(...dependencies);
     }
-  }, dependencies);
+  }, [dependencies, fetchData]);
 
   return { data, loading, error, refetch: fetchData };
 };

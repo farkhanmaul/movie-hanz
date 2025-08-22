@@ -11,7 +11,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
     if (movieId) {
       fetchMovieDetails();
     }
-  }, [movieId]);
+  }, [movieId, fetchMovieDetails]);
 
   const fetchMovieDetails = async () => {
     setLoading(true);
