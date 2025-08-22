@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getMovieDetails } from '../api';
 
 const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) => {
@@ -7,13 +7,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
   const [error, setError] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
 
-  useEffect(() => {
-    if (movieId) {
-      fetchMovieDetails();
-    }
-  }, [movieId, fetchMovieDetails]);
-
-  const fetchMovieDetails = async () => {
+  const fetchMovieDetails = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -25,7 +19,13 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
     } finally {
       setLoading(false);
     }
-  };
+  }, [movieId]);
+
+  useEffect(() => {
+    if (movieId) {
+      fetchMovieDetails();
+    }
+  }, [movieId, fetchMovieDetails]);
 
   const formatRuntime = (minutes) => {
     if (!minutes) return 'N/A';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getMovieGenres, getTVGenres, discoverMoviesByGenre, discoverTVByGenre } from '../api';
 import Pagination from './ui/Pagination';
 
@@ -16,6 +16,25 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
   useEffect(() => {
     fetchGenres();
   }, []);
+
+  const fetchContentByGenre = useCallback(async (genreId, page = 1) => {
+    setLoading(true);
+    try {
+      let result;
+      if (activeTab === 'movies') {
+        result = await discoverMoviesByGenre(genreId, page);
+      } else {
+        result = await discoverTVByGenre(genreId, page);
+      }
+      
+      setContent(result.results || []);
+      setTotalPages(Math.min(result.total_pages || 1, 500));
+    } catch (error) {
+      console.error('Error fetching content by genre:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (selectedGenre) {
@@ -49,26 +68,7 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
     }
   };
 
-  const fetchContentByGenre = async (genreId, page = 1) => {
-    setLoading(true);
-    try {
-      let result;
-      if (activeTab === 'movies') {
-        result = await discoverMoviesByGenre(genreId, page);
-      } else {
-        result = await discoverTVByGenre(genreId, page);
-      }
-      
-      setContent(result.results || []);
-      setTotalPages(Math.min(result.total_pages || 1, 500));
-    } catch (error) {
-      console.error('Error fetching content by genre:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Removed unused functions to fix ESLint warnings
+  // Removed duplicate function - now using useCallback version above
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

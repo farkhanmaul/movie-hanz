@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { searchMulti, searchMovie, searchTV, searchPerson } from '../api';
 
 const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
@@ -8,19 +8,7 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
   const [loading, setLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
 
-  useEffect(() => {
-    if (query.length > 2) {
-      const delaySearch = setTimeout(() => {
-        handleSearch();
-      }, 500);
-      return () => clearTimeout(delaySearch);
-    } else {
-      setResults([]);
-      setTotalResults(0);
-    }
-  }, [query, searchType, handleSearch]);
-
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (query.length <= 2) return;
     
     setLoading(true);
@@ -47,7 +35,19 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query, searchType]);
+
+  useEffect(() => {
+    if (query.length > 2) {
+      const delaySearch = setTimeout(() => {
+        handleSearch();
+      }, 500);
+      return () => clearTimeout(delaySearch);
+    } else {
+      setResults([]);
+      setTotalResults(0);
+    }
+  }, [query, searchType, handleSearch]);
 
   const getMediaType = (item) => {
     if (item.media_type) return item.media_type;

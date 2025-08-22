@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { discoverMoviesByCast, discoverMoviesByCrew, discoverMoviesByCompany, getPersonDetails } from '../api';
 import Pagination from './ui/Pagination';
 
@@ -10,25 +10,16 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
   const [totalPages, setTotalPages] = useState(1);
   const [personDetails, setPersonDetails] = useState(null);
 
-  useEffect(() => {
-    if (filterId) {
-      fetchFilteredMovies(currentPage);
-      if (filterType === 'cast' || filterType === 'crew') {
-        fetchPersonDetails();
-      }
-    }
-  }, [filterId, currentPage, filterType, fetchFilteredMovies, fetchPersonDetails]);
-
-  const fetchPersonDetails = async () => {
+  const fetchPersonDetails = useCallback(async () => {
     try {
       const details = await getPersonDetails(filterId);
       setPersonDetails(details);
     } catch (err) {
       console.error('Error fetching person details:', err);
     }
-  };
+  }, [filterId]);
 
-  const fetchFilteredMovies = async (page) => {
+  const fetchFilteredMovies = useCallback(async (page) => {
     setLoading(true);
     setError(null);
     try {
@@ -54,7 +45,16 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterType, filterId]);
+
+  useEffect(() => {
+    if (filterId) {
+      fetchFilteredMovies(currentPage);
+      if (filterType === 'cast' || filterType === 'crew') {
+        fetchPersonDetails();
+      }
+    }
+  }, [filterId, currentPage, filterType, fetchFilteredMovies, fetchPersonDetails]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
