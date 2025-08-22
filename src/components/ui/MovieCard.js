@@ -11,6 +11,8 @@ const MovieCard = ({ movie, onClick, showRating = true }) => {
           src={getImageUrl(movie.poster_path, 'poster') || '/placeholder-poster.jpg'}
           alt={title}
           className="movie-poster"
+          loading="lazy"
+          decoding="async"
           onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
         />
         <div className="movie-overlay">

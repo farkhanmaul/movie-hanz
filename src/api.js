@@ -2,6 +2,10 @@ import axios from "axios";
 
 const { REACT_APP_API_KEY: apiKey, REACT_APP_BASEURL: baseURL } = process.env;
 
+// Simple cache for API responses (5 minutes TTL)
+const cache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 const createApiUrl = (endpoint, params = {}) => {
   const url = new URL(`${baseURL}${endpoint}`);
   url.searchParams.set('api_key', apiKey);
@@ -12,7 +16,15 @@ const createApiUrl = (endpoint, params = {}) => {
 };
 
 const apiRequest = async (endpoint, params = {}) => {
+  const cacheKey = `${endpoint}:${JSON.stringify(params)}`;
+  const cached = cache.get(cacheKey);
+  
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+  
   const response = await axios.get(createApiUrl(endpoint, params));
+  cache.set(cacheKey, { data: response.data, timestamp: Date.now() });
   return response.data;
 };
 

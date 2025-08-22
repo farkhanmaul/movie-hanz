@@ -29,21 +29,28 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
   const loadHomeData = async () => {
     setLoading(true);
     try {
-      const [popularResult, tvResult, trendingResult] = await Promise.all([
-        getMovieList(1),
-        getPopularTV(),
-        getTrendingMovies('week')
-      ]);
-      
-      // Show only 1 complete row per section (5 items each)
+      // Load trending movies first (for hero and recommended)
+      const trendingResult = await getTrendingMovies('week');
       const itemsPerRow = 5;
-      setPopularMovies(popularResult.results.slice(0, itemsPerRow));
-      setPopularTVShows(tvResult.slice(0, itemsPerRow));
-      setRecommendedMovies(trendingResult.results?.slice(0, itemsPerRow) || []);
       
-      // Use popular movies as hero carousel
-      if (popularResult.results && popularResult.results.length > 0) {
-        setHeroMovies(popularResult.results.slice(0, 20));
+      if (trendingResult.results) {
+        setRecommendedMovies(trendingResult.results.slice(0, itemsPerRow));
+        setHeroMovies(trendingResult.results.slice(0, 10)); // Reduce hero movies
+        setLoading(false); // Show content early
+        
+        // Load other sections in background
+        setTimeout(async () => {
+          try {
+            const [popularResult, tvResult] = await Promise.all([
+              getMovieList(1),
+              getPopularTV()
+            ]);
+            setPopularMovies(popularResult.results.slice(0, itemsPerRow));
+            setPopularTVShows(tvResult.slice(0, itemsPerRow));
+          } catch (error) {
+            console.error('Error loading additional content:', error);
+          }
+        }, 100);
       }
     } catch (error) {
       // Fallback if API fails

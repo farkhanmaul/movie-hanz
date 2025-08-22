@@ -1,21 +1,22 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import SearchSection from "./components/SearchSection";
 import FilteredMovies from "./components/FilteredMovies";
-import HomePage from "./pages/HomePage";
-import TrendingPage from "./pages/TrendingPage";
-import NowPlayingPage from "./pages/NowPlayingPage";
-import TopRatedPage from "./pages/TopRatedPage";
-import GenresPage from "./pages/GenresPage";
-import MoviesPage from "./pages/MoviesPage";
-import TVShowsPage from "./pages/TVShowsPage";
-import CastPage from "./pages/CastPage";
-import CrewPage from "./pages/CrewPage";
-import CompanyPage from "./pages/CompanyPage";
-import MovieDetailPage from "./pages/MovieDetailPage";
-import NotFoundPage from "./pages/NotFoundPage";
+
+// Lazy load pages for better performance
+const HomePage = lazy(() => import("./pages/HomePage"));
+const TrendingPage = lazy(() => import("./pages/TrendingPage"));
+const NowPlayingPage = lazy(() => import("./pages/NowPlayingPage"));
+const TopRatedPage = lazy(() => import("./pages/TopRatedPage"));
+const GenresPage = lazy(() => import("./pages/GenresPage"));
+const MoviesPage = lazy(() => import("./pages/MoviesPage"));
+const TVShowsPage = lazy(() => import("./pages/TVShowsPage"));
+const CastPage = lazy(() => import("./pages/CastPage"));
+const CrewPage = lazy(() => import("./pages/CrewPage"));
+const CompanyPage = lazy(() => import("./pages/CompanyPage"));
+const MovieDetailPage = lazy(() => import("./pages/MovieDetailPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 const AppContent = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -119,26 +120,22 @@ const AppContent = () => {
       </nav>
 
       <main className="main-content">
-        <TransitionGroup component={null}>
-          <CSSTransition key={location.pathname} timeout={300} classNames="page-transition">
-            <div>
-              <Routes location={location}>
-              <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
-              <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
-              <Route path="/nowplaying" element={<NowPlayingPage onMovieClick={handleMovieClick} />} />
-              <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} />} />
-              <Route path="/genres" element={<GenresPage onMovieClick={handleMovieClick} />} />
-              <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
-              <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
-              <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
-              <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-              <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-              <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-              <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </div>
-          </CSSTransition>
-        </TransitionGroup>
+        <Suspense fallback={<div className="loading-page">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
+            <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
+            <Route path="/nowplaying" element={<NowPlayingPage onMovieClick={handleMovieClick} />} />
+            <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} />} />
+            <Route path="/genres" element={<GenresPage onMovieClick={handleMovieClick} />} />
+            <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
+            <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
+            <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
+            <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+            <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+            <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
       </main>
 
       {showSearchModal && (
