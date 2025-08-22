@@ -205,3 +205,4 @@ Project ini menggunakan MIT License - lihat file [LICENSE](LICENSE) untuk detail
 ---
 
 *Built with ❤️ using React and TMDb API*
+# Force redeploy
