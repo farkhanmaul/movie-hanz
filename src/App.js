@@ -3,6 +3,7 @@ import { useState, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import SearchSection from "./components/SearchSection";
 import FilteredMovies from "./components/FilteredMovies";
+import Footer from "./components/Footer";
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -145,6 +146,8 @@ const AppContent = () => {
           onShowFilteredMovies={handleShowFilteredMovies}
         />
       )}
+      
+      <Footer />
     </div>
   );
 };

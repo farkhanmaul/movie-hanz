@@ -21,7 +21,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
     if (heroMovies.length > 0) {
       const interval = setInterval(() => {
         setCurrentHeroIndex(prev => prev === heroMovies.length - 1 ? 0 : prev + 1);
-      }, 5000);
+      }, 7000); // Slower auto-swipe: 7 seconds
       return () => clearInterval(interval);
     }
   }, [heroMovies]);
@@ -35,7 +35,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
       
       if (trendingResult.results) {
         setRecommendedMovies(trendingResult.results.slice(0, itemsPerRow));
-        setHeroMovies(trendingResult.results.slice(0, 10)); // Reduce hero movies
+        setHeroMovies(trendingResult.results.slice(0, 6)); // Reduce to 6 hero movies
         setLoading(false); // Show content early
         
         // Load other sections in background

@@ -2880,3 +2880,91 @@ body.light-mode .genre-dropdown-item:hover {
     font-size: 14px;
   }
 }
+
+/* Footer Styles */
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  margin-top: 60px;
+  padding: 48px 0 24px;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+}
+
+.footer-section h3 {
+  color: #e50914;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  font-family: var(--font-primary);
+}
+
+.footer-section h4 {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.footer-section p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.footer-link {
+  color: #e50914;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 32px auto 0;
+  padding: 24px 24px 0;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.footer-heart {
+  color: #e50914;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    margin-top: 40px;
+    padding: 32px 0 16px;
+  }
+  
+  .footer-content {
+    padding: 0 16px;
+    gap: 24px;
+  }
+  
+  .footer-section h3 {
+    font-size: 20px;
+  }
+}
