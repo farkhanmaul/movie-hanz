@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getTopRatedMovies, getTopRatedTV } from '../api';
-import { useApi } from '../hooks/useApi';
 import { getImageUrl, formatRating, generateYears } from '../utils/helpers';
 import LoadingSpinner from './ui/LoadingSpinner';
 import Pagination from './ui/Pagination';
@@ -9,13 +8,26 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const [activeTab, setActiveTab] = useState('movies');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedYear, setSelectedYear] = useState('');
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const { data, loading, refetch } = useApi(
-    () => activeTab === 'movies' 
-      ? getTopRatedMovies(currentPage, selectedYear)
-      : getTopRatedTV(currentPage, selectedYear), 
-    [currentPage, activeTab, selectedYear]
-  );
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = activeTab === 'movies' 
+        ? await getTopRatedMovies(currentPage, selectedYear)
+        : await getTopRatedTV(currentPage, selectedYear);
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching top rated:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, currentPage, selectedYear]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -25,7 +37,6 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const handleYearChange = (year) => {
     setSelectedYear(year);
     setCurrentPage(1);
-    setTimeout(() => refetch(), 100);
   };
 
   const handleItemClick = (item) => {

@@ -2906,10 +2906,33 @@ body.light-mode .genre-dropdown-item:hover {
 .footer-link {
   color: #e50914;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .footer-link:hover {
   text-decoration: underline;
+}
+
+.footer-link.github {
+  color: #333;
+}
+
+.footer-link.claude {
+  color: #ff8c42;
+}
+
+.footer-link.tmdb {
+  color: #01b4e4;
+}
+
+body.light-mode .footer-link.github {
+  color: #24292e;
+}
+
+.footer-icon {
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
