@@ -7,10 +7,7 @@ import Footer from "./components/Footer";
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import("./pages/HomePage"));
-const TrendingPage = lazy(() => import("./pages/TrendingPage"));
-const NowPlayingPage = lazy(() => import("./pages/NowPlayingPage"));
 const TopRatedPage = lazy(() => import("./pages/TopRatedPage"));
-const GenresPage = lazy(() => import("./pages/GenresPage"));
 const MoviesPage = lazy(() => import("./pages/MoviesPage"));
 const TVShowsPage = lazy(() => import("./pages/TVShowsPage"));
 const CastPage = lazy(() => import("./pages/CastPage"));
@@ -29,10 +26,7 @@ const AppContent = () => {
   const navigate = useNavigate();
 
   const navItems = [
-    { path: '/trending', label: 'Trending' },
-    { path: '/nowplaying', label: 'Now Playing' },
     { path: '/toprated', label: 'Top Rated' },
-    { path: '/genres', label: 'Genres' },
     { path: '/movies', label: 'Movies' },
     { path: '/tvshows', label: 'TV Shows' }
   ];
@@ -124,10 +118,7 @@ const AppContent = () => {
         <Suspense fallback={<div className="loading-page">Loading...</div>}>
           <Routes>
             <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
-            <Route path="/trending" element={<TrendingPage onMovieClick={handleMovieClick} />} />
-            <Route path="/nowplaying" element={<NowPlayingPage onMovieClick={handleMovieClick} />} />
             <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} />} />
-            <Route path="/genres" element={<GenresPage onMovieClick={handleMovieClick} />} />
             <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
             <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
             <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />

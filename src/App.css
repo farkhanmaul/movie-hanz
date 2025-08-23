@@ -317,6 +317,12 @@ body.light-mode .navbar {
   padding-top: 80px;
 }
 
+/* Hero section should start right below navbar */
+.main-content .hero-section {
+  margin-top: -80px;
+  padding-top: 80px;
+}
+
 /* Content */
 .app-content {
   padding-top: 70px;
@@ -1881,6 +1887,11 @@ body.light-mode .footer-links a:hover {
   flex-direction: column;
   gap: 16px;
   margin-bottom: 60px;
+  padding: 0 24px;
+}
+
+.top-rated-section {
+  padding: 32px 0;
 }
 
 .ranking-item {
@@ -2883,11 +2894,23 @@ body.light-mode .genre-dropdown-item:hover {
 
 /* Simple Footer */
 .footer {
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
-  margin-top: 40px;
-  padding: 24px 0;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border-top: 1px solid rgba(229, 9, 20, 0.1);
+  margin-top: 60px;
+  padding: 32px 0;
   text-align: center;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e50914, transparent);
 }
 
 .footer-content {
@@ -2899,8 +2922,9 @@ body.light-mode .genre-dropdown-item:hover {
 .footer-content p {
   color: var(--text-secondary);
   font-size: 14px;
-  line-height: 1.6;
-  margin: 8px 0;
+  line-height: 1.8;
+  margin: 12px 0;
+  font-weight: 400;
 }
 
 .footer-link {
@@ -2908,31 +2932,60 @@ body.light-mode .genre-dropdown-item:hover {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  transition: all 0.3s ease;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 
 .footer-link:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(229, 9, 20, 0.2);
 }
 
 .footer-link.github {
-  color: #333;
+  color: #6e7681;
+}
+
+.footer-link.github:hover {
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(110, 118, 129, 0.3);
 }
 
 .footer-link.claude {
   color: #ff8c42;
 }
 
+.footer-link.claude:hover {
+  color: #ff9f5a;
+  box-shadow: 0 4px 8px rgba(255, 140, 66, 0.3);
+}
+
 .footer-link.tmdb {
   color: #01b4e4;
+}
+
+.footer-link.tmdb:hover {
+  color: #00a8d6;
+  box-shadow: 0 4px 8px rgba(1, 180, 228, 0.3);
 }
 
 body.light-mode .footer-link.github {
   color: #24292e;
 }
 
+body.light-mode .footer-link.github:hover {
+  color: #0969da;
+}
+
 .footer-icon {
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.footer-link:hover .footer-icon {
+  transform: scale(1.1);
 }
 
 @media (max-width: 768px) {

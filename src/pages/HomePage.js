@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { getMovieList, getPopularTV, getTrendingMovies, getMovieVideos } from '../api';
+import { getMovieList, getPopularTV, getTrendingMovies, getNowPlayingMovies, getMovieVideos } from '../api';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
   const [popularMovies, setPopularMovies] = useState([]);
   const [popularTVShows, setPopularTVShows] = useState([]);
-  const [recommendedMovies, setRecommendedMovies] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
   const [heroMovies, setHeroMovies] = useState([]);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [heroTransitioning, setHeroTransitioning] = useState(false);
@@ -29,24 +29,25 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
   const loadHomeData = async () => {
     setLoading(true);
     try {
-      // Load trending movies first (for hero and recommended)
-      const trendingResult = await getTrendingMovies('week');
+      // Load Now Playing movies for hero section
+      const nowPlayingResult = await getNowPlayingMovies(1);
       const itemsPerRow = 5;
       
-      if (trendingResult.results) {
-        setRecommendedMovies(trendingResult.results.slice(0, itemsPerRow));
-        setHeroMovies(trendingResult.results.slice(0, 6)); // Reduce to 6 hero movies
+      if (nowPlayingResult.results) {
+        setHeroMovies(nowPlayingResult.results.slice(0, 6)); // Now Playing for hero
         setLoading(false); // Show content early
         
         // Load other sections in background
         setTimeout(async () => {
           try {
-            const [popularResult, tvResult] = await Promise.all([
+            const [popularResult, tvResult, trendingResult] = await Promise.all([
               getMovieList(1),
-              getPopularTV()
+              getPopularTV(),
+              getTrendingMovies('week')
             ]);
             setPopularMovies(popularResult.results.slice(0, itemsPerRow));
             setPopularTVShows(tvResult.slice(0, itemsPerRow));
+            setTrendingMovies(trendingResult.results.slice(0, itemsPerRow));
           } catch (error) {
             console.error('Error loading additional content:', error);
           }
@@ -59,7 +60,7 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
         const itemsPerRow = 5;
         setPopularMovies(result.results.slice(0, itemsPerRow));
         if (result.results && result.results.length > 0) {
-          setHeroMovies(result.results.slice(0, 20));
+          setHeroMovies(result.results.slice(0, 6));
         }
       } catch (fallbackError) {
         console.error('Failed to load data:', fallbackError);
@@ -172,8 +173,8 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
     ));
   };
 
-  const RecommendedMoviesList = () => {
-    return recommendedMovies.map((movie, i) => (
+  const TrendingMoviesList = () => {
+    return trendingMovies.map((movie, i) => (
       <div 
         key={movie.id} 
         className="movie-card"
@@ -276,6 +277,20 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
         </div>
       )}
 
+      {/* Trending Movies Section */}
+      <div className="section">
+        <div className="section-header">
+          <h2 className="section-title">Trending This Week</h2>
+        </div>
+        {loading ? (
+          <LoadingSpinner size="lg" className="mx-auto" />
+        ) : (
+          <div className="movie-grid">
+            <TrendingMoviesList />
+          </div>
+        )}
+      </div>
+
       {/* Popular Movies Section */}
       <div className="section">
         <div className="section-header">
@@ -316,19 +331,6 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
         )}
       </div>
 
-      {/* Recommendations Section */}
-      <div className="section">
-        <div className="section-header">
-          <h2 className="section-title">Recommendations for You</h2>
-        </div>
-        {loading ? (
-          <LoadingSpinner size="lg" className="mx-auto" />
-        ) : (
-          <div className="movie-grid">
-            <RecommendedMoviesList />
-          </div>
-        )}
-      </div>
 
       {/* Hero Trailer Modal */}
       {showHeroTrailer && heroTrailerKey && (
