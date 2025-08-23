@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState, Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import SearchSection from "./components/SearchSection";
 import FilteredMovies from "./components/FilteredMovies";
 import Footer from "./components/Footer";
