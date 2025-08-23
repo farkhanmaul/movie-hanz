@@ -42,11 +42,11 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
           try {
             const [popularResult, tvResult, trendingResult] = await Promise.all([
               getMovieList(1),
-              getPopularTV(),
+              getPopularTV(1),
               getTrendingMovies('week')
             ]);
             setPopularMovies(popularResult.results.slice(0, itemsPerRow));
-            setPopularTVShows(tvResult.slice(0, itemsPerRow));
+            setPopularTVShows(tvResult.results.slice(0, itemsPerRow));
             setTrendingMovies(trendingResult.results.slice(0, itemsPerRow));
           } catch (error) {
             console.error('Error loading additional content:', error);

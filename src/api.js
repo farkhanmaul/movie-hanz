@@ -77,8 +77,8 @@ export const getTopRatedMovies = (page = 1, year = '') =>
 export const getTopRatedTV = (page = 1, year = '') => 
   apiRequest('/tv/top_rated', { page, first_air_date_year: year });
 
-export const getPopularTV = () => 
-  apiRequest('/tv/popular', { page: 1 }).then(data => data.results);
+export const getPopularTV = (page = 1) => 
+  apiRequest('/tv/popular', { page });
 
 export const getMovieGenres = () => 
   apiRequest('/genre/movie/list').then(data => data.genres);

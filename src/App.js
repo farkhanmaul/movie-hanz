@@ -4,6 +4,8 @@ import { HashRouter as Router, Routes, Route, Link, useLocation, useNavigate } f
 import SearchSection from "./components/SearchSection";
 import FilteredMovies from "./components/FilteredMovies";
 import Footer from "./components/Footer";
+import PageTransition from "./components/ui/PageTransition";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -26,6 +28,9 @@ const AppContent = () => {
   const [filterConfig, setFilterConfig] = useState({ type: '', id: '', name: '' });
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Enable scroll to top on route change
+  useScrollToTop();
 
   const navItems = [
     { path: '/toprated', label: 'Top Rated' },
@@ -117,21 +122,23 @@ const AppContent = () => {
       </nav>
 
       <main className="main-content">
-        <Suspense fallback={<div className="loading-page">Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
-            <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} onTVClick={handleTVClick} />} />
-            <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
-            <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
-            <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
-            <Route path="/tv/:id" element={<TVDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
-            <Route path="/genre/:id" element={<GenrePage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-            <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-            <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-            <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
+        <PageTransition>
+          <Suspense fallback={<div className="loading-page">Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
+              <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} onTVClick={handleTVClick} />} />
+              <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
+              <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
+              <Route path="/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
+              <Route path="/tv/:id" element={<TVDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
+              <Route path="/genre/:id" element={<GenrePage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+              <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+              <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+              <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </PageTransition>
       </main>
 
       {showSearchModal && (

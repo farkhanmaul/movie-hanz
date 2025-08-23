@@ -75,9 +75,9 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
   );
 
   return (
-    <>
+    <div className="tv-detail-page">
       <div className="movie-detail-overlay">
-        <div className="movie-detail-container">
+        <div className="movie-detail-container scrollable-container">
           <button className="close-button" onClick={onClose}>×</button>
           
           {/* Header with backdrop */}
@@ -294,7 +294,7 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
