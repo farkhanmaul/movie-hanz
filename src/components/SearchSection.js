@@ -50,6 +50,17 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
     }
   };
 
+  const handleSearchTypeChange = (type) => {
+    setSearchType(type);
+    // Auto-search if there's a query
+    if (query.length > 2) {
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        handleSearch();
+      }, 100);
+    }
+  };
+
   const getMediaType = (item) => {
     if (item.media_type) return item.media_type;
     if (item.title) return 'movie';
@@ -179,34 +190,41 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
           className="search-input"
         />
         <button type="submit" className="search-submit-btn">
-          🔍 Search
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="search-icon">
+            <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Search
         </button>
       </form>
         
-      <div className="control-tabs">
+      <div className="search-toggle-tabs">
         <button
-          className={searchType === 'multi' ? 'tab-button active' : 'tab-button'}
-          onClick={() => setSearchType('multi')}
+          className={searchType === 'multi' ? 'search-tab-button active' : 'search-tab-button'}
+          onClick={() => handleSearchTypeChange('multi')}
         >
-          All
+          <span className="tab-icon">🔍</span>
+          <span className="tab-text">All</span>
         </button>
         <button
-          className={searchType === 'movie' ? 'tab-button active' : 'tab-button'}
-          onClick={() => setSearchType('movie')}
+          className={searchType === 'movie' ? 'search-tab-button active' : 'search-tab-button'}
+          onClick={() => handleSearchTypeChange('movie')}
         >
-          Movies
+          <span className="tab-icon">🎬</span>
+          <span className="tab-text">Movies</span>
         </button>
         <button
-          className={searchType === 'tv' ? 'tab-button active' : 'tab-button'}
-          onClick={() => setSearchType('tv')}
+          className={searchType === 'tv' ? 'search-tab-button active' : 'search-tab-button'}
+          onClick={() => handleSearchTypeChange('tv')}
         >
-          TV Shows
+          <span className="tab-icon">📺</span>
+          <span className="tab-text">TV Shows</span>
         </button>
         <button
-          className={searchType === 'person' ? 'tab-button active' : 'tab-button'}
-          onClick={() => setSearchType('person')}
+          className={searchType === 'person' ? 'search-tab-button active' : 'search-tab-button'}
+          onClick={() => handleSearchTypeChange('person')}
         >
-          People
+          <span className="tab-icon">👤</span>
+          <span className="tab-text">People</span>
         </button>
       </div>
 

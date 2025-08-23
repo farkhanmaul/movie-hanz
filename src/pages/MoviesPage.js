@@ -19,6 +19,7 @@ const MoviesPage = ({ onMovieClick }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [selectedTrailer, setSelectedTrailer] = useState(null);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
   useEffect(() => {
     loadMovies(currentPage);
@@ -129,12 +130,34 @@ const MoviesPage = ({ onMovieClick }) => {
     <div className="section">
       <div className="section-header">
         <h2 className="section-title">Popular Movies</h2>
-        <button 
-          className="filter-toggle-btn"
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          {showFilters ? '⚙️ Hide Filters' : '⚙️ Show Filters'}
-        </button>
+        <div className="header-controls">
+          <div className="view-toggle">
+            <button 
+              className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="Grid View"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+              </svg>
+            </button>
+            <button 
+              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+              title="List View"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+              </svg>
+            </button>
+          </div>
+          <button 
+            className="filter-toggle-btn"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            {showFilters ? '⚙️ Hide Filters' : '⚙️ Show Filters'}
+          </button>
+        </div>
       </div>
       
       {showFilters && (
@@ -217,17 +240,59 @@ const MoviesPage = ({ onMovieClick }) => {
         <div className="loading">Loading movies...</div>
       ) : (
         <>
-          <div className="movie-grid">
-            {getGridMovies(movies).map((movie, index) => (
-              movie ? (
+          <div className={`movies-container ${viewMode}-view`}>
+            {viewMode === 'grid' ? (
+              // Grid View
+              getGridMovies(movies).map((movie, index) => (
+                movie ? (
+                  <div 
+                    key={movie.id} 
+                    className="movie-card"
+                    onClick={() => onMovieClick(movie.id)}
+                  >
+                    <div className="movie-poster-container">
+                      <img
+                        className="Movie-img"
+                        alt={movie.title}
+                        src={movie.poster_path 
+                          ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
+                          : '/placeholder-poster.svg'
+                        }
+                        onError={(e) => {
+                          e.target.src = '/placeholder-poster.svg';
+                        }}
+                      />
+                      <div className="movie-overlay">
+                        <button 
+                          className="play-button"
+                          onClick={(e) => handlePlayTrailer(e, movie.id)}
+                          title="Watch Trailer"
+                        >
+                          ▶
+                        </button>
+                      </div>
+                    </div>
+                    <div className="movie-info">
+                      <div className="Movie-title">{movie.title}</div>
+                      <div className="Movie-date">{movie.release_date}</div>
+                      <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={`empty-${index}`} className="movie-card-placeholder"></div>
+                )
+              ))
+            ) : (
+              // List View
+              movies.map((movie) => (
                 <div 
                   key={movie.id} 
-                  className="movie-card"
+                  className="movie-list-item"
                   onClick={() => onMovieClick(movie.id)}
                 >
-                  <div className="movie-poster-container">
+                  <div className="movie-list-poster">
                     <img
-                      className="Movie-img"
+                      className="Movie-img-list"
                       alt={movie.title}
                       src={movie.poster_path 
                         ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
@@ -237,26 +302,35 @@ const MoviesPage = ({ onMovieClick }) => {
                         e.target.src = '/placeholder-poster.svg';
                       }}
                     />
-                    <div className="movie-overlay">
-                      <button 
-                        className="play-button"
-                        onClick={(e) => handlePlayTrailer(e, movie.id)}
-                        title="Watch Trailer"
-                      >
-                        ▶
-                      </button>
-                    </div>
+                    <button 
+                      className="play-button-list"
+                      onClick={(e) => handlePlayTrailer(e, movie.id)}
+                      title="Watch Trailer"
+                    >
+                      ▶
+                    </button>
                   </div>
-                  <div className="movie-info">
-                    <div className="Movie-title">{movie.title}</div>
-                    <div className="Movie-date">{movie.release_date}</div>
-                    <div className="Movie-rate">⭐ {movie.vote_average?.toFixed(1)}</div>
+                  <div className="movie-list-content">
+                    <div className="movie-list-header">
+                      <h3 className="movie-list-title">{movie.title}</h3>
+                      <div className="movie-list-meta">
+                        <span className="movie-list-year">{movie.release_date?.split('-')[0]}</span>
+                        <span className="movie-list-rating">⭐ {movie.vote_average?.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <p className="movie-list-overview">
+                      {movie.overview ? 
+                        (movie.overview.length > 200 ? 
+                          `${movie.overview.substring(0, 200)}...` : 
+                          movie.overview
+                        ) : 
+                        'No description available.'
+                      }
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <div key={`empty-${index}`} className="movie-card-placeholder"></div>
-              )
-            ))}
+              ))
+            )}
           </div>
           <Pagination
             currentPage={currentPage}

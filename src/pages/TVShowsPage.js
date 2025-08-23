@@ -19,6 +19,7 @@ const TVShowsPage = ({ onMovieClick }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [selectedTrailer, setSelectedTrailer] = useState(null);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
   useEffect(() => {
     loadTVShows(currentPage);
@@ -129,12 +130,34 @@ const TVShowsPage = ({ onMovieClick }) => {
     <div className="section">
       <div className="section-header">
         <h2 className="section-title">Popular TV Shows</h2>
-        <button 
-          className="filter-toggle-btn"
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          {showFilters ? '⚙️ Hide Filters' : '⚙️ Show Filters'}
-        </button>
+        <div className="header-controls">
+          <div className="view-toggle">
+            <button 
+              className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="Grid View"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+              </svg>
+            </button>
+            <button 
+              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+              title="List View"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+              </svg>
+            </button>
+          </div>
+          <button 
+            className="filter-toggle-btn"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            {showFilters ? '⚙️ Hide Filters' : '⚙️ Show Filters'}
+          </button>
+        </div>
       </div>
       
       {showFilters && (
@@ -217,17 +240,59 @@ const TVShowsPage = ({ onMovieClick }) => {
         <div className="loading">Loading TV shows...</div>
       ) : (
         <>
-          <div className="movie-grid">
-            {getGridShows(tvShows).map((show, index) => (
-              show ? (
+          <div className={`movies-container ${viewMode}-view`}>
+            {viewMode === 'grid' ? (
+              // Grid View
+              getGridShows(tvShows).map((show, index) => (
+                show ? (
+                  <div 
+                    key={show.id} 
+                    className="movie-card"
+                    onClick={() => onMovieClick(show.id)}
+                  >
+                    <div className="movie-poster-container">
+                      <img
+                        className="Movie-img"
+                        alt={show.name}
+                        src={show.poster_path 
+                          ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
+                          : '/placeholder-poster.svg'
+                        }
+                        onError={(e) => {
+                          e.target.src = '/placeholder-poster.svg';
+                        }}
+                      />
+                      <div className="movie-overlay">
+                        <button 
+                          className="play-button"
+                          onClick={(e) => handlePlayTrailer(e, show.id)}
+                          title="Watch Trailer"
+                        >
+                          ▶
+                        </button>
+                      </div>
+                    </div>
+                    <div className="movie-info">
+                      <div className="Movie-title">{show.name}</div>
+                      <div className="Movie-date">{show.first_air_date}</div>
+                      <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={`empty-${index}`} className="movie-card-placeholder"></div>
+                )
+              ))
+            ) : (
+              // List View
+              tvShows.map((show) => (
                 <div 
                   key={show.id} 
-                  className="movie-card"
+                  className="movie-list-item"
                   onClick={() => onMovieClick(show.id)}
                 >
-                  <div className="movie-poster-container">
+                  <div className="movie-list-poster">
                     <img
-                      className="Movie-img"
+                      className="Movie-img-list"
                       alt={show.name}
                       src={show.poster_path 
                         ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
@@ -237,26 +302,35 @@ const TVShowsPage = ({ onMovieClick }) => {
                         e.target.src = '/placeholder-poster.svg';
                       }}
                     />
-                    <div className="movie-overlay">
-                      <button 
-                        className="play-button"
-                        onClick={(e) => handlePlayTrailer(e, show.id)}
-                        title="Watch Trailer"
-                      >
-                        ▶
-                      </button>
-                    </div>
+                    <button 
+                      className="play-button-list"
+                      onClick={(e) => handlePlayTrailer(e, show.id)}
+                      title="Watch Trailer"
+                    >
+                      ▶
+                    </button>
                   </div>
-                  <div className="movie-info">
-                    <div className="Movie-title">{show.name}</div>
-                    <div className="Movie-date">{show.first_air_date}</div>
-                    <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
+                  <div className="movie-list-content">
+                    <div className="movie-list-header">
+                      <h3 className="movie-list-title">{show.name}</h3>
+                      <div className="movie-list-meta">
+                        <span className="movie-list-year">{show.first_air_date?.split('-')[0]}</span>
+                        <span className="movie-list-rating">⭐ {show.vote_average?.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <p className="movie-list-overview">
+                      {show.overview ? 
+                        (show.overview.length > 200 ? 
+                          `${show.overview.substring(0, 200)}...` : 
+                          show.overview
+                        ) : 
+                        'No description available.'
+                      }
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <div key={`empty-${index}`} className="movie-card-placeholder"></div>
-              )
-            ))}
+              ))
+            )}
           </div>
           <Pagination
             currentPage={currentPage}
