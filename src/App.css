@@ -120,7 +120,8 @@ body.light-mode .navbar {
 
 .logo {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   text-decoration: none;
   color: var(--text-primary);
 }
@@ -131,19 +132,37 @@ body.light-mode .navbar {
   margin: 0;
   color: #e50914;
   font-family: var(--font-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.logo span {
-  font-size: 12px;
+.portal-text {
+  font-size: 14px;
   color: var(--text-secondary);
   text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 2px 8px;
+  border: 1px solid rgba(229, 9, 20, 0.3);
+  border-radius: 4px;
+  background: rgba(229, 9, 20, 0.1);
+  transition: all 0.3s ease;
+}
+
+.logo:hover .portal-text {
+  border-color: rgba(229, 9, 20, 0.6);
+  background: rgba(229, 9, 20, 0.2);
+  color: #e50914;
 }
 
 .search-container {
   position: relative;
   flex: 1;
   max-width: 400px;
-  margin: 0 40px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 .search-input {
@@ -1258,6 +1277,15 @@ body.light-mode .navbar {
   margin-right: 8px;
   margin-bottom: 8px;
   display: inline-block;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.genre-tag.clickable:hover {
+  background: rgba(229, 9, 20, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
 }
 
 .movie-detail-content {
@@ -1887,11 +1915,12 @@ body.light-mode .footer-links a:hover {
   flex-direction: column;
   gap: 16px;
   margin-bottom: 60px;
-  padding: 0 24px;
 }
 
 .top-rated-section {
-  padding: 32px 0;
+  padding: 32px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .ranking-item {

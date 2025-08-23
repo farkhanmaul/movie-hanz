@@ -125,9 +125,13 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
               </div>
               <div className="movie-detail-genres">
                 {movie.genres?.map(genre => (
-                  <span key={genre.id} className="genre-tag">
+                  <button 
+                    key={genre.id} 
+                    className="genre-tag clickable"
+                    onClick={() => onShowFilteredMovies && onShowFilteredMovies('genre', genre.id, genre.name)}
+                  >
                     {genre.name}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>

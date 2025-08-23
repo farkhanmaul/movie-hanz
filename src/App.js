@@ -69,8 +69,7 @@ const AppContent = () => {
       <nav className="navbar">
         <div className="navbar-container">
           <Link to="/" className="logo">
-            <h1>MOVIEHANZ</h1>
-            <span>Portal</span>
+            <h1>MOVIEHANZ <span className="portal-text">Portal</span></h1>
           </Link>
           
           <div className="search-container">

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getTopRatedMovies, getTopRatedTV } from '../api';
-import { getImageUrl, formatRating, generateYears } from '../utils/helpers';
+import { getImageUrl, formatRating } from '../utils/helpers';
 import LoadingSpinner from './ui/LoadingSpinner';
 import Pagination from './ui/Pagination';
 
 const TopRatedSection = ({ onMovieClick, onTVClick }) => {
   const [activeTab, setActiveTab] = useState('movies');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedYear, setSelectedYear] = useState('');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,15 +14,15 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
     setLoading(true);
     try {
       const result = activeTab === 'movies' 
-        ? await getTopRatedMovies(currentPage, selectedYear)
-        : await getTopRatedTV(currentPage, selectedYear);
+        ? await getTopRatedMovies(currentPage)
+        : await getTopRatedTV(currentPage);
       setData(result);
     } catch (error) {
       console.error('Error fetching top rated:', error);
     } finally {
       setLoading(false);
     }
-  }, [activeTab, currentPage, selectedYear]);
+  }, [activeTab, currentPage]);
 
   useEffect(() => {
     fetchData();
@@ -34,10 +33,6 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
     setCurrentPage(1);
   };
 
-  const handleYearChange = (year) => {
-    setSelectedYear(year);
-    setCurrentPage(1);
-  };
 
   const handleItemClick = (item) => {
     if (activeTab === 'movies' && onMovieClick) onMovieClick(item.id);
@@ -64,14 +59,6 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
                 {tab.label}
               </button>
             ))}
-          </div>
-          <div className="year-filter">
-            <select value={selectedYear} onChange={(e) => handleYearChange(e.target.value)} className="year-select">
-              <option value="">All Years</option>
-              {generateYears().map(year => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
           </div>
         </div>
       </div>
