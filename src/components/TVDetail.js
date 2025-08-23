@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getTVDetails } from '../api';
 import { useNavigate } from 'react-router-dom';
+import WatchProviders from './WatchProviders';
+import ContentRatings from './ContentRatings';
 
 const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies }) => {
   const [tvShow, setTVShow] = useState(null);
@@ -275,6 +277,19 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
                 </div>
               </div>
             )}
+
+            {/* Watch Providers */}
+            <WatchProviders 
+              contentId={tvId}
+              contentType="tv"
+              region="US"
+            />
+
+            {/* Content Ratings */}
+            <ContentRatings 
+              contentId={tvId}
+              contentType="tv"
+            />
           </div>
         </div>
       </div>

@@ -117,6 +117,18 @@ export const getMovieKeywords = (movieId) =>
 
 export const getMovieCollection = (collectionId) => apiRequest(`/collection/${collectionId}`);
 
+export const getMovieWatchProviders = (movieId, region = 'US') => 
+  apiRequest(`/movie/${movieId}/watch/providers`);
+
+export const getTVWatchProviders = (tvId, region = 'US') => 
+  apiRequest(`/tv/${tvId}/watch/providers`);
+
+export const getMovieReleaseDates = (movieId) => 
+  apiRequest(`/movie/${movieId}/release_dates`);
+
+export const getTVContentRatings = (tvId) => 
+  apiRequest(`/tv/${tvId}/content_ratings`);
+
 export const discoverMoviesAdvanced = ({ genre, year, sortBy = 'popularity.desc', page = 1, minRating = 0, maxRating = 10, region = '' }) => {
   const params = { page, sort_by: sortBy };
   if (genre) params.with_genres = genre;

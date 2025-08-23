@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState, Suspense, lazy } from "react";
-import { HashRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import SearchSection from "./components/SearchSection";
 import FilteredMovies from "./components/FilteredMovies";
 import Footer from "./components/Footer";
@@ -18,6 +18,7 @@ const CrewPage = lazy(() => import("./pages/CrewPage"));
 const CompanyPage = lazy(() => import("./pages/CompanyPage"));
 const MovieDetailPage = lazy(() => import("./pages/MovieDetailPage"));
 const TVDetailPage = lazy(() => import("./pages/TVDetailPage"));
+const CollectionPage = lazy(() => import("./pages/CollectionPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 const AppContent = () => {
@@ -135,6 +136,7 @@ const AppContent = () => {
               <Route path="/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
               <Route path="/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
               <Route path="/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
+              <Route path="/collection/:id" element={<CollectionPage onMovieClick={handleMovieClick} onClose={() => navigate('/')} />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
@@ -155,7 +157,7 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <Router>
+  <Router basename="/movie-hanz/portal">
     <AppContent />
   </Router>
 );

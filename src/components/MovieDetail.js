@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getMovieDetails } from '../api';
 import { useNavigate } from 'react-router-dom';
+import WatchProviders from './WatchProviders';
+import ContentRatings from './ContentRatings';
 
 const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) => {
   const [movie, setMovie] = useState(null);
@@ -191,6 +193,32 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
             </div>
           </section>
 
+          {/* Collection */}
+          {movie.belongs_to_collection && (
+            <section className="movie-detail-section">
+              <h3>Part of Collection</h3>
+              <div 
+                className="collection-card"
+                onClick={() => navigate(`/collection/${movie.belongs_to_collection.id}`)}
+              >
+                <div className="collection-poster">
+                  <img 
+                    src={movie.belongs_to_collection.poster_path
+                      ? `https://image.tmdb.org/t/p/w185${movie.belongs_to_collection.poster_path}`
+                      : '/placeholder-poster.jpg'
+                    }
+                    alt={movie.belongs_to_collection.name}
+                    onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+                  />
+                </div>
+                <div className="collection-info-small">
+                  <h4 className="collection-name">{movie.belongs_to_collection.name}</h4>
+                  <p className="collection-link">View full collection →</p>
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* Cast */}
           {movie.credits?.cast && movie.credits.cast.length > 0 && (
             <section className="movie-detail-section">
@@ -261,6 +289,19 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
               </div>
             </section>
           )}
+
+          {/* Watch Providers */}
+          <WatchProviders 
+            contentId={movieId}
+            contentType="movie"
+            region="US"
+          />
+
+          {/* Content Ratings */}
+          <ContentRatings 
+            contentId={movieId}
+            contentType="movie"
+          />
 
           {/* Trailer Popup */}
           {showTrailer && trailerVideo && (
