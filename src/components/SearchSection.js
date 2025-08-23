@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { searchMulti, searchMovie, searchTV, searchPerson } from '../api';
 
-const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
+const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searchType, setSearchType] = useState('multi');
@@ -89,10 +89,13 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
         onClick={() => {
           if (mediaType === 'movie' && onMovieClick) {
             onMovieClick(item.id);
+            onClose && onClose();
           } else if (mediaType === 'tv' && onTVClick) {
             onTVClick(item.id);
+            onClose && onClose();
           } else if (mediaType === 'person' && onPersonClick) {
             onPersonClick(item.id);
+            onClose && onClose();
           }
         }}
       >
@@ -159,8 +162,11 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
   };
 
   return (
-    <div className="section">
-      <h2 className="section-title">Search Movies, TV Shows & People</h2>
+    <div className="search-modal-overlay" onClick={onClose}>
+      <div className="search-modal-container" onClick={(e) => e.stopPropagation()}>
+        <button className="search-close-btn" onClick={onClose}>×</button>
+        <div className="section">
+          <h2 className="section-title">Search Movies, TV Shows & People</h2>
       
       <div className="search-container">
         <input
@@ -216,6 +222,8 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick }) => {
           <p>No results found for "{query}". Try different keywords.</p>
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 };

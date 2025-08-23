@@ -129,7 +129,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                   <button 
                     key={genre.id} 
                     className="genre-tag clickable"
-                    onClick={() => navigate(`/portal/genre/${genre.id}`)}
+                    onClick={() => navigate(`/genre/${genre.id}`))
                   >
                     {genre.name}
                   </button>
@@ -182,7 +182,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                     <button 
                       key={company.id}
                       className="company-tag clickable"
-                      onClick={() => navigate(`/portal/company/${company.id}`)}
+                      onClick={() => navigate(`/company/${company.id}`))
                       title={`See more movies by ${company.name}`}
                     >
                       {company.name}
@@ -199,7 +199,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
               <h3>Part of Collection</h3>
               <div 
                 className="collection-card"
-                onClick={() => navigate(`/portal/collection/${movie.belongs_to_collection.id}`)}
+                onClick={() => navigate(`/collection/${movie.belongs_to_collection.id}`))
               >
                 <div className="collection-poster">
                   <img 
@@ -228,7 +228,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                   <div 
                     key={person.id} 
                     className="cast-member clickable-cast"
-                    onClick={() => navigate(`/portal/cast/${person.id}`)}
+                    onClick={() => navigate(`/cast/${person.id}`))
                     title={`See more movies with ${person.name}`}
                   >
                     <img
@@ -261,7 +261,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                     <div 
                       key={`${person.id}-${person.job}`} 
                       className="crew-text-item clickable-crew"
-                      onClick={() => navigate(`/portal/crew/${person.id}`)}
+                      onClick={() => navigate(`/crew/${person.id}`))
                       title={`See more movies by ${person.name}`}
                     >
                       <span className="crew-name">{person.name}</span>
@@ -295,6 +295,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
             contentId={movieId}
             contentType="movie"
             region="US"
+            title={movie.title}
           />
 
           {/* Content Ratings */}

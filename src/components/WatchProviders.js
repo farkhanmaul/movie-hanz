@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMovieWatchProviders, getTVWatchProviders } from '../api';
 
-const WatchProviders = ({ contentId, contentType, region = 'US' }) => {
+const WatchProviders = ({ contentId, contentType, region = 'US', title = '' }) => {
   const [providers, setProviders] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,6 +59,47 @@ const WatchProviders = ({ contentId, contentType, region = 'US' }) => {
     }
   };
 
+  const getProviderUrl = (providerName, contentType, contentId) => {
+    const provider = providerName.toLowerCase();
+    const baseUrls = {
+      'netflix': 'https://www.netflix.com/search?q=',
+      'amazon prime video': 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=',
+      'prime video': 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=',
+      'hbo max': 'https://www.hbomax.com/search?q=',
+      'max': 'https://www.max.com/search?q=',
+      'disney plus': 'https://www.disneyplus.com/search?q=',
+      'hulu': 'https://www.hulu.com/search?q=',
+      'apple tv plus': 'https://tv.apple.com/search?term=',
+      'apple tv': 'https://tv.apple.com/search?term=',
+      'paramount plus': 'https://www.paramountplus.com/search/?query=',
+      'peacock': 'https://www.peacocktv.com/search/',
+      'crunchyroll': 'https://www.crunchyroll.com/search?q=',
+      'youtube': 'https://www.youtube.com/results?search_query=',
+      'google play movies & tv': 'https://play.google.com/store/search?q=',
+      'vudu': 'https://www.vudu.com/content/movies/search/',
+      'microsoft store': 'https://www.microsoft.com/en-us/search?q=',
+      'roku channel': 'https://therokuchannel.roku.com/search/',
+      'tubi': 'https://tubitv.com/search/',
+      'pluto tv': 'https://pluto.tv/search/details?query=',
+      'kanopy': 'https://www.kanopy.com/search?query=',
+      'hoopla': 'https://www.hoopladigital.com/search?q=',
+      'imdb tv': 'https://www.imdb.com/find?q=',
+      'plex': 'https://watch.plex.tv/search?query='
+    };
+
+    // Try to find exact match or partial match
+    const matchedProvider = Object.keys(baseUrls).find(key => 
+      provider.includes(key) || key.includes(provider.replace(/\s/g, ''))
+    );
+
+    if (matchedProvider) {
+      return baseUrls[matchedProvider];
+    }
+
+    // Fallback to Google search
+    return `https://www.google.com/search?q=${encodeURIComponent(providerName + ' stream watch online')}`;
+  };
+
   const renderProviderSection = (providerList, type) => {
     if (!providerList || providerList.length === 0) return null;
 
@@ -68,18 +109,30 @@ const WatchProviders = ({ contentId, contentType, region = 'US' }) => {
           {getProviderTypeIcon(type)} {getProviderTypeLabel(type)}
         </h4>
         <div className="provider-list">
-          {providerList.map(provider => (
-            <div key={provider.provider_id} className="provider-item">
-              <div className="provider-logo">
-                <img
-                  src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
-                  alt={provider.provider_name}
-                  title={provider.provider_name}
-                />
-              </div>
-              <span className="provider-name">{provider.provider_name}</span>
-            </div>
-          ))}
+          {providerList.map(provider => {
+            const searchQuery = title || `${contentType} ${contentId}`;
+            const providerUrl = getProviderUrl(provider.provider_name, contentType, contentId) + encodeURIComponent(searchQuery);
+            
+            return (
+              <a 
+                key={provider.provider_id} 
+                href={providerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="provider-item clickable"
+                title={`Watch on ${provider.provider_name}`}
+              >
+                <div className="provider-logo">
+                  <img
+                    src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+                    alt={provider.provider_name}
+                  />
+                </div>
+                <span className="provider-name">{provider.provider_name}</span>
+                <div className="provider-external-icon">↗</div>
+              </a>
+            );
+          })}
         </div>
       </div>
     );

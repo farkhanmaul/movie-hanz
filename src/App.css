@@ -639,6 +639,107 @@ body.light-mode .navbar {
   margin-bottom: 32px;
 }
 
+.filter-toggle-btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filter-toggle-btn:hover {
+  background: #c50812;
+  transform: translateY(-2px);
+}
+
+.filters-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  animation: slideDown 0.3s ease;
+}
+
+.filter-row {
+  display: flex;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.filter-group label {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input[type="range"] {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.filter-group select:focus,
+.filter-group input[type="range"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.filter-group input[type="range"] {
+  width: 120px;
+  height: 6px;
+  cursor: pointer;
+}
+
+.reset-filters-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.reset-filters-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .section-title {
   font-size: 32px;
   font-weight: 700;
@@ -1122,7 +1223,7 @@ body.light-mode .navbar {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -1130,6 +1231,42 @@ body.light-mode .navbar {
   padding: 100px 20px 20px;
   backdrop-filter: blur(0px);
   animation: fadeInOverlay 0.3s ease forwards;
+}
+
+.search-modal-container {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideInSearch 0.3s ease forwards;
+  border: 1px solid var(--border-color);
+}
+
+.search-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.search-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
 }
 
 .search-modal {
@@ -1826,6 +1963,17 @@ body.light-mode .navbar {
   }
 }
 
+@keyframes slideInSearch {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* Fix for TV Detail Page scroll */
 .tv-detail-page {
   position: relative;
@@ -2299,11 +2447,41 @@ body.light-mode .navbar {
   background: rgba(255, 255, 255, 0.03);
   transition: all 0.2s ease;
   cursor: pointer;
+  text-decoration: none;
+  color: var(--text-primary);
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.provider-item.clickable {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.provider-external-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--accent-color);
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .provider-item:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
+  border-color: var(--accent-color);
+}
+
+.provider-item.clickable:hover .provider-external-icon {
+  opacity: 1;
 }
 
 .provider-logo {
@@ -2842,6 +3020,21 @@ body.light-mode .navbar {
   .advanced-filters {
     padding: 16px;
     margin: 16px 0;
+  }
+  
+  .filter-row {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .filter-group {
+    min-width: auto;
+  }
+  
+  .reset-filters-btn {
+    margin-left: 0;
+    align-self: flex-start;
   }
   
   .filters-header {

@@ -34,9 +34,9 @@ const AppContent = () => {
   useScrollToTop();
 
   const navItems = [
-    { path: '/portal/toprated', label: 'Top Rated' },
-    { path: '/portal/movies', label: 'Movies' },
-    { path: '/portal/tvshows', label: 'TV Shows' }
+    { path: '/toprated', label: 'Top Rated' },
+    { path: '/movies', label: 'Movies' },
+    { path: '/tvshows', label: 'TV Shows' }
   ];
 
   const toggleMobileMenu = () => setShowMobileMenu(prev => !prev);
@@ -56,8 +56,8 @@ const AppContent = () => {
     setFilterConfig({ type: '', id: '', name: '' });
   };
 
-  const handleMovieClick = (movieId) => navigate(`/portal/movie/${movieId}`);
-  const handleTVClick = (tvId) => navigate(`/portal/tv/${tvId}`);
+  const handleMovieClick = (movieId) => navigate(`/movie/${movieId}`);
+  const handleTVClick = (tvId) => navigate(`/tv/${tvId}`);
 
   const handleSearchClick = () => setShowSearchModal(true);
 
@@ -77,7 +77,7 @@ const AppContent = () => {
     <div className="App">
       <nav className="navbar">
         <div className="navbar-container">
-          <Link to="/portal" className="logo">
+          <Link to="/" className="logo">
             <h1>MOVIEHANZ <span className="portal-text">Portal</span></h1>
           </Link>
           
@@ -127,18 +127,6 @@ const AppContent = () => {
           <Suspense fallback={<div className="loading-page">Loading...</div>}>
             <Routes>
               <Route path="/" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
-              <Route path="/portal" element={<HomePage onMovieClick={handleMovieClick} onShowFilteredMovies={handleShowFilteredMovies} onNavigate={navigate} />} />
-              <Route path="/portal/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} onTVClick={handleTVClick} />} />
-              <Route path="/portal/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
-              <Route path="/portal/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
-              <Route path="/portal/movie/:id" element={<MovieDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
-              <Route path="/portal/tv/:id" element={<TVDetailPage onShowFilteredMovies={handleShowFilteredMovies} />} />
-              <Route path="/portal/genre/:id" element={<GenrePage onMovieClick={handleMovieClick} onClose={() => navigate('/portal')} />} />
-              <Route path="/portal/cast/:id" element={<CastPage onMovieClick={handleMovieClick} onClose={() => navigate('/portal')} />} />
-              <Route path="/portal/crew/:id" element={<CrewPage onMovieClick={handleMovieClick} onClose={() => navigate('/portal')} />} />
-              <Route path="/portal/company/:id" element={<CompanyPage onMovieClick={handleMovieClick} onClose={() => navigate('/portal')} />} />
-              <Route path="/portal/collection/:id" element={<CollectionPage onMovieClick={handleMovieClick} onClose={() => navigate('/portal')} />} />
-              {/* Legacy routes redirect to /portal */}
               <Route path="/toprated" element={<TopRatedPage onMovieClick={handleMovieClick} onTVClick={handleTVClick} />} />
               <Route path="/movies" element={<MoviesPage onMovieClick={handleMovieClick} />} />
               <Route path="/tvshows" element={<TVShowsPage onMovieClick={handleMovieClick} />} />
@@ -158,6 +146,8 @@ const AppContent = () => {
       {showSearchModal && (
         <SearchSection
           onMovieClick={handleMovieClick}
+          onTVClick={handleTVClick}
+          onPersonClick={(personId) => navigate(`/cast/${personId}`)}
           onClose={() => setShowSearchModal(false)}
           onShowFilteredMovies={handleShowFilteredMovies}
         />

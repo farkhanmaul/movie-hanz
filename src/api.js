@@ -147,3 +147,12 @@ export const discoverMoviesByCrew = (personId, page = 1) =>
 
 export const discoverMoviesByCompany = (companyId, page = 1) => 
   apiRequest('/discover/movie', { with_companies: companyId, page, sort_by: 'popularity.desc' });
+
+export const discoverTVAdvanced = ({ genre, year, sortBy = 'popularity.desc', page = 1, minRating = 0, maxRating = 10 }) => {
+  const params = { page, sort_by: sortBy };
+  if (genre) params.with_genres = genre;
+  if (year) params.first_air_date_year = year;
+  if (minRating > 0) params['vote_average.gte'] = minRating;
+  if (maxRating < 10) params['vote_average.lte'] = maxRating;
+  return apiRequest('/discover/tv', params);
+};
