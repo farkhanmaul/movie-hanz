@@ -65,6 +65,9 @@ export const getTVDetails = (tvId) =>
 export const getPersonDetails = (personId) => 
   apiRequest(`/person/${personId}`, { append_to_response: 'movie_credits,tv_credits' });
 
+export const getCompanyDetails = (companyId) => 
+  apiRequest(`/company/${companyId}`);
+
 export const getNowPlayingMovies = (page = 1) => apiRequest('/movie/now_playing', { page });
 export const getUpcomingMovies = (page = 1) => apiRequest('/movie/upcoming', { page });
 

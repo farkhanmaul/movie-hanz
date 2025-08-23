@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getMovieDetails } from '../api';
+import { useNavigate } from 'react-router-dom';
 
 const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
+  const navigate = useNavigate();
 
   const fetchMovieDetails = useCallback(async () => {
     setLoading(true);
@@ -128,7 +130,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                   <button 
                     key={genre.id} 
                     className="genre-tag clickable"
-                    onClick={() => onShowFilteredMovies && onShowFilteredMovies('genre', genre.id, genre.name)}
+                    onClick={() => navigate(`/genre/${genre.id}`)}
                   >
                     {genre.name}
                   </button>
@@ -178,15 +180,14 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                 <strong>Production:</strong>
                 <div className="production-companies">
                   {movie.production_companies?.map((company, index) => (
-                    <span 
+                    <button 
                       key={company.id}
-                      className="clickable-company"
-                      onClick={() => handleFilterClick('company', company.id, company.name)}
+                      className="company-tag clickable"
+                      onClick={() => navigate(`/company/${company.id}`)}
                       title={`See more movies by ${company.name}`}
                     >
                       {company.name}
-                      {index < movie.production_companies.length - 1 && ', '}
-                    </span>
+                    </button>
                   )) || 'N/A'}
                 </div>
               </div>

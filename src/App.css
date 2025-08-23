@@ -1247,10 +1247,13 @@ body.light-mode .navbar {
 }
 
 .movie-detail-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 12px;
   color: #ffffff;
+  font-family: var(--font-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .movie-detail-meta {
@@ -1288,25 +1291,172 @@ body.light-mode .navbar {
   box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
 }
 
+.company-tag {
+  background: rgba(0, 113, 235, 0.2);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin: 2px 4px 2px 0;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.company-tag.clickable:hover {
+  background: rgba(0, 113, 235, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 113, 235, 0.3);
+}
+
 .movie-detail-content {
-  padding: 32px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(24, 24, 24, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%);
 }
 
 .movie-detail-section {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .movie-detail-section h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
   color: #ffffff;
+  font-family: var(--font-primary);
+  letter-spacing: -0.3px;
+}
+
+/* Info Items */
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item strong {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  min-width: 120px;
+  margin-right: 16px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item > div:last-child {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 400;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.production-companies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* TV Show Specific Styles */
+.tv-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.network-tag {
+  background: rgba(0, 200, 83, 0.2);
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 2px 4px 2px 0;
+  display: inline-block;
+}
+
+.networks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Seasons List */
+.seasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.season-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.season-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.season-poster img {
+  width: 80px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.season-info {
+  flex: 1;
+}
+
+.season-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  font-family: var(--font-primary);
+}
+
+.season-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.season-episodes {
+  font-weight: 600;
+}
+
+.season-year {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.season-overview {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin: 0;
+  font-size: 14px;
 }
 
 .movie-detail-overview {
-  font-size: 16px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-secondary);
+  font-weight: 400;
+  text-align: justify;
+  margin-bottom: 24px;
 }
 
 /* Cast Grid */

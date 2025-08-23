@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { discoverMoviesByCast, discoverMoviesByCrew, discoverMoviesByCompany, getPersonDetails } from '../api';
+import { discoverMoviesByCast, discoverMoviesByCrew, discoverMoviesByCompany, discoverMoviesByGenre, getPersonDetails, getMovieGenres, getCompanyDetails } from '../api';
 import Pagination from './ui/Pagination';
 
 const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClose }) => {
@@ -9,6 +9,8 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [personDetails, setPersonDetails] = useState(null);
+  const [genreDetails, setGenreDetails] = useState(null);
+  const [companyDetails, setCompanyDetails] = useState(null);
 
   const fetchPersonDetails = useCallback(async () => {
     try {
@@ -16,6 +18,25 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
       setPersonDetails(details);
     } catch (err) {
       console.error('Error fetching person details:', err);
+    }
+  }, [filterId]);
+
+  const fetchGenreDetails = useCallback(async () => {
+    try {
+      const genres = await getMovieGenres();
+      const genre = genres.find(g => g.id === parseInt(filterId));
+      setGenreDetails(genre);
+    } catch (err) {
+      console.error('Error fetching genre details:', err);
+    }
+  }, [filterId]);
+
+  const fetchCompanyDetails = useCallback(async () => {
+    try {
+      const details = await getCompanyDetails(filterId);
+      setCompanyDetails(details);
+    } catch (err) {
+      console.error('Error fetching company details:', err);
     }
   }, [filterId]);
 
@@ -33,6 +54,9 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
           break;
         case 'company':
           result = await discoverMoviesByCompany(filterId, page);
+          break;
+        case 'genre':
+          result = await discoverMoviesByGenre(filterId, page);
           break;
         default:
           throw new Error('Invalid filter type');
@@ -53,8 +77,14 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
       if (filterType === 'cast' || filterType === 'crew') {
         fetchPersonDetails();
       }
+      if (filterType === 'genre') {
+        fetchGenreDetails();
+      }
+      if (filterType === 'company') {
+        fetchCompanyDetails();
+      }
     }
-  }, [filterId, currentPage, filterType, fetchFilteredMovies, fetchPersonDetails]);
+  }, [filterId, currentPage, filterType, fetchFilteredMovies, fetchPersonDetails, fetchGenreDetails, fetchCompanyDetails]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -68,7 +98,9 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
       case 'crew':
         return `Movies by ${filterName}`;
       case 'company':
-        return `Movies by ${filterName}`;
+        return companyDetails ? `Movies by ${companyDetails.name}` : `Movies by ${filterName}`;
+      case 'genre':
+        return genreDetails ? `${genreDetails.name} Movies` : 'Genre Movies';
       default:
         return `Movies featuring ${filterName}`;
     }
