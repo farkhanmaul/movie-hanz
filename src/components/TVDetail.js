@@ -185,7 +185,7 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
                       <button 
                         key={company.id}
                         className="company-tag clickable"
-                        onClick={() => navigate(`/company/${company.id}`))
+                        onClick={() => navigate(`/company/${company.id}`)}
                         title={`See more shows by ${company.name}`}
                       >
                         {company.name}
@@ -243,7 +243,7 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
                 <h3>Cast</h3>
                 <div className="cast-list">
                   {tvShow.credits.cast.slice(0, 12).map(person => (
-                    <div key={person.id} className="cast-member" onClick={() => navigate(`/cast/${person.id}`))>
+                    <div key={person.id} className="cast-member" onClick={() => navigate(`/cast/${person.id}`)}>
                       <img 
                         src={person.profile_path 
                           ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
