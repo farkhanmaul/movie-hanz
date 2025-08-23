@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/movie-hanz/static/css/main.864f8425.css",
-    "main.js": "/movie-hanz/static/js/main.42d23e93.js",
+    "main.css": "/movie-hanz/static/css/main.7b60833a.css",
+    "main.js": "/movie-hanz/static/js/main.0b45145b.js",
     "static/js/206.b220ba5d.chunk.js": "/movie-hanz/static/js/206.b220ba5d.chunk.js",
     "static/js/72.2f054285.chunk.js": "/movie-hanz/static/js/72.2f054285.chunk.js",
     "static/js/408.cfd362ab.chunk.js": "/movie-hanz/static/js/408.cfd362ab.chunk.js",
@@ -10,13 +10,13 @@
     "static/js/222.bfeeded0.chunk.js": "/movie-hanz/static/js/222.bfeeded0.chunk.js",
     "static/js/906.6c29cfdb.chunk.js": "/movie-hanz/static/js/906.6c29cfdb.chunk.js",
     "static/js/916.f04e69b9.chunk.js": "/movie-hanz/static/js/916.f04e69b9.chunk.js",
-    "static/js/189.4a5745eb.chunk.js": "/movie-hanz/static/js/189.4a5745eb.chunk.js",
+    "static/js/189.9faab7e8.chunk.js": "/movie-hanz/static/js/189.9faab7e8.chunk.js",
     "static/js/409.4e9cb636.chunk.js": "/movie-hanz/static/js/409.4e9cb636.chunk.js",
     "static/js/791.609403e5.chunk.js": "/movie-hanz/static/js/791.609403e5.chunk.js",
     "static/js/787.e66b5992.chunk.js": "/movie-hanz/static/js/787.e66b5992.chunk.js",
     "index.html": "/movie-hanz/index.html",
-    "main.864f8425.css.map": "/movie-hanz/static/css/main.864f8425.css.map",
-    "main.42d23e93.js.map": "/movie-hanz/static/js/main.42d23e93.js.map",
+    "main.7b60833a.css.map": "/movie-hanz/static/css/main.7b60833a.css.map",
+    "main.0b45145b.js.map": "/movie-hanz/static/js/main.0b45145b.js.map",
     "206.b220ba5d.chunk.js.map": "/movie-hanz/static/js/206.b220ba5d.chunk.js.map",
     "72.2f054285.chunk.js.map": "/movie-hanz/static/js/72.2f054285.chunk.js.map",
     "408.cfd362ab.chunk.js.map": "/movie-hanz/static/js/408.cfd362ab.chunk.js.map",
@@ -25,13 +25,13 @@
     "222.bfeeded0.chunk.js.map": "/movie-hanz/static/js/222.bfeeded0.chunk.js.map",
     "906.6c29cfdb.chunk.js.map": "/movie-hanz/static/js/906.6c29cfdb.chunk.js.map",
     "916.f04e69b9.chunk.js.map": "/movie-hanz/static/js/916.f04e69b9.chunk.js.map",
-    "189.4a5745eb.chunk.js.map": "/movie-hanz/static/js/189.4a5745eb.chunk.js.map",
+    "189.9faab7e8.chunk.js.map": "/movie-hanz/static/js/189.9faab7e8.chunk.js.map",
     "409.4e9cb636.chunk.js.map": "/movie-hanz/static/js/409.4e9cb636.chunk.js.map",
     "791.609403e5.chunk.js.map": "/movie-hanz/static/js/791.609403e5.chunk.js.map",
     "787.e66b5992.chunk.js.map": "/movie-hanz/static/js/787.e66b5992.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.864f8425.css",
-    "static/js/main.42d23e93.js"
+    "static/css/main.7b60833a.css",
+    "static/js/main.0b45145b.js"
   ]
 }

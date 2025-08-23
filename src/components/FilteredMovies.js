@@ -165,6 +165,45 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
         </div>
       )}
 
+      {/* Company Info */}
+      {filterType === 'company' && companyDetails && (
+        <div className="company-hero">
+          <div className="company-hero-content">
+            {companyDetails.logo_path && (
+              <div className="company-logo">
+                <img
+                  src={`${process.env.REACT_APP_BASEIMGURL}${companyDetails.logo_path}`}
+                  alt={companyDetails.name}
+                  className="company-logo-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            <div className="company-info">
+              <h1 className="company-name">{companyDetails.name}</h1>
+              {companyDetails.headquarters && (
+                <div className="company-headquarters">
+                  <strong>Headquarters:</strong> {companyDetails.headquarters}
+                </div>
+              )}
+              {companyDetails.origin_country && (
+                <div className="company-country">
+                  <strong>Country:</strong> {companyDetails.origin_country}
+                </div>
+              )}
+            </div>
+          </div>
+          {companyDetails.description && (
+            <div className="company-description">
+              <h3>About</h3>
+              <p>{companyDetails.description}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {loading ? (
         <div className="loading">Loading movies...</div>
       ) : error ? (

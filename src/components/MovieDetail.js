@@ -45,9 +45,6 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
     }).format(amount);
   };
 
-  const handleFilterClick = (type, id, name) => {
-    window.location.href = `/${type}/${id}`;
-  };
 
 
   const handleSimilarMovieClick = (movieId) => {
@@ -203,7 +200,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                   <div 
                     key={person.id} 
                     className="cast-member clickable-cast"
-                    onClick={() => handleFilterClick('cast', person.id, person.name)}
+                    onClick={() => navigate(`/cast/${person.id}`)}
                     title={`See more movies with ${person.name}`}
                   >
                     <img
@@ -236,7 +233,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                     <div 
                       key={`${person.id}-${person.job}`} 
                       className="crew-text-item clickable-crew"
-                      onClick={() => handleFilterClick('crew', person.id, person.name)}
+                      onClick={() => navigate(`/crew/${person.id}`)}
                       title={`See more movies by ${person.name}`}
                     >
                       <span className="crew-name">{person.name}</span>

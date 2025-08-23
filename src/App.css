@@ -1449,6 +1449,79 @@ body.light-mode .navbar {
   font-size: 14px;
 }
 
+/* Company Hero Section */
+.company-hero {
+  background: rgba(0, 113, 235, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 32px 0;
+  border: 1px solid rgba(0, 113, 235, 0.2);
+}
+
+.company-hero-content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.company-logo {
+  flex-shrink: 0;
+}
+
+.company-logo-img {
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.company-info {
+  flex: 1;
+}
+
+.company-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  font-family: var(--font-primary);
+}
+
+.company-headquarters,
+.company-country {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.company-headquarters strong,
+.company-country strong {
+  color: rgba(0, 113, 235, 0.9);
+  margin-right: 8px;
+}
+
+.company-description {
+  border-top: 1px solid rgba(0, 113, 235, 0.2);
+  padding-top: 20px;
+}
+
+.company-description h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  font-family: var(--font-primary);
+}
+
+.company-description p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
 .movie-detail-overview {
   font-size: 17px;
   line-height: 1.7;
