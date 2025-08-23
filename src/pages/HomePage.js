@@ -122,10 +122,10 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
             alt={movie.title}
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-              : '/placeholder-poster.jpg'
+              : '/placeholder-poster.svg'
             }
             onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
+              e.target.src = '/placeholder-poster.svg';
             }}
           />
           <div className="movie-overlay">
@@ -154,10 +154,10 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
             alt={tv.name}
             src={tv.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${tv.poster_path}`
-              : '/placeholder-poster.jpg'
+              : '/placeholder-poster.svg'
             }
             onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
+              e.target.src = '/placeholder-poster.svg';
             }}
           />
           <div className="movie-overlay">
@@ -186,10 +186,10 @@ const HomePage = ({ onMovieClick, onShowFilteredMovies, onNavigate }) => {
             alt={movie.title}
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-              : '/placeholder-poster.jpg'
+              : '/placeholder-poster.svg'
             }
             onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
+              e.target.src = '/placeholder-poster.svg';
             }}
           />
           <div className="movie-overlay">

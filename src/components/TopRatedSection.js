@@ -71,9 +71,9 @@ const TopRatedSection = ({ onMovieClick, onTVClick }) => {
             </div>
             <div className="ranking-poster">
               <img
-                src={getImageUrl(item.poster_path, 'poster') || '/placeholder-poster.jpg'}
+                src={getImageUrl(item.poster_path, 'poster') || '/placeholder-poster.svg'}
                 alt={item.title || item.name}
-                onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+                onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
               />
             </div>
             <div className="ranking-info">

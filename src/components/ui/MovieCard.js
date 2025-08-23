@@ -8,12 +8,12 @@ const MovieCard = ({ movie, onClick, showRating = true }) => {
     <div className="movie-card group cursor-pointer" onClick={() => onClick?.(movie.id)}>
       <div className="movie-poster-container">
         <img
-          src={getImageUrl(movie.poster_path, 'poster') || '/placeholder-poster.jpg'}
+          src={getImageUrl(movie.poster_path, 'poster') || '/placeholder-poster.svg'}
           alt={title}
           className="movie-poster"
           loading="lazy"
           decoding="async"
-          onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+          onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
         />
         <div className="movie-overlay">
           <div className="movie-overlay-content">

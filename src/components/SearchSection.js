@@ -37,17 +37,18 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
     }
   }, [query, searchType]);
 
-  useEffect(() => {
-    if (query.length > 2) {
-      const delaySearch = setTimeout(() => {
-        handleSearch();
-      }, 500);
-      return () => clearTimeout(delaySearch);
-    } else {
-      setResults([]);
-      setTotalResults(0);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && query.length > 2) {
+      handleSearch();
     }
-  }, [query, searchType, handleSearch]);
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (query.length > 2) {
+      handleSearch();
+    }
+  };
 
   const getMediaType = (item) => {
     if (item.media_type) return item.media_type;
@@ -70,11 +71,11 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
     if (mediaType === 'person') {
       return item.profile_path 
         ? `${process.env.REACT_APP_BASEIMGURL}${item.profile_path}`
-        : '/placeholder-person.jpg';
+        : '/placeholder-person.svg';
     }
     return item.poster_path 
       ? `${process.env.REACT_APP_BASEIMGURL}${item.poster_path}`
-      : '/placeholder-poster.jpg';
+      : '/placeholder-poster.svg';
   };
 
   const renderSearchResult = (item) => {
@@ -105,8 +106,8 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
           className="search-result-image"
           onError={(e) => {
             e.target.src = mediaType === 'person' 
-              ? '/placeholder-person.jpg' 
-              : '/placeholder-poster.jpg';
+              ? '/placeholder-person.svg' 
+              : '/placeholder-poster.svg';
           }}
         />
         <div className="search-result-info">
@@ -168,15 +169,19 @@ const SearchSection = ({ onMovieClick, onTVClick, onPersonClick, onClose }) => {
         <div className="section">
           <h2 className="section-title">Search Movies, TV Shows & People</h2>
       
-      <div className="search-container">
+      <form onSubmit={handleFormSubmit} className="search-container">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for movies, TV shows, or people..."
+          onKeyPress={handleKeyPress}
+          placeholder="Type and press Enter to search..."
           className="search-input"
         />
-      </div>
+        <button type="submit" className="search-submit-btn">
+          🔍 Search
+        </button>
+      </form>
         
       <div className="control-tabs">
         <button

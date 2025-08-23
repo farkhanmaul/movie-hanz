@@ -107,6 +107,9 @@ export const getSimilarTV = (tvId) =>
 export const getMovieVideos = (movieId) => 
   apiRequest(`/movie/${movieId}/videos`).then(data => data.results);
 
+export const getTVVideos = (tvId) => 
+  apiRequest(`/tv/${tvId}/videos`).then(data => data.results);
+
 export const getMovieCredits = (movieId) => apiRequest(`/movie/${movieId}/credits`);
 
 export const getMovieReviews = (movieId) => 

@@ -97,11 +97,11 @@ const GenreBrowse = ({ onMovieClick, onTVClick }) => {
             className="movie-poster"
             src={item.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${item.poster_path}`
-              : '/placeholder-poster.jpg'
+              : '/placeholder-poster.svg'
             }
             alt={item.title || item.name}
             onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
+              e.target.src = '/placeholder-poster.svg';
             }}
           />
           <div className="movie-overlay">

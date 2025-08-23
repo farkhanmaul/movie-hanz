@@ -3,6 +3,7 @@ import { getTVDetails } from '../api';
 import { useNavigate } from 'react-router-dom';
 import WatchProviders from './WatchProviders';
 import ContentRatings from './ContentRatings';
+import ErrorState from './ui/ErrorState';
 
 const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies }) => {
   const [tvShow, setTVShow] = useState(null);
@@ -58,18 +59,18 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
     );
   }
 
-  if (error || !tvShow) {
+  if (error) {
     return (
-      <div className="movie-detail-overlay">
-        <div className="movie-detail-container">
-          <button className="close-button" onClick={onClose}>×</button>
-          <div className="error-message">
-            {error || 'TV show not found'}
-          </div>
-        </div>
-      </div>
+      <ErrorState 
+        title="TV Show Not Found"
+        message="We couldn't load the TV show details you requested. The show might not exist or there might be a connection issue."
+        type="tv"
+        onRetry={fetchTVDetails}
+      />
     );
   }
+
+  if (!tvShow) return null;
 
   // Find trailer video
   const trailerVideo = tvShow.videos?.results?.find(
@@ -96,10 +97,10 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
                 <img 
                   src={tvShow.poster_path 
                     ? `https://image.tmdb.org/t/p/w500${tvShow.poster_path}`
-                    : '/placeholder-poster.jpg'
+                    : '/placeholder-poster.svg'
                   }
                   alt={tvShow.name}
-                  onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+                  onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
                 />
               </div>
               <div className="movie-detail-info">
@@ -207,10 +208,10 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
                         <img 
                           src={season.poster_path 
                             ? `https://image.tmdb.org/t/p/w154${season.poster_path}`
-                            : '/placeholder-poster.jpg'
+                            : '/placeholder-poster.svg'
                           }
                           alt={season.name}
-                          onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+                          onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
                         />
                       </div>
                       <div className="season-info">
@@ -247,10 +248,10 @@ const TVDetail = ({ tvId, onClose, onMovieClick, onTVClick, onShowFilteredMovies
                       <img 
                         src={person.profile_path 
                           ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
-                          : '/placeholder-person.jpg'
+                          : '/placeholder-person.svg'
                         }
                         alt={person.name}
-                        onError={(e) => { e.target.src = '/placeholder-person.jpg'; }}
+                        onError={(e) => { e.target.src = '/placeholder-person.svg'; }}
                       />
                       <div className="cast-name">{person.name}</div>
                       <div className="cast-character">{person.character}</div>

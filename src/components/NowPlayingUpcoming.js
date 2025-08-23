@@ -39,11 +39,11 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
             className="movie-poster"
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-              : '/placeholder-poster.jpg'
+              : '/placeholder-poster.svg'
             }
             alt={movie.title}
             onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
+              e.target.src = '/placeholder-poster.svg';
             }}
           />
           <div className="movie-overlay">
@@ -87,11 +87,11 @@ const NowPlayingUpcoming = ({ onMovieClick }) => {
             className="movie-poster"
             src={movie.poster_path 
               ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-              : '/placeholder-poster.jpg'
+              : '/placeholder-poster.svg'
             }
             alt={movie.title}
             onError={(e) => {
-              e.target.src = '/placeholder-poster.jpg';
+              e.target.src = '/placeholder-poster.svg';
             }}
           />
           <div className="upcoming-badge">

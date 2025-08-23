@@ -3,6 +3,7 @@ import { getMovieDetails } from '../api';
 import { useNavigate } from 'react-router-dom';
 import WatchProviders from './WatchProviders';
 import ContentRatings from './ContentRatings';
+import ErrorState from './ui/ErrorState';
 
 const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) => {
   const [movie, setMovie] = useState(null);
@@ -73,9 +74,12 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
 
   if (error) {
     return (
-      <div className="movie-detail-container">
-        <div className="error">{error}</div>
-      </div>
+      <ErrorState 
+        title="Movie Not Found"
+        message="We couldn't load the movie details you requested. The movie might not exist or there might be a connection issue."
+        type="movie"
+        onRetry={fetchMovieDetails}
+      />
     );
   }
 
@@ -87,7 +91,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
 
   const posterUrl = movie.poster_path 
     ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-    : '/placeholder-poster.jpg';
+    : '/placeholder-poster.svg';
 
   const trailerVideo = movie.videos?.results?.find(
     video => video.type === 'Trailer' && video.site === 'YouTube'
@@ -205,10 +209,10 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                   <img 
                     src={movie.belongs_to_collection.poster_path
                       ? `https://image.tmdb.org/t/p/w185${movie.belongs_to_collection.poster_path}`
-                      : '/placeholder-poster.jpg'
+                      : '/placeholder-poster.svg'
                     }
                     alt={movie.belongs_to_collection.name}
-                    onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+                    onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
                   />
                 </div>
                 <div className="collection-info-small">
@@ -234,7 +238,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                     <img
                       src={person.profile_path 
                         ? `${process.env.REACT_APP_BASEIMGURL}${person.profile_path}`
-                        : '/placeholder-person.jpg'
+                        : '/placeholder-person.svg'
                       }
                       alt={person.name}
                       className="cast-photo"
@@ -334,7 +338,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                     <img
                       src={similarMovie.poster_path 
                         ? `${process.env.REACT_APP_BASEIMGURL}${similarMovie.poster_path}`
-                        : '/placeholder-poster.jpg'
+                        : '/placeholder-poster.svg'
                       }
                       alt={similarMovie.title}
                       className="similar-movie-poster"

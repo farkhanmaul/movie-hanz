@@ -61,10 +61,10 @@ const TrendingSection = ({ onMovieClick, onTVClick }) => {
           <div key={item.id} className="trending-item" onClick={() => handleItemClick(item)}>
             <div className="trending-rank">#{index + 1}</div>
             <img
-              src={getImageUrl(item.poster_path, 'poster') || '/placeholder-poster.jpg'}
+              src={getImageUrl(item.poster_path, 'poster') || '/placeholder-poster.svg'}
               alt={item.title || item.name}
               className="trending-poster"
-              onError={(e) => { e.target.src = '/placeholder-poster.jpg'; }}
+              onError={(e) => { e.target.src = '/placeholder-poster.svg'; }}
             />
             <div className="trending-info">
               <h3 className="trending-title">{item.title || item.name}</h3>

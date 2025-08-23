@@ -209,10 +209,10 @@ const CollectionPage = ({ onMovieClick, onClose }) => {
                   alt={movie.title}
                   src={movie.poster_path 
                     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                    : '/placeholder-poster.jpg'
+                    : '/placeholder-poster.svg'
                   }
                   onError={(e) => {
-                    e.target.src = '/placeholder-poster.jpg';
+                    e.target.src = '/placeholder-poster.svg';
                   }}
                 />
                 <div className="movie-overlay">

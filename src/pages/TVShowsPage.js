@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getPopularTV, discoverTVAdvanced, getTVGenres } from '../api';
+import { getPopularTV, discoverTVAdvanced, getTVGenres, getTVVideos } from '../api';
 import Pagination from '../components/ui/Pagination';
+import TrailerModal from '../components/ui/TrailerModal';
 
 const TVShowsPage = ({ onMovieClick }) => {
   const [tvShows, setTVShows] = useState([]);
@@ -16,6 +17,8 @@ const TVShowsPage = ({ onMovieClick }) => {
     maxRating: 10
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [selectedTrailer, setSelectedTrailer] = useState(null);
 
   useEffect(() => {
     loadTVShows(currentPage);
@@ -85,6 +88,42 @@ const TVShowsPage = ({ onMovieClick }) => {
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
+
+  // Ensure consistent grid layout by padding incomplete rows
+  const getGridShows = (showList) => {
+    const itemsPerRow = window.innerWidth <= 480 ? 2 : window.innerWidth <= 768 ? 3 : window.innerWidth <= 1024 ? 4 : 5;
+    const totalRows = Math.ceil(showList.length / itemsPerRow);
+    const totalItemsNeeded = totalRows * itemsPerRow;
+    
+    // Pad with empty items if needed for last row
+    const paddedShows = [...showList];
+    while (paddedShows.length < totalItemsNeeded && paddedShows.length % itemsPerRow !== 0) {
+      paddedShows.push(null); // null represents empty slot
+    }
+    return paddedShows;
+  };
+
+  const handlePlayTrailer = async (e, tvId) => {
+    e.stopPropagation(); // Prevent TV card click
+    try {
+      const videos = await getTVVideos(tvId);
+      const trailer = videos.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+      if (trailer) {
+        setSelectedTrailer(trailer);
+        setShowTrailer(true);
+      } else {
+        alert('No trailer available for this show');
+      }
+    } catch (error) {
+      console.error('Error fetching trailer:', error);
+      alert('Failed to load trailer');
+    }
+  };
+
+  const handleCloseTrailer = () => {
+    setShowTrailer(false);
+    setSelectedTrailer(null);
+  };
 
   return (
     <div className="section">
@@ -179,34 +218,44 @@ const TVShowsPage = ({ onMovieClick }) => {
       ) : (
         <>
           <div className="movie-grid">
-            {tvShows.map((show) => (
-              <div 
-                key={show.id} 
-                className="movie-card"
-                onClick={() => onMovieClick(show.id)}
-              >
-                <div className="movie-poster-container">
-                  <img
-                    className="Movie-img"
-                    alt={show.name}
-                    src={show.poster_path 
-                      ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
-                      : '/placeholder-poster.jpg'
-                    }
-                    onError={(e) => {
-                      e.target.src = '/placeholder-poster.jpg';
-                    }}
-                  />
-                  <div className="movie-overlay">
-                    <button className="play-button">▶</button>
+            {getGridShows(tvShows).map((show, index) => (
+              show ? (
+                <div 
+                  key={show.id} 
+                  className="movie-card"
+                  onClick={() => onMovieClick(show.id)}
+                >
+                  <div className="movie-poster-container">
+                    <img
+                      className="Movie-img"
+                      alt={show.name}
+                      src={show.poster_path 
+                        ? `${process.env.REACT_APP_BASEIMGURL}${show.poster_path}`
+                        : '/placeholder-poster.svg'
+                      }
+                      onError={(e) => {
+                        e.target.src = '/placeholder-poster.svg';
+                      }}
+                    />
+                    <div className="movie-overlay">
+                      <button 
+                        className="play-button"
+                        onClick={(e) => handlePlayTrailer(e, show.id)}
+                        title="Watch Trailer"
+                      >
+                        ▶
+                      </button>
+                    </div>
+                  </div>
+                  <div className="movie-info">
+                    <div className="Movie-title">{show.name}</div>
+                    <div className="Movie-date">{show.first_air_date}</div>
+                    <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
                   </div>
                 </div>
-                <div className="movie-info">
-                  <div className="Movie-title">{show.name}</div>
-                  <div className="Movie-date">{show.first_air_date}</div>
-                  <div className="Movie-rate">⭐ {show.vote_average?.toFixed(1)}</div>
-                </div>
-              </div>
+              ) : (
+                <div key={`empty-${index}`} className="movie-card-placeholder"></div>
+              )
             ))}
           </div>
           <Pagination
@@ -217,6 +266,12 @@ const TVShowsPage = ({ onMovieClick }) => {
           />
         </>
       )}
+      
+      <TrailerModal 
+        trailerVideo={selectedTrailer}
+        isOpen={showTrailer}
+        onClose={handleCloseTrailer}
+      />
     </div>
   );
 };

@@ -1,0 +1,17 @@
+<svg width="300" height="450" viewBox="0 0 300 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="450" fill="#181818"/>
+  <rect width="300" height="450" fill="url(#gradient)"/>
+  <g opacity="0.3">
+    <path d="M100 150L200 150L200 200L150 175L100 200V150Z" fill="#ffffff"/>
+    <circle cx="150" cy="250" r="30" stroke="#ffffff" stroke-width="2" fill="none"/>
+    <path d="M135 240L165 255L135 270V240Z" fill="#ffffff"/>
+  </g>
+  <text x="150" y="330" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" opacity="0.7">No Image</text>
+  <text x="150" y="350" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" opacity="0.7">Available</text>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d2d2d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f0f0f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

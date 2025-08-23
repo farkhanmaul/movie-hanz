@@ -122,12 +122,12 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
             <img
               src={personDetails.profile_path 
                 ? `${process.env.REACT_APP_BASEIMGURL}${personDetails.profile_path}`
-                : '/placeholder-person.jpg'
+                : '/placeholder-person.svg'
               }
               alt={personDetails.name}
               className="person-large-photo"
               onError={(e) => {
-                e.target.src = '/placeholder-person.jpg';
+                e.target.src = '/placeholder-person.svg';
               }}
             />
           </div>
@@ -250,10 +250,10 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
                       alt={movie.title || movie.name}
                       src={movie.poster_path 
                         ? `${process.env.REACT_APP_BASEIMGURL}${movie.poster_path}`
-                        : '/placeholder-poster.jpg'
+                        : '/placeholder-poster.svg'
                       }
                       onError={(e) => {
-                        e.target.src = '/placeholder-poster.jpg';
+                        e.target.src = '/placeholder-poster.svg';
                       }}
                     />
                     <div className="movie-overlay-small">
