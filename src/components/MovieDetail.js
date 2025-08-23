@@ -129,7 +129,7 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
                   <button 
                     key={genre.id} 
                     className="genre-tag clickable"
-                    onClick={() => navigate(`/genre/${genre.id}`))
+                    onClick={() => navigate(`/genre/${genre.id}`)}
                   >
                     {genre.name}
                   </button>
