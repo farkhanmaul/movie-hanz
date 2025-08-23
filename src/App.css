@@ -1522,6 +1522,239 @@ body.light-mode .navbar {
   margin: 0;
 }
 
+/* 404 Not Found Page */
+.not-found-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, rgba(15, 15, 15, 0.98) 50%, rgba(24, 24, 24, 0.95) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 20px;
+  position: relative;
+}
+
+.not-found-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at center top, rgba(229, 9, 20, 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse at center bottom, rgba(0, 113, 235, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.not-found-container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.not-found-content {
+  background: rgba(24, 24, 24, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 48px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.not-found-header {
+  margin-bottom: 32px;
+}
+
+.not-found-title {
+  font-size: 120px;
+  font-weight: 900;
+  color: #e50914;
+  margin: 0;
+  font-family: var(--font-primary);
+  text-shadow: 0 0 30px rgba(229, 9, 20, 0.5);
+  line-height: 1;
+}
+
+.not-found-divider {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #e50914, transparent);
+  margin: 20px auto;
+  border-radius: 2px;
+}
+
+.not-found-message {
+  margin-bottom: 40px;
+}
+
+.not-found-subtitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  font-family: var(--font-primary);
+}
+
+.not-found-description {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.not-found-subdescription {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.not-found-actions {
+  margin-bottom: 40px;
+}
+
+.not-found-home-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3);
+}
+
+.not-found-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(229, 9, 20, 0.4);
+  background: linear-gradient(135deg, #ff0a16 0%, #e50914 100%);
+}
+
+.not-found-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.not-found-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.not-found-link:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
+}
+
+.not-found-icon {
+  opacity: 0.6;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.not-found-icon svg {
+  margin-bottom: 12px;
+}
+
+.not-found-icon-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .not-found-title {
+    font-size: 80px;
+  }
+  
+  .not-found-subtitle {
+    font-size: 24px;
+  }
+  
+  .not-found-content {
+    padding: 32px 24px;
+    margin: 0 16px;
+  }
+  
+  .not-found-links {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .not-found-link {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* No Results Section */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.no-results-icon {
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.no-results-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  font-family: var(--font-primary);
+}
+
+.no-results-description {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.no-results-suggestion {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Missing Info Message */
+.missing-info {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.missing-info p {
+  color: rgba(255, 193, 7, 0.9);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .movie-detail-overview {
   font-size: 17px;
   line-height: 1.7;

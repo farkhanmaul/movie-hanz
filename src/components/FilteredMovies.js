@@ -165,6 +165,13 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
         </div>
       )}
 
+      {/* Missing Person Info Message */}
+      {(filterType === 'cast' || filterType === 'crew') && !loading && !personDetails && (
+        <div className="missing-info">
+          <p>Person information is not available, but their filmography might still be listed below.</p>
+        </div>
+      )}
+
       {/* Company Info */}
       {filterType === 'company' && companyDetails && (
         <div className="company-hero">
@@ -201,6 +208,13 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
               <p>{companyDetails.description}</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Missing Company Info Message */}
+      {filterType === 'company' && !loading && !companyDetails && (
+        <div className="missing-info">
+          <p>Company information is not available, but their productions might still be listed below.</p>
         </div>
       )}
 
@@ -271,7 +285,22 @@ const FilteredMovies = ({ filterType, filterId, filterName, onMovieClick, onClos
         </>
       ) : (
         <div className="no-results">
-          No movies found for {filterName}
+          <div className="no-results-icon">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+          <h3 className="no-results-title">No Content Found</h3>
+          <p className="no-results-description">
+            {filterType === 'cast' && 'This person might not have appeared in any movies or TV shows in our database.'}
+            {filterType === 'crew' && 'This person might not have worked on any movies or TV shows in our database.'}
+            {filterType === 'company' && 'This production company might not have any movies in our database.'}
+            {filterType === 'genre' && 'No movies found for this genre at the moment.'}
+          </p>
+          <p className="no-results-suggestion">
+            Try exploring other sections or go back to browse more content.
+          </p>
         </div>
       )}
     </div>
