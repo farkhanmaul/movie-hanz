@@ -2,6 +2,8 @@
 
 MovieHanz adalah aplikasi web React yang modern untuk menjelajahi film dan acara TV. Aplikasi ini menggunakan API The Movie Database (TMDb) untuk memberikan pengalaman komprehensif dalam menemukan dan menonton informasi lengkap tentang konten hiburan favorit Anda dengan UI yang elegant dan responsive.
 
+🚀 **Live Demo:** https://farkhanmaul.github.io/movie-hanz
+
 ## ✨ Features
 
 ### 🎯 Core Features
