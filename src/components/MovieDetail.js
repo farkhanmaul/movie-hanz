@@ -1,23 +1,30 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getMovieDetails } from '../api';
+import { getMovieDetails, getMovieImages } from '../api';
 import { useNavigate } from 'react-router-dom';
 import WatchProviders from './WatchProviders';
 import ContentRatings from './ContentRatings';
 import ErrorState from './ui/ErrorState';
+import ImageGallery from './ui/ImageGallery';
 
 const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) => {
   const [movie, setMovie] = useState(null);
+  const [movieImages, setMovieImages] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('overview');
   const navigate = useNavigate();
 
   const fetchMovieDetails = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getMovieDetails(movieId);
-      setMovie(data);
+      const [movieData, imagesData] = await Promise.all([
+        getMovieDetails(movieId),
+        getMovieImages(movieId)
+      ]);
+      setMovie(movieData);
+      setMovieImages(imagesData);
     } catch (err) {
       setError('Failed to load movie details');
       console.error('Error fetching movie details:', err);
@@ -143,13 +150,37 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
           </div>
         </div>
 
+        {/* Navigation Tabs */}
+        <div className="movie-detail-tabs">
+          {[
+            { key: 'overview', label: 'Overview', count: 1 },
+            { key: 'cast', label: 'Cast', count: movie.credits?.cast?.length || 0 },
+            { key: 'images', label: 'Images', count: (movieImages?.posters?.length || 0) + (movieImages?.backdrops?.length || 0) },
+            { key: 'collection', label: 'Collection', count: movie.belongs_to_collection ? 1 : 0 }
+          ].map(tab => (
+            tab.count > 0 && (
+              <button
+                key={tab.key}
+                className={`movie-tab ${selectedTab === tab.key ? 'active' : ''}`}
+                onClick={() => setSelectedTab(tab.key)}
+              >
+                {tab.label} {tab.count > 1 && `(${tab.count})`}
+              </button>
+            )
+          ))}
+        </div>
+
         {/* Content */}
         <div className="movie-detail-content">
-          {/* Overview */}
-          <section className="movie-detail-section">
-            <h3>Overview</h3>
-            <p className="movie-detail-overview">
-              {movie.overview || 'No overview available.'}
+          
+          {/* Overview Tab */}
+          {selectedTab === 'overview' && (
+            <>
+              {/* Overview */}
+              <section className="movie-detail-section">
+                <h3>Overview</h3>
+                <p className="movie-detail-overview">
+                  {movie.overview || 'No overview available.'}
             </p>
           </section>
 
@@ -302,11 +333,76 @@ const MovieDetail = ({ movieId, onClose, onMovieClick, onShowFilteredMovies }) =
             title={movie.title}
           />
 
-          {/* Content Ratings */}
-          <ContentRatings 
-            contentId={movieId}
-            contentType="movie"
-          />
+              {/* Content Ratings */}
+              <ContentRatings 
+                contentId={movieId}
+                contentType="movie"
+              />
+            </>
+          )}
+
+          {/* Cast Tab */}
+          {selectedTab === 'cast' && movie.credits?.cast && (
+            <section className="movie-detail-section">
+              <h3>Cast</h3>
+              <div className="cast-list">
+                {movie.credits.cast.slice(0, 20).map(person => (
+                  <div key={person.id} className="cast-member" onClick={() => navigate(`/cast/${person.id}`)}>
+                    <img 
+                      src={person.profile_path 
+                        ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
+                        : '/placeholder-person.svg'
+                      }
+                      alt={person.name}
+                      onError={(e) => { e.target.src = '/placeholder-person.svg'; }}
+                    />
+                    <div className="cast-name">{person.name}</div>
+                    <div className="cast-character">{person.character}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Images Tab */}
+          {selectedTab === 'images' && movieImages && (
+            <ImageGallery
+              images={[
+                ...(movieImages.posters || []),
+                ...(movieImages.backdrops || [])
+              ]}
+              title="Movie Images"
+              type="mixed"
+              showTabs={true}
+            />
+          )}
+
+          {/* Collection Tab */}
+          {selectedTab === 'collection' && movie.belongs_to_collection && (
+            <section className="movie-detail-section">
+              <h3>Collection: {movie.belongs_to_collection.name}</h3>
+              <div className="collection-info">
+                <img 
+                  src={movie.belongs_to_collection.poster_path 
+                    ? `https://image.tmdb.org/t/p/w500${movie.belongs_to_collection.poster_path}`
+                    : '/placeholder-poster.svg'
+                  }
+                  alt={movie.belongs_to_collection.name}
+                  className="collection-poster"
+                />
+                <div className="collection-details">
+                  <h4>{movie.belongs_to_collection.name}</h4>
+                  <p>{movie.belongs_to_collection.overview}</p>
+                  <button 
+                    className="view-collection-btn"
+                    onClick={() => navigate(`/collection/${movie.belongs_to_collection.id}`)}
+                  >
+                    View Full Collection
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* Trailer Popup */}
           {showTrailer && trailerVideo && (

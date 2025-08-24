@@ -159,3 +159,133 @@ export const discoverTVAdvanced = ({ genre, year, sortBy = 'popularity.desc', pa
   if (maxRating < 10) params['vote_average.lte'] = maxRating;
   return apiRequest('/discover/tv', params);
 };
+
+// ==========================================
+// IMAGES API ENDPOINTS
+// ==========================================
+
+export const getMovieImages = (movieId) => 
+  apiRequest(`/movie/${movieId}/images`);
+
+export const getTVImages = (tvId) => 
+  apiRequest(`/tv/${tvId}/images`);
+
+export const getPersonImages = (personId) => 
+  apiRequest(`/person/${personId}/images`);
+
+export const getCollectionImages = (collectionId) => 
+  apiRequest(`/collection/${collectionId}/images`);
+
+export const getSeasonImages = (tvId, seasonNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}/images`);
+
+export const getEpisodeImages = (tvId, seasonNumber, episodeNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}/images`);
+
+// ==========================================
+// SEASON & EPISODE API ENDPOINTS
+// ==========================================
+
+export const getSeasonDetails = (tvId, seasonNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}`, { append_to_response: 'credits,images,videos' });
+
+export const getEpisodeDetails = (tvId, seasonNumber, episodeNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}`, { 
+    append_to_response: 'credits,images,videos,external_ids' 
+  });
+
+export const getEpisodeVideos = (tvId, seasonNumber, episodeNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}/videos`)
+    .then(data => data.results);
+
+export const getEpisodeCredits = (tvId, seasonNumber, episodeNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}/credits`);
+
+export const getEpisodeExternalIds = (tvId, seasonNumber, episodeNumber) => 
+  apiRequest(`/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}/external_ids`);
+
+// ==========================================
+// ENHANCED SEARCH API ENDPOINTS
+// ==========================================
+
+export const searchCollection = (q, page = 1) => 
+  apiRequest('/search/collection', { query: q, page });
+
+export const searchKeyword = (q, page = 1) => 
+  apiRequest('/search/keyword', { query: q, page });
+
+export const searchCompany = (q, page = 1) => 
+  apiRequest('/search/company', { query: q, page });
+
+// ==========================================
+// TV CURRENT CONTENT API ENDPOINTS
+// ==========================================
+
+export const getTVAiringToday = (page = 1) => 
+  apiRequest('/tv/airing_today', { page });
+
+export const getTVOnTheAir = (page = 1) => 
+  apiRequest('/tv/on_the_air', { page });
+
+// ==========================================
+// KEYWORDS & METADATA API ENDPOINTS
+// ==========================================
+
+export const getTVKeywords = (tvId) => 
+  apiRequest(`/tv/${tvId}/keywords`).then(data => data.results);
+
+export const getKeywordDetails = (keywordId) => 
+  apiRequest(`/keyword/${keywordId}`);
+
+export const discoverMoviesByKeyword = (keywordId, page = 1) => 
+  apiRequest('/discover/movie', { with_keywords: keywordId, page, sort_by: 'popularity.desc' });
+
+export const discoverTVByKeyword = (keywordId, page = 1) => 
+  apiRequest('/discover/tv', { with_keywords: keywordId, page, sort_by: 'popularity.desc' });
+
+// ==========================================
+// PEOPLE API ENDPOINTS
+// ==========================================
+
+export const getPopularPeople = (page = 1) => 
+  apiRequest('/person/popular', { page });
+
+// ==========================================
+// EXTERNAL IDS API ENDPOINTS
+// ==========================================
+
+export const getMovieExternalIds = (movieId) => 
+  apiRequest(`/movie/${movieId}/external_ids`);
+
+export const getTVExternalIds = (tvId) => 
+  apiRequest(`/tv/${tvId}/external_ids`);
+
+// ==========================================
+// NETWORK & COMPANY API ENDPOINTS
+// ==========================================
+
+export const getNetworkDetails = (networkId) => 
+  apiRequest(`/network/${networkId}`);
+
+export const discoverMoviesByNetwork = (networkId, page = 1) => 
+  apiRequest('/discover/movie', { with_networks: networkId, page, sort_by: 'popularity.desc' });
+
+export const discoverTVByNetwork = (networkId, page = 1) => 
+  apiRequest('/discover/tv', { with_networks: networkId, page, sort_by: 'popularity.desc' });
+
+export const getCompanyImages = (companyId) => 
+  apiRequest(`/company/${companyId}/images`);
+
+// ==========================================
+// ADVANCED TV FEATURES
+// ==========================================
+
+export const getTVEpisodeGroups = (tvId) => 
+  apiRequest(`/tv/${tvId}/episode_groups`).then(data => data.results);
+
+// ==========================================
+// SYSTEM CONFIGURATION
+// ==========================================
+
+export const getAPIConfiguration = () => 
+  apiRequest('/configuration');
