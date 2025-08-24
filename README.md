@@ -4,6 +4,8 @@ MovieHanz adalah aplikasi web React yang modern untuk menjelajahi film dan acara
 
 🚀 **Live Demo:** https://farkhanmaul.github.io/movie-hanz
 
+✨ **Latest Update:** Phase 1 Implementation - Images, Seasons, Enhanced Search!
+
 ## ✨ Features
 
 ### 🎯 Core Features
