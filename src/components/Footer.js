@@ -35,7 +35,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-legal">
-          <p>© 2024 MovieHanz • Made with ❤️</p>
+          <p>© 2025 MovieHanz • Built with Claude</p>
         </div>
       </div>
     </footer>
